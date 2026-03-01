@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stock Notes</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; color: #333; background: #fafafa; display: flex; flex-direction: column; }
+
+    /* Header */
+    header { background: linear-gradient(to right, #f7f7f7, #fff); border-bottom: 1px solid #e0e0e0; flex-shrink: 0; }
+    .header-inner { max-width: 1600px; margin: 0 auto; padding: 0.85rem 1.5rem; display: flex; align-items: center; }
+    .logo { font-size: 1.2rem; font-weight: 700; text-decoration: none; color: #333; display: flex; align-items: center; gap: 0.4rem; margin-right: auto; }
+    nav a { text-decoration: none; color: #555; font-size: 0.88rem; margin-left: 1.2rem; }
+    nav a:hover { color: #000; }
+    nav a.active { font-weight: 700; color: #000; border-bottom: 2px solid #000; }
+
+    /* Workspace */
+    .workspace { display: flex; flex: 1; overflow: hidden; }
+
+    /* Sidebar */
+    .sidebar { width: 260px; min-width: 200px; background: #f0f0f0; border-right: 1px solid #ddd; overflow-y: auto; padding: 0.8rem 0 2rem; flex-shrink: 0; }
+    .sidebar-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #999; padding: 0 0.9rem 0.5rem; }
+    .folder-label { display: flex; align-items: center; gap: 0.35rem; padding: 0.32rem 0.9rem; cursor: pointer; font-size: 0.84rem; font-weight: 600; color: #333; user-select: none; }
+    .folder-label:hover { background: #e4e4e4; }
+    .arrow { font-size: 0.55rem; color: #999; width: 10px; transition: transform 0.18s; }
+    .folder.open > .folder-label .arrow { transform: rotate(90deg); }
+    .folder-contents { display: none; padding-left: 1.6rem; }
+    .folder.open > .folder-contents { display: block; }
+    .note-link { display: flex; align-items: center; gap: 0.35rem; padding: 0.28rem 0.8rem 0.28rem 0; text-decoration: none; color: #444; font-size: 0.82rem; border-radius: 4px; cursor: pointer; }
+    .note-link:hover { background: #ddd; color: #111; }
+    .note-link.active { background: #e0e0e0; font-weight: 600; color: #000; }
+    .note-icon { opacity: 0.55; font-size: 0.8rem; }
+
+    /* Content pane */
+    .content-pane { flex: 1; overflow-y: auto; padding: 2.5rem 3rem; }
+    .welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60%; text-align: center; color: #ccc; }
+    .welcome .icon { font-size: 3.5rem; margin-bottom: 0.8rem; }
+    .welcome h2 { font-size: 1.2rem; font-weight: 500; color: #ccc; margin: 0 0 0.4rem; }
+    .welcome p  { font-size: 0.85rem; color: #ccc; margin: 0; }
+
+    /* Markdown styles */
+    #md-output { max-width: 780px; line-height: 1.75; }
+    #md-output h1 { font-size: 1.8rem; font-weight: 700; margin: 0 0 0.3rem; color: #111; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+    #md-output h2 { font-size: 1.15rem; font-weight: 700; margin: 2rem 0 0.5rem; color: #111; border-left: 3px solid #2d6a4f; padding-left: 0.6rem; }
+    #md-output h3 { font-size: 1rem; font-weight: 600; margin: 1.4rem 0 0.35rem; color: #222; }
+    #md-output p  { margin: 0 0 1rem; }
+    #md-output ul, #md-output ol { margin: 0 0 1rem; padding-left: 1.5rem; }
+    #md-output li { margin-bottom: 0.3rem; }
+    #md-output a  { color: #2d6a4f; }
+    #md-output code { background: #f0f0f0; border-radius: 3px; padding: 0.1em 0.4em; font-family: 'Courier New', monospace; font-size: 0.87em; color: #c0392b; }
+    #md-output pre { background: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 6px; padding: 1rem 1.2rem; overflow-x: auto; margin: 1.2rem 0; }
+    #md-output pre code { background: none; color: #333; padding: 0; font-size: 0.88rem; line-height: 1.6; }
+    #md-output blockquote { border-left: 3px solid #ccc; margin: 1rem 0; padding: 0.5rem 1rem; color: #555; background: #f9f9f9; border-radius: 0 4px 4px 0; }
+    #md-output hr { border: none; border-top: 1px solid #eee; margin: 1.5rem 0; }
+    #md-output table { border-collapse: collapse; width: 100%; margin-bottom: 1rem; }
+    #md-output th, #md-output td { border: 1px solid #ddd; padding: 0.5rem 0.8rem; font-size: 0.9rem; }
+    #md-output th { background: #f5f5f5; font-weight: 600; }
+
+    /* GitHub-style alert callouts: > [!TIP], > [!WARNING], > [!INFO] */
+    .callout { border-radius: 6px; padding: 0.75rem 1.1rem; margin: 1.2rem 0; font-size: 0.9rem; }
+    .callout p { margin: 0; }
+    .callout.tip      { background: #e8f5e9; border-left: 4px solid #2d6a4f; color: #1b4332; }
+    .callout.warning  { background: #fff8e1; border-left: 4px solid #f59e0b; color: #78350f; }
+    .callout.info     { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e3a5f; }
+    .callout.important{ background: #fdf4ff; border-left: 4px solid #a855f7; color: #4a1772; }
+    .callout-title { font-weight: 700; margin-bottom: 0.25rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* Breadcrumb */
+    .breadcrumb { font-size: 0.78rem; color: #bbb; margin-bottom: 0.5rem; }
+    .breadcrumb span { margin: 0 0.3rem; }
+
+    /* Footer */
+    footer { background: linear-gradient(to right, #f7f7f7, #fff); border-top: 1px solid #eee; text-align: center; padding: 0.7rem; font-size: 0.8rem; color: #aaa; flex-shrink: 0; }
+
+    @media (max-width: 700px) {
+      .workspace { flex-direction: column; }
+      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #ddd; }
+      .content-pane { padding: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">📈 Stock Notes</a>
+    <nav>
+      <a href="index.html" class="active">Notes</a>
+      <a href="../blogs/index.html">Blog</a>
+    </nav>
+  </div>
+</header>
+
+<div class="workspace">
+
+  <aside class="sidebar">
+    <div class="sidebar-title">Explorer</div>
+
+    <div class="folder open" id="f-trading">
+      <div class="folder-label" onclick="toggleFolder('f-trading')">
+        <span class="arrow">▶</span> 📁 Trading Rules
+      </div>
+      <div class="folder-contents">
+        <a class="note-link" data-md="trading-rules/123-rules.md" data-folder="Trading Rules" data-title="1-2-3 Reversal Rule">
+          <span class="note-icon">📄</span> 1-2-3 Reversal Rule
+        </a>
+        <a class="note-link" data-md="trading-rules/357-rule.md" data-folder="Trading Rules" data-title="3-5-7 Rule">
+          <span class="note-icon">📄</span> 3-5-7 Rule
+        </a>
+        <a class="note-link" data-md="trading-rules/risk-management.md" data-folder="Trading Rules" data-title="Risk Management Basics">
+          <span class="note-icon">📄</span> Risk Management Basics
+        </a>
+      </div>
+    </div>
+
+    <div class="folder open" id="f-options">
+      <div class="folder-label" onclick="toggleFolder('f-options')">
+        <span class="arrow">▶</span> 📁 Options & Greeks
+      </div>
+      <div class="folder-contents">
+        <a class="note-link" data-md="options/what-is-gamma.md" data-folder="Options & Greeks" data-title="What is Gamma?">
+          <span class="note-icon">📄</span> What is Gamma?
+        </a>
+        <a class="note-link" data-md="options/what-is-delta.md" data-folder="Options & Greeks" data-title="What is Delta?">
+          <span class="note-icon">📄</span> What is Delta?
+        </a>
+        <a class="note-link" data-md="options/what-is-theta.md" data-folder="Options & Greeks" data-title="What is Theta?">
+          <span class="note-icon">📄</span> What is Theta?
+        </a>
+        <a class="note-link" data-md="options/what-is-vega.md" data-folder="Options & Greeks" data-title="What is Vega?">
+          <span class="note-icon">📄</span> What is Vega?
+        </a>
+        <a class="note-link" data-md="options/iv-and-iv-crush.md" data-folder="Options & Greeks" data-title="IV & IV Crush">
+          <span class="note-icon">📄</span> IV & IV Crush
+        </a>
+      </div>
+    </div>
+
+    <div class="folder" id="f-ta">
+      <div class="folder-label" onclick="toggleFolder('f-ta')">
+        <span class="arrow">▶</span> 📁 Technical Analysis
+      </div>
+      <div class="folder-contents">
+        <a class="note-link" data-md="technical-analysis/support-resistance.md" data-folder="Technical Analysis" data-title="Support & Resistance">
+          <span class="note-icon">📄</span> Support & Resistance
+        </a>
+        <a class="note-link" data-md="technical-analysis/moving-averages.md" data-folder="Technical Analysis" data-title="Moving Averages">
+          <span class="note-icon">📄</span> Moving Averages
+        </a>
+        <a class="note-link" data-md="technical-analysis/candlestick-patterns.md" data-folder="Technical Analysis" data-title="Candlestick Patterns">
+          <span class="note-icon">📄</span> Candlestick Patterns
+        </a>
+      </div>
+    </div>
+
+    <div class="folder" id="f-basics">
+      <div class="folder-label" onclick="toggleFolder('f-basics')">
+        <span class="arrow">▶</span> 📁 Market Basics
+      </div>
+      <div class="folder-contents">
+        <a class="note-link" data-md="market-basics/how-options-work.md" data-folder="Market Basics" data-title="How Options Work">
+          <span class="note-icon">📄</span> How Options Work
+        </a>
+        <a class="note-link" data-md="market-basics/market-sessions.md" data-folder="Market Basics" data-title="Market Hours & Sessions">
+          <span class="note-icon">📄</span> Market Hours & Sessions
+        </a>
+        <a class="note-link" data-md="market-basics/order-types.md" data-folder="Market Basics" data-title="Order Types">
+          <span class="note-icon">📄</span> Order Types
+        </a>
+      </div>
+    </div>
+
+  </aside>
+
+  <main class="content-pane">
+    <div class="welcome" id="welcome">
+      <div class="icon">📖</div>
+      <h2>Pick a note from the sidebar</h2>
+      <p>Edit any <code>.md</code> file to update a note.</p>
+    </div>
+    <div id="note-view" style="display:none">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div id="md-output"></div>
+    </div>
+  </main>
+
+</div>
+
+<footer>Stock Notes — Personal learning reference</footer>
+
+<script>
+  function toggleFolder(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  /* Parse GitHub-style alert blockquotes: > [!TIP] etc. */
+  const ALERT_MAP = { TIP:'tip', WARNING:'warning', INFO:'info', NOTE:'info', IMPORTANT:'important', CAUTION:'warning' };
+
+  function applyAlerts(html) {
+    return html.replace(
+      /<blockquote>\n?<p>\[!(TIP|WARNING|INFO|NOTE|IMPORTANT|CAUTION)\]([\s\S]*?)<\/p>\n?<\/blockquote>/gi,
+      (_, type, body) => {
+        const cls   = ALERT_MAP[type.toUpperCase()] || 'info';
+        const label = type.charAt(0) + type.slice(1).toLowerCase();
+        const inner = marked.parseInline(body.trim());
+        return `<div class="callout ${cls}"><div class="callout-title">${label}</div><p>${inner}</p></div>`;
+      }
+    );
+  }
+
+  async function loadNote(link) {
+    const mdPath = link.dataset.md;
+    document.querySelectorAll('.note-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    history.replaceState(null, '', '#' + mdPath);
+
+    document.getElementById('welcome').style.display = 'none';
+    document.getElementById('note-view').style.display = 'block';
+    document.getElementById('breadcrumb').innerHTML =
+      `Notes <span>›</span> ${link.dataset.folder} <span>›</span> ${link.dataset.title}`;
+
+    const out = document.getElementById('md-output');
+    out.innerHTML = '<p style="color:#bbb;font-size:0.85rem">Loading…</p>';
+    try {
+      const res = await fetch(mdPath);
+      if (!res.ok) throw new Error(res.statusText);
+      const raw = await res.text();
+      let html = marked.parse(raw);
+      html = applyAlerts(html);
+      out.innerHTML = html;
+    } catch (e) {
+      out.innerHTML = `<p style="color:#c0392b">Could not load <code>${mdPath}</code>: ${e.message}</p>`;
+    }
+  }
+
+  document.querySelectorAll('.note-link').forEach(link => {
+    link.addEventListener('click', () => loadNote(link));
+  });
+
+  /* Restore from URL hash on load */
+  const hash = location.hash.slice(1);
+  if (hash) {
+    const match = document.querySelector(`.note-link[data-md="${hash}"]`);
+    if (match) {
+      match.closest('.folder')?.classList.add('open');
+      loadNote(match);
+    }
+  }
+</script>
+</body>
+</html>

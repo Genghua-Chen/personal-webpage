@@ -1,0 +1,52 @@
+{
+    "posts": [
+      {
+        "title": "Transformer Explainations",
+        "filename": "transformer-2025-01-03.html",
+        "date": "2025-01-06",
+        "excerpt": "Understanding the core concepts and mechanisms behind Transformer models",
+        "readingTime": 45,
+        "author": "Genghua"
+      },
+      {
+        "title": "Golang Logs",
+        "filename": "go.html",
+        "date": "2025-01-27",
+        "excerpt": "Logs on Golang.",
+        "readingTime": 23,
+        "author": "Genghua"
+      },
+      {
+        "title": "Machine Learning Basic Concepts",
+        "filename": "machineLearningBasicConcepts.html",
+        "date": "2025-03-13",
+        "excerpt": "Machine Learning Compcets, including LLM, CV, Recs, and so on.",
+        "readingTime": 75,
+        "author": "Genghua"
+      },
+      {
+        "title": "Data Structure Concepts",
+        "filename": "dataStructure.html",
+        "date": "2025-04-15",
+        "excerpt": "Data Structure Compcets, including array, linked list, queue, BST, and so on.",
+        "readingTime": 75,
+        "author": "Genghua"
+      },
+      {
+        "title": "Stock Logs",
+        "filename": "stocks.html",
+        "date": "2025-09-21",
+        "excerpt": "Learning from stock market",
+        "readingTime": 6,
+        "author": "Genghua"
+      },
+      {
+        "title": "Language Model Training Resource Expectation",
+        "filename": "llm_memory_estimations.html",
+        "date": "2025-01-16",
+        "excerpt": "The resource estimates for training and inference language models",
+        "readingTime": 10,
+        "author": "Genghua"
+      }
+    ]
+  }
