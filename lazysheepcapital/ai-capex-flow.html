@@ -410,9 +410,18 @@ footer{
 footer a{color:rgba(0,229,255,.6);text-decoration:none}
 footer a:hover{color:rgba(0,229,255,.9)}
 
+/* ── SANKEY ── */
+.sankey-card{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:16px;padding:20px 24px 16px;margin-bottom:20px;overflow:hidden;
+}
+.sankey-svg{width:100%;display:block;overflow:visible}
+.sankey-label{font-family:var(--mono);font-size:9.5px}
+
 /* ── ANIMATIONS ── */
 @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 10px var(--infra)}50%{opacity:.45;box-shadow:0 0 4px var(--infra)}}
 @keyframes flow{0%{stroke-dashoffset:200}100%{stroke-dashoffset:0}}
+@keyframes countUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .flow-anim{animation:flow 2.2s linear infinite}
 
 /* ── RESPONSIVE ── */
@@ -505,6 +514,12 @@ footer a:hover{color:rgba(0,229,255,.9)}
   </div>
 </div>
 
+<!-- SANKEY FLOW OVERVIEW -->
+<div class="sankey-card">
+  <div class="section-eyebrow">// MONEY FLOW · 比例 Sankey 流向图 — 买家 → 供应链层级</div>
+  <svg id="sankeySvg" class="sankey-svg" height="260"></svg>
+</div>
+
 <!-- SUMMARY STRIP -->
 <div class="strip">
   <div class="strip-card" style="--c:var(--gpu)"><div class="strip-val" style="color:var(--gpu)">~45%</div><div class="strip-lbl">GPU / AI 加速芯片<br><span style="color:var(--gpu);opacity:.75">~$300B+</span></div></div>
@@ -533,6 +548,7 @@ footer a:hover{color:rgba(0,229,255,.9)}
   <!-- ARROW LEFT -->
   <div class="col-arr-l">
     <svg class="arr-svg" viewBox="0 0 50 80" fill="none">
+      <defs><filter id="glow"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
       <path d="M8 40 H38" stroke="rgba(0,229,255,.45)" stroke-width="1.5" stroke-dasharray="7 4" class="flow-anim"/>
       <path d="M30 33 L42 40 L30 47" stroke="rgba(0,229,255,.45)" stroke-width="1.5" fill="none"/>
     </svg>
@@ -943,13 +959,239 @@ footer a:hover{color:rgba(0,229,255,.9)}
 </div><!-- end wrap -->
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Animate bars on load
-  document.querySelectorAll('.capex-bar, .layer-bar-fill').forEach(el => {
+/* ══════════════════════════════════════════════
+   AI CAPEX FLOW — Enhanced JS
+   ══════════════════════════════════════════════ */
+
+const BUYERS = [
+  { label:'AMZN', sub:'Amazon / AWS',  capex:200, color:'#00e5ff' },
+  { label:'GOOGL', sub:'Google / GCP', capex:175, color:'#c77dff' },
+  { label:'META', sub:'Meta',          capex:125, color:'#ffd166' },
+  { label:'MSFT', sub:'Microsoft',     capex:120, color:'#4cff8f' },
+  { label:'ORCL', sub:'Oracle',        capex:50,  color:'#ff6b35' },
+  { label:'Others', sub:'xAI / ByteDance', capex:30, color:'#8090a8' },
+];
+
+const LAYERS = [
+  { label:'GPU / AI 芯片 45%',  pct:0.45, color:'#c77dff' },
+  { label:'光互联 / 网络 20%',  pct:0.20, color:'#4cff8f' },
+  { label:'能源 / 电力 15%',    pct:0.15, color:'#ffd166' },
+  { label:'存储 / HBM 10%',     pct:0.10, color:'#ff6b35' },
+  { label:'机架 / 服务器 6%',   pct:0.06, color:'#00e5ff' },
+  { label:'封装 / 材料 4%',     pct:0.04, color:'#e040fb' },
+];
+
+/* ── BAR ANIMATIONS ── */
+function animateBars() {
+  document.querySelectorAll('.capex-bar, .layer-bar-fill').forEach((el, i) => {
     const w = el.style.width;
     el.style.width = '0';
-    requestAnimationFrame(() => setTimeout(() => { el.style.width = w; }, 80));
+    el.style.transition = 'none';
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        el.style.transition = 'width 1.3s cubic-bezier(.16,1,.3,1)';
+        el.style.width = w;
+      }, 120 + i * 60);
+    });
   });
+}
+
+/* ── NUMBER COUNTER ── */
+function animateCounters() {
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseFloat(el.dataset.count);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const dur = 1400;
+    const start = performance.now();
+    const step = now => {
+      const t = Math.min((now - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      el.textContent = prefix + Math.round(target * ease) + suffix;
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+/* ── SANKEY DIAGRAM ── */
+function buildSankey() {
+  const svg = document.getElementById('sankeySvg');
+  if (!svg) return;
+
+  const W  = svg.parentElement.clientWidth - 48;
+  const H  = 260;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+  const total  = BUYERS.reduce((s, b) => s + b.capex, 0);
+  const padT   = 18, padB = 18, padL = 76, padR = 148;
+  const nodeW  = 10, nodeGap = 5;
+  const availH = H - padT - padB;
+  const lx     = padL;
+  const rx     = W - padR;
+
+  /* position left nodes */
+  let y = padT;
+  BUYERS.forEach(b => {
+    b.nodeH  = Math.max((b.capex / total) * availH - nodeGap, 4);
+    b.ny     = y;
+    b.flowY  = y;
+    y += b.nodeH + nodeGap;
+  });
+
+  /* position right nodes */
+  y = padT;
+  LAYERS.forEach(l => {
+    l.nodeH  = Math.max(l.pct * availH - nodeGap, 4);
+    l.ny     = y;
+    l.flowY  = y;
+    y += l.nodeH + nodeGap;
+  });
+
+  /* build defs + paths */
+  let defs  = '<defs>';
+  let paths = '';
+
+  BUYERS.forEach((b, bi) => {
+    LAYERS.forEach((l, li) => {
+      const gid = `sk${bi}x${li}`;
+      defs += `
+        <linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+          <stop offset="0%"   stop-color="${b.color}" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="${l.color}" stop-opacity="0.45"/>
+        </linearGradient>`;
+
+      const fhL = b.nodeH * l.pct;
+      const fhR = l.nodeH * (b.capex / total);
+      const y1t = b.flowY, y1b = b.flowY + fhL;
+      const y2t = l.flowY, y2b = l.flowY + fhR;
+      b.flowY += fhL;
+      l.flowY += fhR;
+
+      /* skip if both flows are negligible */
+      if (fhL < 0.5 && fhR < 0.5) return;
+
+      const mx1 = lx + nodeW + (rx - lx - nodeW) * 0.42;
+      const mx2 = lx + nodeW + (rx - lx - nodeW) * 0.58;
+
+      const d = `M${lx+nodeW} ${y1t}
+        C${mx1} ${y1t},${mx2} ${y2t},${rx} ${y2t}
+        L${rx} ${y2b}
+        C${mx2} ${y2b},${mx1} ${y1b},${lx+nodeW} ${y1b}Z`;
+
+      paths += `<path d="${d}" fill="url(#${gid})" class="sk-path" opacity="0" style="transition:opacity .35s ease ${(bi*LAYERS.length+li)*12+300}ms"/>`;
+    });
+  });
+
+  defs += '</defs>';
+
+  /* node rectangles + labels */
+  let nodes = '';
+  BUYERS.forEach(b => {
+    nodes += `
+      <rect x="${lx}" y="${b.ny}" width="${nodeW}" height="${b.nodeH}" fill="${b.color}" rx="2" opacity="0.9"/>
+      <text x="${lx - 8}" y="${b.ny + b.nodeH/2 + 3.5}" text-anchor="end"
+        fill="${b.color}" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="600"
+        opacity="0.85">${b.label}</text>`;
+  });
+
+  LAYERS.forEach(l => {
+    nodes += `
+      <rect x="${rx}" y="${l.ny}" width="${nodeW}" height="${l.nodeH}" fill="${l.color}" rx="2" opacity="0.9"/>
+      <text x="${rx + nodeW + 8}" y="${l.ny + l.nodeH/2 + 3.5}"
+        fill="${l.color}" font-family="IBM Plex Mono,monospace" font-size="9.5" font-weight="500"
+        opacity="0.85">${l.label}</text>`;
+  });
+
+  svg.innerHTML = defs + paths + nodes;
+
+  /* trigger opacity transitions */
+  requestAnimationFrame(() => {
+    svg.querySelectorAll('.sk-path').forEach(p => p.setAttribute('opacity', '1'));
+  });
+}
+
+/* ── PARTICLE ANIMATION on flow arrows ── */
+function buildParticles() {
+  document.querySelectorAll('.arr-svg').forEach(svg => {
+    const path = svg.querySelector('path:first-child');
+    if (!path) return;
+    const d = path.getAttribute('d');
+    for (let i = 0; i < 3; i++) {
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.setAttribute('r', '2.5');
+      dot.setAttribute('fill', 'rgba(0,229,255,0.7)');
+      dot.setAttribute('filter', 'url(#glow)');
+      const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+      anim.setAttribute('dur', `${1.8 + i * 0.6}s`);
+      anim.setAttribute('repeatCount', 'indefinite');
+      anim.setAttribute('begin', `${i * 0.6}s`);
+      const mp = document.createElementNS('http://www.w3.org/2000/svg', 'mpath');
+      mp.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `#${uniquePath(svg, d, i)}`);
+      anim.appendChild(mp);
+      dot.appendChild(anim);
+      svg.appendChild(dot);
+    }
+  });
+}
+
+let _pathId = 0;
+function uniquePath(svg, d, i) {
+  const id = `pp${++_pathId}`;
+  const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  p.setAttribute('id', id);
+  p.setAttribute('d', d);
+  p.setAttribute('fill', 'none');
+  p.style.display = 'none';
+  svg.prepend(p);
+  return id;
+}
+
+/* ── HOVER HIGHLIGHTS ── */
+function initHoverHighlights() {
+  const buyers = document.querySelectorAll('.buyer');
+  const chips  = document.querySelectorAll('.chip');
+
+  buyers.forEach(b => {
+    b.addEventListener('mouseenter', () => {
+      /* dim all buyers except this one */
+      buyers.forEach(o => { if (o !== b) o.style.opacity = '0.35'; });
+    });
+    b.addEventListener('mouseleave', () => {
+      buyers.forEach(o => { o.style.opacity = ''; });
+    });
+  });
+}
+
+/* ── LAYER HEADER GLOW on hover ── */
+function initLayerGlow() {
+  document.querySelectorAll('.layer-hd').forEach(hd => {
+    const layer = hd.closest('.layer');
+    layer.addEventListener('mouseenter', () => {
+      hd.style.filter = 'brightness(1.15)';
+    });
+    layer.addEventListener('mouseleave', () => {
+      hd.style.filter = '';
+    });
+  });
+}
+
+/* ── RESIZE HANDLER ── */
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(buildSankey, 200);
+});
+
+/* ── BOOT ── */
+document.addEventListener('DOMContentLoaded', () => {
+  animateBars();
+  animateCounters();
+  buildSankey();
+  initHoverHighlights();
+  initLayerGlow();
+  /* short delay for particles so layout is settled */
+  setTimeout(buildParticles, 400);
 });
 </script>
 </body>
