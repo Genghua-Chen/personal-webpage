@@ -239,6 +239,93 @@
       border-radius: 999px; padding: 1px 7px; font-weight: 600;
     }
 
+    /* ── Global Heatmap ── */
+    .gmap-section {
+      margin-bottom: 14px;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 4px);
+      background: var(--panel);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .gmap-head {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+      padding: 13px 18px 11px;
+      border-bottom: 1px solid var(--line);
+    }
+    .gmap-title {
+      font-size: 0.8rem; font-weight: 700; letter-spacing: .02em; flex-shrink: 0;
+    }
+    .gmap-q-wrap { display: flex; gap: 6px; flex-wrap: wrap; }
+    .gmap-chip {
+      border: 1px solid var(--line); background: #fff; border-radius: 999px;
+      padding: 4px 11px; cursor: pointer; font-size: 0.76rem; font-weight: 500; color: var(--text);
+      transition: background .12s, color .12s;
+    }
+    .gmap-chip:hover { background: #f0f0f5; }
+    .gmap-chip.active { background: var(--text); color: #fff; border-color: transparent; }
+    .gmap-count { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+    .gmap-toggle {
+      margin-left: auto; display: flex; align-items: center; gap: 5px;
+      background: none; border: 1px solid var(--line); border-radius: 999px;
+      padding: 4px 11px; cursor: pointer; font-size: 0.76rem; color: var(--muted);
+      transition: background .12s, color .12s;
+    }
+    .gmap-toggle:hover { background: #f0f0f5; color: var(--text); }
+    .gmap-toggle svg { transition: transform .25s ease; }
+    .gmap-section.collapsed .gmap-toggle svg { transform: rotate(-90deg); }
+    .gmap-section.collapsed .gmap-legend,
+    .gmap-section.collapsed .gmap-grid { display: none; }
+
+    .gmap-legend {
+      display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+      padding: 8px 18px; border-bottom: 1px solid var(--line);
+      background: rgba(0,0,0,.018);
+    }
+    .gl-item { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--muted); }
+    .gl-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+    .gmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+      gap: 7px;
+      padding: 14px 16px 16px;
+    }
+    .gmap-cell {
+      border-radius: 11px; padding: 10px 11px;
+      border: 1px solid var(--line);
+      cursor: default;
+      transition: transform .15s, box-shadow .15s;
+      position: relative; overflow: hidden;
+    }
+    .gmap-cell:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.10); }
+    .gmap-ticker  { font-weight: 700; font-size: 0.94rem; letter-spacing: .02em; }
+    .gmap-company { font-size: 0.7rem; color: inherit; opacity: .6; margin-top: 1px;
+                    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .gmap-signal  { font-size: 0.73rem; font-weight: 700; margin-top: 6px; }
+    .gmap-badges  { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+    .gmap-b  { font-size: 0.69rem; font-weight: 700; padding: 1px 5px; border-radius: 3px;
+               background: rgba(26,150,85,.14); color: var(--green); }
+    .gmap-s  { font-size: 0.69rem; font-weight: 700; padding: 1px 5px; border-radius: 3px;
+               background: rgba(192,57,43,.12); color: var(--red); }
+    .gmap-inst { font-size: 0.66rem; color: inherit; opacity: .5; margin-top: 3px; }
+    .gmap-flow { font-size: 0.68rem; font-weight: 600; margin-top: 2px; }
+
+    /* Signal colours */
+    .gc-strong-buy  { background:#c6edda; border-color:#90d4ae; }
+    .gc-strong-buy  .gmap-ticker,.gc-strong-buy  .gmap-signal { color:#145a32; }
+    .gc-buy         { background:#dff0ea; border-color:#aadcc2; }
+    .gc-buy         .gmap-ticker,.gc-buy         .gmap-signal { color:#1a6b3c; }
+    .gc-mild-buy    { background:#eef8f2; border-color:#c0dfd0; }
+    .gc-mild-buy    .gmap-ticker,.gc-mild-buy    .gmap-signal { color:#2a7a50; }
+    .gc-mixed       { background:#fef9e7; border-color:#f0d880; }
+    .gc-mixed       .gmap-ticker,.gc-mixed       .gmap-signal { color:#7a5c00; }
+    .gc-mild-sell   { background:#fdecea; border-color:#f0b8b0; }
+    .gc-mild-sell   .gmap-ticker,.gc-mild-sell   .gmap-signal { color:#7a2020; }
+    .gc-sell        { background:#fbbaba; border-color:#e08080; }
+    .gc-sell        .gmap-ticker,.gc-sell        .gmap-signal { color:#5a0a0a; }
+
     /* ── Back link ── */
     .back-link { font-size: 0.84rem; color: var(--accent); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 14px; }
     .back-link:hover { text-decoration: underline; }
@@ -276,6 +363,31 @@
         <span class="hero-badge">5 Quarters · 2025–2026</span>
       </div>
     </div>
+  </section>
+
+  <!-- Global Heatmap -->
+  <section class="gmap-section">
+    <div class="gmap-head">
+      <span class="gmap-title">全市场信号热力图</span>
+      <div class="gmap-q-wrap" id="gmapQChips"></div>
+      <span class="gmap-count" id="gmapCount"></span>
+      <button class="gmap-toggle" id="gmapToggle">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        收起
+      </button>
+    </div>
+    <div class="gmap-legend">
+      <span class="gl-item"><span class="gl-swatch" style="background:#c6edda;border:1px solid #90d4ae"></span>强力买入</span>
+      <span class="gl-item"><span class="gl-swatch" style="background:#dff0ea;border:1px solid #aadcc2"></span>买入</span>
+      <span class="gl-item"><span class="gl-swatch" style="background:#eef8f2;border:1px solid #c0dfd0"></span>温和买入</span>
+      <span class="gl-item"><span class="gl-swatch" style="background:#fef9e7;border:1px solid #f0d880"></span>分歧 / 混合</span>
+      <span class="gl-item"><span class="gl-swatch" style="background:#fdecea;border:1px solid #f0b8b0"></span>温和减持</span>
+      <span class="gl-item"><span class="gl-swatch" style="background:#fbbaba;border:1px solid #e08080"></span>减持 / 清仓</span>
+      <span style="font-size:.73rem;color:var(--muted);margin-left:auto">↑ 买入次数 · ↓ 减持次数 · 机构数</span>
+    </div>
+    <div class="gmap-grid" id="gmapGrid"></div>
   </section>
 
   <!-- Toolbar -->
@@ -319,6 +431,8 @@
     valF:    "All",
     pctF:    "All",
     timingF: "All",
+    // global heatmap quarter filter
+    gmapQ: "Q1 2026",
   };
 
   const el = {
@@ -610,7 +724,12 @@
       return;
     }
 
-    const allInstRows = filteredRows().filter(r => r.institution === state.selectedInst);
+    // Use unfiltered rows for the detail pane so search text doesn't hide
+    // positions inside the selected institution (search only narrows the left list).
+    const allInstRows = state.rows.filter(r => {
+      const catOk = state.catFilter === "All" || r.category === state.catFilter;
+      return catOk && r.institution === state.selectedInst;
+    });
     if (!allInstRows.length) {
       el.detail.innerHTML = '<div class="empty-msg">No data for current filters.</div>';
       return;
@@ -774,11 +893,120 @@
     }).join("");
   }
 
+  /* ══════════════════════════════════
+     GLOBAL HEATMAP
+     ══════════════════════════════════ */
+  const GMAP_QUARTERS = ["All", "Q1 2026", "Q4 2025", "Q3 2025", "Q2 2025", "Q1 2025"];
+  const SKIP_TICKERS  = new Set(["DATA CENTER","PRIVATE MARKETS","PRIVATE CREDIT","HEALTHCARE","PRIVATE MARKETS"]);
+
+  function isRealTicker(t) {
+    return t && !t.includes(" ") && t.length <= 7 && !SKIP_TICKERS.has(t.toUpperCase());
+  }
+
+  function renderGlobalHeatmap() {
+    const grid   = document.getElementById("gmapGrid");
+    const count  = document.getElementById("gmapCount");
+    const chips  = document.getElementById("gmapQChips");
+    if (!grid) return;
+
+    /* ── Quarter filter chips ── */
+    chips.innerHTML = GMAP_QUARTERS.map(q =>
+      `<button class="gmap-chip${state.gmapQ === q ? " active" : ""}" data-gq="${esc(q)}">${esc(q)}</button>`
+    ).join("");
+    chips.querySelectorAll(".gmap-chip").forEach(btn =>
+      btn.addEventListener("click", () => { state.gmapQ = btn.dataset.gq; renderGlobalHeatmap(); })
+    );
+
+    /* ── Aggregate ── */
+    const map = {};
+    state.rows.forEach(r => {
+      if (!isRealTicker(r.stock_ticker)) return;
+      if (state.gmapQ !== "All" && r.quarter !== state.gmapQ) return;
+
+      const tk = r.stock_ticker;
+      if (!map[tk]) map[tk] = {
+        ticker: tk, company: r.stock_company,
+        buys: 0, sells: 0, buyW: 0, sellW: 0,
+        institutions: new Set(), netVal: 0,
+      };
+
+      const d = map[tk];
+      d.institutions.add(r.institution);
+
+      const a = r.action;
+      const v = parseFloat(r.value_change_usd_mn) || 0;
+
+      if (a === "New Position" || a === "Smart Money Buy") {
+        d.buys++; d.buyW += 2; d.netVal += Math.max(v, 0);
+      } else if (a === "Added") {
+        d.buys++; d.buyW += 1; d.netVal += Math.max(v, 0);
+      } else if (a === "Exited") {
+        d.sells++; d.sellW += 2; d.netVal += Math.min(v, 0);
+      } else if (a === "Reduced") {
+        d.sells++; d.sellW += 1; d.netVal += Math.min(v, 0);
+      }
+      // Held / Mixed → no weight
+    });
+
+    /* ── Filter & sort ── */
+    const items = Object.values(map)
+      .filter(d => d.buys + d.sells > 0)
+      .map(d => {
+        const w = d.buyW + d.sellW;
+        const score = w > 0 ? (d.buyW - d.sellW) / w : 0;
+        return { ...d, score, instCount: d.institutions.size };
+      })
+      .sort((a, b) => b.score - a.score || b.instCount - a.instCount);
+
+    count.textContent = `${items.length} stocks · ${state.gmapQ}`;
+
+    /* ── Render ── */
+    grid.innerHTML = items.map(d => {
+      const cls   = gmapClass(d.score);
+      const label = gmapLabel(d.score);
+      const net   = d.netVal;
+      const netStr = net !== 0
+        ? `<div class="gmap-flow" style="color:${net>0?"var(--green)":"var(--red)"}">${net>0?"+":""}${Math.abs(net)>=1000?"$"+(Math.abs(net)/1000).toFixed(1)+"B":"$"+Math.round(Math.abs(net))+"M"}</div>`
+        : "";
+      return `
+        <div class="gmap-cell ${cls}" title="${esc(d.company)} | 买入信号:${d.buys} 卖出:${d.sells} 机构:${d.instCount}">
+          <div class="gmap-ticker">${esc(d.ticker)}</div>
+          <div class="gmap-company">${esc(d.company)}</div>
+          <div class="gmap-signal">${label}</div>
+          <div class="gmap-badges">
+            ${d.buys  > 0 ? `<span class="gmap-b">↑${d.buys}</span>`  : ""}
+            ${d.sells > 0 ? `<span class="gmap-s">↓${d.sells}</span>` : ""}
+          </div>
+          <div class="gmap-inst">${d.instCount} 家机构</div>
+          ${netStr}
+        </div>`;
+    }).join("");
+  }
+
+  function gmapClass(s) {
+    if (s >= 0.7)  return "gc-strong-buy";
+    if (s >= 0.3)  return "gc-buy";
+    if (s >= 0.01) return "gc-mild-buy";
+    if (s >= -0.3) return "gc-mixed";
+    if (s >= -0.7) return "gc-mild-sell";
+    return "gc-sell";
+  }
+
+  function gmapLabel(s) {
+    if (s >= 0.7)  return "强力买入 ★";
+    if (s >= 0.3)  return "买入 ▲";
+    if (s >= 0.01) return "温和买入";
+    if (s >= -0.3) return "分歧 ◆";
+    if (s >= -0.7) return "温和减持 ▼";
+    return "减持 / 清仓 ✕";
+  }
+
   /* ── Master update ── */
   function update() {
     const rows = filteredRows();
     renderFilters();
     renderSummary(rows);
+    renderGlobalHeatmap();
     const groups = groupByInst(rows);
     if (!groups.some(g => g.institution === state.selectedInst)) {
       state.selectedInst = groups[0] ? groups[0].institution : null;
@@ -797,6 +1025,14 @@
     state.selectedInst = state.rows[0] ? state.rows[0].institution : null;
     update();
   }
+
+  /* ── Heatmap toggle ── */
+  document.getElementById("gmapToggle").addEventListener("click", () => {
+    const sec = document.querySelector(".gmap-section");
+    const btn = document.getElementById("gmapToggle");
+    const collapsed = sec.classList.toggle("collapsed");
+    btn.childNodes[btn.childNodes.length - 1].textContent = collapsed ? " 展开" : " 收起";
+  });
 
   /* ── Bind search ── */
   el.search.addEventListener("input", e => {
