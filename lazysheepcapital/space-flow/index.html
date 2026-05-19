@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>太空板块流向图 — LazySheepcapital</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & ROOT ── */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06080f;
+  --glass:rgba(255,255,255,0.035);
+  --glass2:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --text:#dde2f0;
+  --muted:#4a5268;
+  --muted2:#7a8299;
+  --launch:#ff6b35;   --launch-rgb:255,107,53;
+  --sat:#c77dff;      --sat-rgb:199,125,255;
+  --comms:#00e5ff;    --comms-rgb:0,229,255;
+  --defense:#60b0ff;  --defense-rgb:96,176,255;
+  --obs:#4cff8f;      --obs-rgb:76,255,143;
+  --ground:#ffd166;   --ground-rgb:255,209,102;
+  --mat:#a0b8e0;      --mat-rgb:160,184,224;
+  --red:#ff4d6d;
+  --amber:#ffa030;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'Inter',sans-serif;
+}
+
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+.bg-canvas{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 900px 700px at -5% -5%,  rgba(199,125,255,.07)  0%, transparent 60%),
+    radial-gradient(ellipse 700px 500px at 105% 15%, rgba(0,229,255,.05)    0%, transparent 55%),
+    radial-gradient(ellipse 500px 700px at 100% 95%, rgba(255,107,53,.04)   0%, transparent 55%),
+    radial-gradient(ellipse 600px 400px at 5%  90%,  rgba(96,176,255,.04)   0%, transparent 55%);
+}
+.bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(199,125,255,.014) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(199,125,255,.014) 1px, transparent 1px);
+  background-size:48px 48px;
+}
+
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite var(--delay,0s)}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.7}}
+
+.wrap{max-width:1360px;margin:0 auto;position:relative;z-index:1;padding:28px 22px 60px}
+
+/* ── NAV ── */
+.back{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:11px;color:rgba(199,125,255,.6);
+  text-decoration:none;margin-bottom:24px;
+  transition:color .2s;
+}
+.back:hover{color:rgba(199,125,255,.95)}
+
+/* ── HERO ── */
+.hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(199,125,255,.07) 0%,rgba(0,229,255,.04) 50%,rgba(255,107,53,.03) 100%);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  padding:36px 40px 32px;
+  margin-bottom:20px;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(135deg,rgba(199,125,255,.05),transparent 60%);
+  pointer-events:none;
+}
+.hero-kicker{
+  font-family:var(--mono);font-size:10px;letter-spacing:3px;
+  color:rgba(199,125,255,.75);text-transform:uppercase;margin-bottom:10px;
+}
+.hero-title{
+  font-size:clamp(26px,3vw,40px);font-weight:700;
+  letter-spacing:-.04em;line-height:1.15;
+  background:linear-gradient(135deg,#e8eaf0 30%,rgba(199,125,255,.9) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:10px;
+}
+.hero-sub{font-size:13px;color:var(--muted2);font-family:var(--mono);margin-bottom:24px}
+
+.hero-stats{display:flex;flex-wrap:wrap;gap:10px}
+.hstat{
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:10px;padding:10px 18px;
+}
+.hstat-val{font-family:var(--mono);font-size:19px;font-weight:600}
+.hstat-lbl{font-size:10px;color:var(--muted2);margin-top:2px}
+
+/* ── SPCX BANNER ── */
+.spcx-banner{
+  background:linear-gradient(135deg,rgba(199,125,255,.12),rgba(96,176,255,.08));
+  border:1px solid rgba(199,125,255,.3);
+  border-radius:14px;padding:16px 22px;margin-bottom:20px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.spcx-badge{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  background:rgba(199,125,255,.18);border:1px solid rgba(199,125,255,.4);
+  color:var(--sat);border-radius:6px;padding:4px 10px;white-space:nowrap;
+}
+.spcx-text{font-size:12px;color:rgba(200,210,228,.85);line-height:1.6;flex:1}
+.spcx-text strong{color:var(--text)}
+
+/* ── CAPEX CHART ── */
+.capex-card{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:16px;padding:22px 26px;margin-bottom:20px;
+}
+.section-eyebrow{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:2.5px;
+  color:var(--muted);text-transform:uppercase;margin-bottom:14px;
+}
+.capex-rows{display:flex;flex-direction:column;gap:9px}
+.capex-row{display:grid;grid-template-columns:160px 1fr 90px 80px;align-items:center;gap:12px}
+.capex-ticker{font-family:var(--mono);font-size:11px;font-weight:600}
+.capex-track{height:8px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden}
+.capex-bar{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+.capex-val{font-family:var(--mono);font-size:11px;text-align:right}
+.capex-yoy{font-size:10px;color:rgba(76,255,143,.8);text-align:right}
+
+/* ── SUMMARY STRIP ── */
+.strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px}
+.strip-card{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:12px;padding:14px 16px;position:relative;overflow:hidden;
+}
+.strip-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--c,var(--sat));border-radius:2px 2px 0 0;
+}
+.strip-val{font-family:var(--mono);font-size:20px;font-weight:600}
+.strip-lbl{font-size:10px;color:var(--muted2);margin-top:3px;line-height:1.5}
+
+/* ── MAIN FLOW ── */
+.flow-wrap{
+  display:grid;
+  grid-template-columns:210px 50px 1fr 50px 200px;
+  gap:0;align-items:start;margin-bottom:24px;
+}
+.col-buyers{grid-column:1}
+.col-arr-l{grid-column:2;display:flex;align-items:center;justify-content:center;padding-top:120px}
+.col-layers{grid-column:3;display:flex;flex-direction:column;gap:12px}
+.col-arr-r{grid-column:4;display:flex;align-items:center;justify-content:center;padding-top:120px}
+.col-down{grid-column:5;display:flex;flex-direction:column;gap:8px;padding-top:48px}
+
+/* ── BUYER CARDS ── */
+.col-label{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:2px;margin-bottom:8px}
+.buyer{
+  background:linear-gradient(145deg,rgba(199,125,255,.07),rgba(199,125,255,.02));
+  border:1px solid rgba(199,125,255,.16);
+  border-radius:10px;padding:11px 14px;position:relative;
+  margin-bottom:7px;transition:border-color .2s,transform .2s;cursor:default;
+}
+.buyer:hover{border-color:rgba(199,125,255,.4);transform:translateX(2px)}
+.buyer-pulse{
+  position:absolute;right:-4px;top:50%;transform:translateY(-50%);
+  width:7px;height:7px;border-radius:50%;
+  background:var(--sat);box-shadow:0 0 10px var(--sat);
+  animation:pulse 2s ease-in-out infinite;
+}
+.buyer-ticker{font-family:var(--mono);font-size:9px;color:rgba(199,125,255,.8);letter-spacing:1px;margin-bottom:2px}
+.buyer-name{font-size:12px;font-weight:600;margin-bottom:2px}
+.buyer-cap{font-family:var(--mono);font-size:9.5px;color:var(--muted2)}
+.buyer-yoy{font-family:var(--mono);font-size:9px;color:rgba(76,255,143,.75);margin-top:1px}
+
+/* ── LAYER PANELS ── */
+.layer{border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.07);transition:border-color .2s}
+.layer:hover{border-color:rgba(255,255,255,.14)}
+.layer-hd{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 16px 11px;position:relative;overflow:hidden;
+}
+.layer-hd::before{
+  content:'';position:absolute;inset:0;
+  background:var(--hd-grad,linear-gradient(135deg,rgba(199,125,255,.15),transparent 70%));
+  pointer-events:none;
+}
+.layer-icon{font-size:17px;position:relative;z-index:1}
+.layer-name{font-size:13px;font-weight:700;flex:1;position:relative;z-index:1}
+.layer-amt{font-family:var(--mono);font-size:11px;font-weight:600;position:relative;z-index:1}
+.layer-pct{font-family:var(--mono);font-size:13px;font-weight:700;position:relative;z-index:1}
+
+.layer-bar-track{height:2px;background:rgba(255,255,255,.05)}
+.layer-bar-fill{height:100%;transition:width 1.4s cubic-bezier(.16,1,.3,1)}
+
+.layer-body{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:10px 12px 14px}
+
+/* ── CHIPS ── */
+.chip{
+  background:rgba(255,255,255,.028);
+  border:1px solid rgba(255,255,255,.065);
+  border-radius:10px;padding:9px 11px;
+  position:relative;overflow:hidden;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  cursor:default;
+}
+.chip::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:var(--stripe,rgba(255,255,255,.15));
+  border-radius:3px 0 0 3px;
+}
+.chip:hover{
+  transform:translateY(-2px);
+  border-color:rgba(var(--chip-rgb,255,255,255),.28);
+  box-shadow:0 6px 22px rgba(0,0,0,.4), 0 0 18px rgba(var(--chip-rgb,255,255,255),.08);
+}
+.chip-ticker{font-family:var(--mono);font-size:10px;font-weight:700;margin-bottom:2px}
+.chip-name{font-size:10px;color:rgba(200,210,228,.8);line-height:1.35;margin-bottom:3px}
+.chip-role{font-size:9.5px;color:var(--muted);line-height:1.45}
+.chip-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.tag{
+  font-family:var(--mono);font-size:8px;
+  padding:1px 6px;border-radius:3px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.04);color:rgba(160,175,200,.8);
+}
+
+.chip-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.badge{font-family:var(--mono);font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;letter-spacing:.3px}
+.b-sm-strong{color:#4cff8f;background:rgba(76,255,143,.1);border:1px solid rgba(76,255,143,.25)}
+.b-sm-buy{color:#00e5ff;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.22)}
+.b-sm-mixed{color:#ffd166;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.22)}
+.b-warn{color:#ff4d6d;background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.22)}
+.b-amber{color:#ffa030;background:rgba(255,160,0,.08);border:1px solid rgba(255,160,0,.22)}
+.b-new{color:#c77dff;background:rgba(199,125,255,.1);border:1px solid rgba(199,125,255,.25)}
+.b-private{color:#94a3b8;background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.22)}
+
+.sublabel{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 14px;font-family:var(--mono);font-size:9.5px;color:var(--muted2);
+  background:rgba(255,255,255,.025);
+}
+.sl-badge{font-size:8px;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:.8px}
+.arr-svg{width:44px}
+
+/* ── DOWNSTREAM ── */
+.down-card{
+  background:rgba(255,255,255,.025);
+  border:1px solid var(--border);
+  border-radius:10px;padding:10px 13px;
+  border-left:3px solid rgba(255,255,255,.12);
+  transition:border-color .2s, border-left-color .2s;
+}
+.down-card:hover{border-color:var(--border2);border-left-color:rgba(199,125,255,.35)}
+.down-lbl{font-family:var(--mono);font-size:8.5px;color:var(--muted);letter-spacing:1px;margin-bottom:3px}
+.down-name{font-size:11px;font-weight:600;margin-bottom:3px;line-height:1.4}
+.down-detail{font-size:9.5px;color:var(--muted2);line-height:1.4}
+
+/* ── LAYER THEMES ── */
+.ly-launch .layer-hd{--hd-grad:linear-gradient(135deg,rgba(255,107,53,.22) 0%,rgba(255,107,53,.06) 60%,transparent 100%)}
+.ly-launch .layer-amt,.ly-launch .layer-pct{color:var(--launch)}
+.ly-launch .layer-bar-fill{background:linear-gradient(90deg,rgba(255,107,53,.7),rgba(255,107,53,.4))}
+.ly-launch .chip{--stripe:var(--launch);--chip-rgb:var(--launch-rgb)}
+.ly-launch .chip-ticker{color:var(--launch)}
+
+.ly-sat .layer-hd{--hd-grad:linear-gradient(135deg,rgba(199,125,255,.22) 0%,rgba(199,125,255,.06) 60%,transparent 100%)}
+.ly-sat .layer-amt,.ly-sat .layer-pct{color:var(--sat)}
+.ly-sat .layer-bar-fill{background:linear-gradient(90deg,rgba(199,125,255,.7),rgba(199,125,255,.4))}
+.ly-sat .chip{--stripe:var(--sat);--chip-rgb:var(--sat-rgb)}
+.ly-sat .chip-ticker{color:var(--sat)}
+
+.ly-comms .layer-hd{--hd-grad:linear-gradient(135deg,rgba(0,229,255,.18) 0%,rgba(0,229,255,.05) 60%,transparent 100%)}
+.ly-comms .layer-amt,.ly-comms .layer-pct{color:var(--comms)}
+.ly-comms .layer-bar-fill{background:linear-gradient(90deg,rgba(0,229,255,.7),rgba(0,229,255,.4))}
+.ly-comms .chip{--stripe:var(--comms);--chip-rgb:var(--comms-rgb)}
+.ly-comms .chip-ticker{color:var(--comms)}
+
+.ly-defense .layer-hd{--hd-grad:linear-gradient(135deg,rgba(96,176,255,.2) 0%,rgba(96,176,255,.05) 60%,transparent 100%)}
+.ly-defense .layer-amt,.ly-defense .layer-pct{color:var(--defense)}
+.ly-defense .layer-bar-fill{background:linear-gradient(90deg,rgba(96,176,255,.7),rgba(96,176,255,.4))}
+.ly-defense .chip{--stripe:var(--defense);--chip-rgb:var(--defense-rgb)}
+.ly-defense .chip-ticker{color:var(--defense)}
+
+.ly-obs .layer-hd{--hd-grad:linear-gradient(135deg,rgba(76,255,143,.18) 0%,rgba(76,255,143,.05) 60%,transparent 100%)}
+.ly-obs .layer-amt,.ly-obs .layer-pct{color:var(--obs)}
+.ly-obs .layer-bar-fill{background:linear-gradient(90deg,rgba(76,255,143,.7),rgba(76,255,143,.4))}
+.ly-obs .chip{--stripe:var(--obs);--chip-rgb:var(--obs-rgb)}
+.ly-obs .chip-ticker{color:var(--obs)}
+
+.ly-ground .layer-hd{--hd-grad:linear-gradient(135deg,rgba(255,209,102,.18) 0%,rgba(255,209,102,.05) 60%,transparent 100%)}
+.ly-ground .layer-amt,.ly-ground .layer-pct{color:var(--ground)}
+.ly-ground .layer-bar-fill{background:linear-gradient(90deg,rgba(255,209,102,.7),rgba(255,209,102,.4))}
+.ly-ground .chip{--stripe:var(--ground);--chip-rgb:var(--ground-rgb)}
+.ly-ground .chip-ticker{color:var(--ground)}
+
+.ly-mat .layer-hd{--hd-grad:linear-gradient(135deg,rgba(160,184,224,.18) 0%,rgba(160,184,224,.05) 60%,transparent 100%)}
+.ly-mat .layer-amt,.ly-mat .layer-pct{color:var(--mat)}
+.ly-mat .layer-bar-fill{background:linear-gradient(90deg,rgba(160,184,224,.7),rgba(160,184,224,.4))}
+.ly-mat .chip{--stripe:var(--mat);--chip-rgb:var(--mat-rgb)}
+.ly-mat .chip-ticker{color:var(--mat)}
+
+/* ── BOTTLENECK ── */
+.section-card{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;margin-bottom:20px;
+}
+.section-hd{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 20px;border-bottom:1px solid var(--border);
+}
+.section-hd-title{font-size:13px;font-weight:700}
+.bottle-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+.b-item{padding:16px 18px;border-right:1px solid var(--border)}
+.b-item:last-child{border-right:0}
+.b-name{font-size:12px;font-weight:700;margin-bottom:6px}
+.b-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+.b-desc{font-size:10.5px;color:var(--muted2);line-height:1.55}
+.b-who{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px}
+
+/* ── SPCX ETF HOLDINGS ── */
+.etf-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.etf-col{padding:18px 22px}
+.etf-col:first-child{border-right:1px solid var(--border)}
+.etf-col:nth-child(2){border-right:1px solid var(--border)}
+.etf-sub{font-family:var(--mono);font-size:11px;font-weight:700;margin-bottom:12px;color:var(--text)}
+.etf-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px}
+.etf-row:last-child{border-bottom:0}
+.etf-tkr{font-family:var(--mono);font-weight:700;font-size:11px}
+.etf-name{color:var(--muted2);font-size:10px}
+.etf-wt{font-family:var(--mono);font-size:10px;color:rgba(76,255,143,.8)}
+
+/* ── SCENARIO TABLE ── */
+.tvi-grid{display:grid;grid-template-columns:1fr 1fr}
+.tvi-col{padding:18px 22px}
+.tvi-col:first-child{border-right:1px solid var(--border)}
+.tvi-label{font-family:var(--mono);font-size:11px;font-weight:700;margin-bottom:12px}
+.tvi-row{display:flex;gap:10px;margin-bottom:9px;font-size:11px}
+.tvi-icon{font-size:14px;flex-shrink:0}
+.tvi-text{color:rgba(180,190,210,.85);line-height:1.55}
+.tvi-text strong{color:var(--text)}
+
+/* ── SMART MONEY TABLE ── */
+.sm-table{width:100%;border-collapse:collapse;font-size:11px}
+.sm-table th{text-align:left;padding:8px 16px;font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.8px;border-bottom:1px solid var(--border)}
+.sm-table td{padding:9px 16px;border-bottom:1px solid rgba(255,255,255,.035);vertical-align:middle}
+.sm-table tr:last-child td{border-bottom:0}
+.sm-table tr:hover td{background:rgba(255,255,255,.025)}
+.sm-tkr{font-family:var(--mono);font-weight:700;font-size:11px}
+.buyer-pill{display:inline-block;margin:2px 2px 2px 0;font-family:var(--mono);font-size:8.5px;padding:2px 6px;border-radius:3px;background:rgba(199,125,255,.07);border:1px solid rgba(199,125,255,.18);color:rgba(200,150,230,.9)}
+
+/* ── PRIVATE NOTE ── */
+.private-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:var(--mono);font-size:9px;font-weight:700;
+  color:#94a3b8;background:rgba(148,163,184,.08);
+  border:1px solid rgba(148,163,184,.22);border-radius:3px;padding:2px 7px;margin-top:4px;
+}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);padding-top:14px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:10px;color:var(--muted);
+}
+footer a{color:rgba(199,125,255,.6);text-decoration:none}
+footer a:hover{color:rgba(199,125,255,.9)}
+
+/* ── ANIMATIONS ── */
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 10px var(--sat)}50%{opacity:.45;box-shadow:0 0 4px var(--sat)}}
+@keyframes flow{0%{stroke-dashoffset:200}100%{stroke-dashoffset:0}}
+.flow-anim{animation:flow 2.2s linear infinite}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .flow-wrap{grid-template-columns:1fr}
+  .col-arr-l,.col-arr-r{display:none}
+  .col-down{padding-top:0}
+  .strip{grid-template-columns:repeat(3,1fr)}
+  .bottle-grid{grid-template-columns:1fr 1fr}
+  .tvi-grid{grid-template-columns:1fr}
+  .tvi-col:first-child{border-right:none;border-bottom:1px solid var(--border)}
+  .etf-grid{grid-template-columns:1fr}
+  .etf-col{border-right:none!important;border-bottom:1px solid var(--border)}
+  .capex-row{grid-template-columns:120px 1fr 80px 0}
+}
+@media(max-width:600px){
+  .strip{grid-template-columns:1fr 1fr}
+  .bottle-grid{grid-template-columns:1fr}
+  .hero{padding:22px 20px}
+  .layer-body{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="bg-canvas"></div>
+<div class="bg-grid"></div>
+
+<!-- STARS -->
+<div class="stars" id="starsContainer"></div>
+
+<div class="wrap">
+
+<!-- NAV -->
+<a class="back" href="../index.html">
+  <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  Market Briefing
+</a>
+
+<!-- TAB BAR -->
+<div style="display:flex;gap:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:4px;margin-bottom:20px">
+  <a href="../ai-capex-flow/index.html" style="flex:1;text-align:center;padding:8px 16px;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:rgba(0,229,255,.6);text-decoration:none;transition:all .2s" onmouseover="this.style.background='rgba(0,229,255,.08)';this.style.color='rgba(0,229,255,.95)'" onmouseout="this.style.background='transparent';this.style.color='rgba(0,229,255,.6)'">⚡ AI Capex Flow</a>
+  <span style="flex:1;text-align:center;padding:8px 16px;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;background:rgba(199,125,255,.1);border:1px solid rgba(199,125,255,.25);color:#c084fc;cursor:default">🚀 太空板块</span>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">// Space Economy · 太空板块供应链流向图 · 2026E</div>
+  <h1 class="hero-title">太空板块全产业链图谱</h1>
+  <p class="hero-sub">全球太空经济 $630B+ · SpaceX 生态 + 上市公司替代标的 · 上下游受益拆解 · 估算数据，仅供参考</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-val" style="color:var(--sat)">~$630B</div><div class="hstat-lbl">全球太空经济（2026E）</div></div>
+    <div class="hstat"><div class="hstat-val" style="color:var(--defense)">~$120B</div><div class="hstat-lbl">政府预算（NASA+DoD+盟国）</div></div>
+    <div class="hstat"><div class="hstat-val" style="color:var(--comms)">~$160B</div><div class="hstat-lbl">商业卫星通信服务</div></div>
+    <div class="hstat"><div class="hstat-val" style="color:var(--launch)">~$25B</div><div class="hstat-lbl">发射服务市场</div></div>
+    <div class="hstat"><div class="hstat-val" style="color:var(--obs)">~$8B</div><div class="hstat-lbl">地球观测 / 数据</div></div>
+  </div>
+</div>
+
+<!-- SPCX BANNER -->
+<div class="spcx-banner">
+  <span class="spcx-badge">🚀 SPCX / SpaceX</span>
+  <div class="spcx-text">
+    <strong>SpaceX 上市预期（SPCX）</strong>：Elon Musk 旗下 SpaceX 估值已达 $350B+，Starlink 子公司曾传 IPO 计划。SpaceX 本身仍为私有，但可通过以下上市替代标的间接布局：
+    <strong>RKLB</strong>（发射+卫星制造）、<strong>IRDM</strong>（LEO 通信竞对+受益者）、<strong>ASTS</strong>（直连手机卫星宽带）、<strong>PL</strong>（地球观测数据）、<strong>LMT / NOC</strong>（国防太空合同）。
+    SPCX ETF（ProShares S-Network Space Index）可作为板块整体暴露。
+  </div>
+</div>
+
+<!-- BUDGET BREAKDOWN -->
+<div class="capex-card">
+  <div class="section-eyebrow">// 2026E 主要太空资金来源 — 预算规模</div>
+  <div class="capex-rows">
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--defense)">US DoD / Space Force</div>
+      <div class="capex-track"><div class="capex-bar" style="width:35%;background:linear-gradient(90deg,rgba(96,176,255,.8),rgba(96,176,255,.45))"></div></div>
+      <div class="capex-val" style="color:var(--defense)">~$33B+</div>
+      <div class="capex-yoy">+12% YoY</div>
+    </div>
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--sat)">SpaceX（私有）</div>
+      <div class="capex-track"><div class="capex-bar" style="width:28%;background:linear-gradient(90deg,rgba(199,125,255,.8),rgba(199,125,255,.45))"></div></div>
+      <div class="capex-val" style="color:var(--sat)">~$22B+ 收入</div>
+      <div class="capex-yoy">Starlink 主力</div>
+    </div>
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--comms)">NASA</div>
+      <div class="capex-track"><div class="capex-bar" style="width:22%;background:linear-gradient(90deg,rgba(0,229,255,.8),rgba(0,229,255,.45))"></div></div>
+      <div class="capex-val" style="color:var(--comms)">~$24.8B</div>
+      <div class="capex-yoy">FY2026 预算</div>
+    </div>
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--launch)">Amazon Kuiper</div>
+      <div class="capex-track"><div class="capex-bar" style="width:12%;background:linear-gradient(90deg,rgba(255,107,53,.8),rgba(255,107,53,.45))"></div></div>
+      <div class="capex-val" style="color:var(--launch)">~$10B+</div>
+      <div class="capex-yoy">星座建设期</div>
+    </div>
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--obs)">欧洲 ESA + 盟国</div>
+      <div class="capex-track"><div class="capex-bar" style="width:10%;background:linear-gradient(90deg,rgba(76,255,143,.8),rgba(76,255,143,.45))"></div></div>
+      <div class="capex-val" style="color:var(--obs)">€7.8B+</div>
+      <div class="capex-yoy">ESA 2026</div>
+    </div>
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--muted2)">JAXA / 其他政府</div>
+      <div class="capex-track"><div class="capex-bar" style="width:6%;background:linear-gradient(90deg,rgba(150,150,180,.7),rgba(150,150,180,.4))"></div></div>
+      <div class="capex-val" style="color:var(--muted2)">~$8B</div>
+      <div class="capex-yoy" style="color:var(--ground)">多极化</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY STRIP -->
+<div class="strip">
+  <div class="strip-card" style="--c:var(--defense)"><div class="strip-val" style="color:var(--defense)">~35%</div><div class="strip-lbl">国防 / 国家安全<br><span style="color:var(--defense);opacity:.75">LMT · NOC · RTX · LHX</span></div></div>
+  <div class="strip-card" style="--c:var(--comms)"><div class="strip-val" style="color:var(--comms)">~25%</div><div class="strip-lbl">卫星通信服务<br><span style="color:var(--comms);opacity:.75">IRDM · VSAT · GSAT · ASTS</span></div></div>
+  <div class="strip-card" style="--c:var(--launch)"><div class="strip-val" style="color:var(--launch)">~15%</div><div class="strip-lbl">发射 / 火箭<br><span style="color:var(--launch);opacity:.75">RKLB · SpaceX（私）</span></div></div>
+  <div class="strip-card" style="--c:var(--sat)"><div class="strip-val" style="color:var(--sat)">~15%</div><div class="strip-lbl">卫星制造<br><span style="color:var(--sat);opacity:.75">LMT · NOC · LHX · RKLB</span></div></div>
+  <div class="strip-card" style="--c:var(--obs)"><div class="strip-val" style="color:var(--obs)">~10%</div><div class="strip-lbl">观测 / 材料 / 地面<br><span style="color:var(--obs);opacity:.75">PL · SPIR · HXL · KTOS</span></div></div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     MAIN FLOW
+     ═════════════════════════════════════════ -->
+<div class="flow-wrap">
+
+  <!-- BUYERS -->
+  <div class="col-buyers">
+    <div class="col-label">BUYERS / CUSTOMERS</div>
+    <div class="buyer"><div class="buyer-pulse"></div><div class="buyer-ticker">DoD / USSF</div><div class="buyer-name">美国国防部 / 太空军</div><div class="buyer-cap">预算 $33B+/yr</div><div class="buyer-yoy">↑ GPS · ISR · 导弹防御</div></div>
+    <div class="buyer"><div class="buyer-pulse"></div><div class="buyer-ticker">NASA</div><div class="buyer-name">美国宇航局</div><div class="buyer-cap">预算 $24.8B</div><div class="buyer-yoy">↑ Artemis · James Webb · 商业月球</div></div>
+    <div class="buyer" style="background:rgba(255,107,53,.05);border-color:rgba(255,107,53,.18)"><div class="buyer-pulse" style="background:var(--launch);box-shadow:0 0 10px var(--launch)"></div><div class="buyer-ticker" style="color:rgba(255,107,53,.8)">SpaceX（私）</div><div class="buyer-name">SpaceX / Starlink</div><div class="buyer-cap">收入 $22B+ · 估值 $350B+</div><div class="buyer-yoy" style="color:rgba(255,107,53,.7)">↑ 6000+ 在轨卫星</div></div>
+    <div class="buyer"><div class="buyer-pulse"></div><div class="buyer-ticker">AMZN Kuiper</div><div class="buyer-name">Amazon Project Kuiper</div><div class="buyer-cap">投入 $10B+</div><div class="buyer-yoy">↑ 3236 颗星座建设中</div></div>
+    <div class="buyer" style="background:rgba(96,176,255,.04);border-color:rgba(96,176,255,.14)"><div class="buyer-pulse" style="background:var(--defense);box-shadow:0 0 10px var(--defense)"></div><div class="buyer-ticker" style="color:rgba(96,176,255,.8)">ESA / JAXA</div><div class="buyer-name">欧洲 / 日本 / 盟国</div><div class="buyer-cap">合计 ~$16B</div><div class="buyer-yoy" style="color:rgba(96,176,255,.7)">↑ Galileo · SLIM · Ariane 6</div></div>
+    <div class="buyer" style="background:rgba(76,255,143,.04);border-color:rgba(76,255,143,.12)"><div class="buyer-pulse" style="background:var(--obs);box-shadow:0 0 10px var(--obs)"></div><div class="buyer-ticker" style="color:rgba(76,255,143,.8)">商业运营商</div><div class="buyer-name">Telesat / OneWeb / SES</div><div class="buyer-cap">星座更新迭代</div><div class="buyer-yoy" style="color:rgba(76,255,143,.7)">↑ LEO 宽带竞赛</div></div>
+  </div>
+
+  <!-- ARROW LEFT -->
+  <div class="col-arr-l">
+    <svg class="arr-svg" viewBox="0 0 50 80" fill="none">
+      <defs><filter id="glow2"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <path d="M8 40 H38" stroke="rgba(199,125,255,.45)" stroke-width="1.5" stroke-dasharray="7 4" class="flow-anim"/>
+      <path d="M30 33 L42 40 L30 47" stroke="rgba(199,125,255,.45)" stroke-width="1.5" fill="none"/>
+    </svg>
+  </div>
+
+  <!-- LAYERS -->
+  <div class="col-layers">
+    <div class="col-label">SUPPLY CHAIN LAYERS</div>
+
+    <!-- ① Launch -->
+    <div class="layer ly-launch">
+      <div class="layer-hd">
+        <span class="layer-icon">🚀</span>
+        <span class="layer-name">发射服务 / 运载火箭</span>
+        <span class="layer-amt">~$25B</span>&nbsp;
+        <span class="layer-pct">15%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:15%"></div></div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">RKLB</div>
+          <div class="chip-name">Rocket Lab USA</div>
+          <div class="chip-role">Electron 小型入轨（商业+政府）· Neutron 中型火箭在研 · 同时做卫星制造</div>
+          <div class="chip-tags"><span class="tag">Electron</span><span class="tag">Neutron(dev)</span><span class="tag">Photon 卫星</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">纯发射上市第一股</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">SpaceX（私）</div>
+          <div class="chip-name">Space Exploration Technologies</div>
+          <div class="chip-role">Falcon 9 占全球发射市场 60%+ · Starship 超重型 · 深度垄断LEO</div>
+          <div class="chip-tags"><span class="tag">Falcon 9</span><span class="tag">Starship</span><span class="tag">Dragon</span></div>
+          <div class="chip-badges"><span class="badge b-private">私有 — SPCX 候选</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">NOC</div>
+          <div class="chip-name">Northrop Grumman</div>
+          <div class="chip-role">Antares（已退役）→ VCLS 下一代 · Cygnus 货运飞船 · GEM 固体助推器</div>
+          <div class="chip-tags"><span class="tag">Cygnus</span><span class="tag">GEM 63XL</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">BA</div>
+          <div class="chip-name">Boeing</div>
+          <div class="chip-role">SLS（NASA Artemis 月球火箭）· Starliner 载人飞船 · ULA 联合持股方</div>
+          <div class="chip-tags"><span class="tag">SLS Block 1B</span><span class="tag">Starliner</span></div>
+          <div class="chip-badges"><span class="badge b-warn">Starliner 问题</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">KTOS</div>
+          <div class="chip-name">Kratos Defense</div>
+          <div class="chip-role">无人靶机 / 小型快速发射系统（KRATOS Launch）· 国防 SpaceX 替代方案</div>
+          <div class="chip-tags"><span class="tag">Gremlins</span><span class="tag">KRATOS Launch</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">LMT</div>
+          <div class="chip-name">Lockheed Martin（ULA方）</div>
+          <div class="chip-role">ULA Vulcan Centaur 联合持股方 · Atlas V 遗产 · 国家安全发射合同</div>
+          <div class="chip-tags"><span class="tag">Vulcan Centaur</span><span class="tag">Atlas V</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② Satellites -->
+    <div class="layer ly-sat">
+      <div class="layer-hd">
+        <span class="layer-icon">🛰️</span>
+        <span class="layer-name">卫星制造 / 飞船平台</span>
+        <span class="layer-amt">~$30B</span>&nbsp;
+        <span class="layer-pct">18%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:18%"></div></div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">LMT</div>
+          <div class="chip-name">Lockheed Martin Space</div>
+          <div class="chip-role">GPS III · 国家侦察卫星 · SBIRS 导弹预警 · Orion 月球飞船</div>
+          <div class="chip-tags"><span class="tag">GPS III</span><span class="tag">SBIRS</span><span class="tag">Orion</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">国防太空第一大</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">NOC</div>
+          <div class="chip-name">Northrop Grumman Space</div>
+          <div class="chip-role">AEHF 军事通信卫星 · James Webb 太空望远镜制造方 · GBSD 核弹头弹体</div>
+          <div class="chip-tags"><span class="tag">AEHF</span><span class="tag">James Webb</span><span class="tag">GBSD</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">军用通信垄断</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">LHX</div>
+          <div class="chip-name">L3Harris Technologies</div>
+          <div class="chip-role">GOES 气象卫星 · 先进传感器 / 望远镜光学 · 收购 Aerojet 推进</div>
+          <div class="chip-tags"><span class="tag">GOES-R</span><span class="tag">SDA 星链</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">传感器+推进双线</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">RTX</div>
+          <div class="chip-name">Raytheon Technologies</div>
+          <div class="chip-role">导弹防御有效载荷 · 太空传感器 / 雷达 · SM-3 拦截弹</div>
+          <div class="chip-tags"><span class="tag">SM-3</span><span class="tag">SPY-6</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">RKLB</div>
+          <div class="chip-name">Rocket Lab — Photon 平台</div>
+          <div class="chip-role">小型卫星总线 Photon · 为政府和商业客户提供 turnkey 卫星</div>
+          <div class="chip-tags"><span class="tag">Photon</span><span class="tag">SDA Tranche</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">PL</div>
+          <div class="chip-name">Planet Labs</div>
+          <div class="chip-role">自建 Dove / SuperDove 小卫星 · 140+ 在轨 · 每日覆盖全球陆地</div>
+          <div class="chip-tags"><span class="tag">SuperDove</span><span class="tag">SkySat</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ Defense / National Security Space -->
+    <div class="layer ly-defense">
+      <div class="layer-hd">
+        <span class="layer-icon">🛡️</span>
+        <span class="layer-name">国防太空 / 国家安全 (NSS)</span>
+        <span class="layer-amt">~$55B</span>&nbsp;
+        <span class="layer-pct">35%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:35%"></div></div>
+      <div class="sublabel" style="border-top:1px solid rgba(96,176,255,.12);border-bottom:1px solid rgba(96,176,255,.1)">
+        <span class="sl-badge" style="background:rgba(96,176,255,.14);color:var(--defense);border:1px solid rgba(96,176,255,.3)">Prime 承包商</span>
+        美国政府国防太空合同直接受益方
+      </div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">LMT</div>
+          <div class="chip-name">Lockheed Martin</div>
+          <div class="chip-role">最大国防太空承包商 · 年收入 $67B · 太空部门占比 ~18%</div>
+          <div class="chip-tags"><span class="tag">Space Revenue ~$12B</span></div>
+          <div class="chip-badges"><span class="badge b-sm-strong">太空一级承包</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">NOC</div>
+          <div class="chip-name">Northrop Grumman</div>
+          <div class="chip-role">太空部门 $4.5B · GBSD 核弹体 · 作战云 · 导弹防御</div>
+          <div class="chip-tags"><span class="tag">GBSD</span><span class="tag">HALO 月球舱</span></div>
+          <div class="chip-badges"><span class="badge b-sm-strong">太空一级承包</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">RTX</div>
+          <div class="chip-name">RTX / Raytheon</div>
+          <div class="chip-role">导弹防御雷达 · 太空传感器 · 高超音速拦截</div>
+          <div class="chip-tags"><span class="tag">SPY-6</span><span class="tag">SM-3 IIA</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">LHX</div>
+          <div class="chip-name">L3Harris</div>
+          <div class="chip-role">SDA 传输层星座 · 太空侦察载荷 · 无人机侦察</div>
+          <div class="chip-tags"><span class="tag">SDA Tranche 2</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">LDOS</div>
+          <div class="chip-name">Leidos Holdings</div>
+          <div class="chip-role">国家安全 IT / 太空地面系统集成 · 情报社区 SIGINT</div>
+          <div class="chip-tags"><span class="tag">NRO 合同</span><span class="tag">C2 系统</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">BAH</div>
+          <div class="chip-name">Booz Allen Hamilton</div>
+          <div class="chip-role">DoD 太空情报分析 · AI 国防系统集成 · 太空态势感知</div>
+          <div class="chip-tags"><span class="tag">SSA</span><span class="tag">JADC2</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ④ Satellite Comms -->
+    <div class="layer ly-comms">
+      <div class="layer-hd">
+        <span class="layer-icon">📡</span>
+        <span class="layer-name">卫星通信运营 / LEO 宽带</span>
+        <span class="layer-amt">~$40B</span>&nbsp;
+        <span class="layer-pct">25%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:25%"></div></div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">IRDM</div>
+          <div class="chip-name">Iridium Communications</div>
+          <div class="chip-role">66颗LEO全球覆盖 · L波段语音+数据 · 海事/航空/IoT · 无死角覆盖</div>
+          <div class="chip-tags"><span class="tag">Iridium NEXT</span><span class="tag">L-band</span><span class="tag">Certus</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">已盈利 · 强订阅模式</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">VSAT</div>
+          <div class="chip-name">ViaSat（+Inmarsat）</div>
+          <div class="chip-role">GEO Ka波段宽带 · 军事战术通信 · 航空机舱WiFi · 合并Inmarsat</div>
+          <div class="chip-tags"><span class="tag">ViaSat-3</span><span class="tag">PACE 军用</span></div>
+          <div class="chip-badges"><span class="badge b-amber">债务压力</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">GSAT</div>
+          <div class="chip-name">Globalstar</div>
+          <div class="chip-role">LEO IoT · Apple iPhone 卫星紧急求救 SOS · SPOT 追踪器</div>
+          <div class="chip-tags"><span class="tag">Apple SOS</span><span class="tag">SPOT</span><span class="tag">IoT</span></div>
+          <div class="chip-badges"><span class="badge b-new">Apple 协议锁定</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">ASTS</div>
+          <div class="chip-name">AST SpaceMobile</div>
+          <div class="chip-role">在轨 BlueBird 卫星直连手机 · 不需专用设备 · AT&T/Verizon/Rakuten 协议</div>
+          <div class="chip-tags"><span class="tag">BlueBird</span><span class="tag">直连手机</span></div>
+          <div class="chip-badges"><span class="badge b-new">技术突破 · 高风险</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">Starlink（私）</div>
+          <div class="chip-name">SpaceX Starlink</div>
+          <div class="chip-role">3.7M+ 用户 · LEO Ku/Ka 宽带 · 与 IRDM/VSAT 直接竞争 · ASTS 上游威胁</div>
+          <div class="chip-tags"><span class="tag">6000+ 卫星</span><span class="tag">v2 Mini</span></div>
+          <div class="chip-badges"><span class="badge b-private">私有</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">SATS</div>
+          <div class="chip-name">EchoStar（含 Hughes）</div>
+          <div class="chip-role">HughesNet 北美卫星宽带 #1 · Jupiter 3（500Gbps 全球最大商业卫星）· 2023 合并 DISH Network · Boost Mobile 5G</div>
+          <div class="chip-tags"><span class="tag">Jupiter 3</span><span class="tag">HughesNet</span><span class="tag">GEO Ka-band</span></div>
+          <div class="chip-badges"><span class="badge b-amber">高负债 · 转型期</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">SES（欧）</div>
+          <div class="chip-name">SES S.A.（欧交所）</div>
+          <div class="chip-role">GEO+MEO 混合星座 · 收购 Intelsat · C波段频谱变现 · 视频+数据</div>
+          <div class="chip-tags"><span class="tag">O3b mPOWER</span><span class="tag">C-band</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑤ Earth Observation / Data -->
+    <div class="layer ly-obs">
+      <div class="layer-hd">
+        <span class="layer-icon">🌍</span>
+        <span class="layer-name">地球观测 / 卫星数据分析</span>
+        <span class="layer-amt">~$8B</span>&nbsp;
+        <span class="layer-pct">5%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:5%"></div></div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">PL</div>
+          <div class="chip-name">Planet Labs PBC</div>
+          <div class="chip-role">每日覆盖全球陆地 · 140+ 卫星 · 农业/城市规划/气候/国防 · SaaS 订阅</div>
+          <div class="chip-tags"><span class="tag">SuperDove 8-band</span><span class="tag">SkySat 50cm</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">最大商业EO平台</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">SPIR</div>
+          <div class="chip-name">Spire Global</div>
+          <div class="chip-role">175+ 颗 LEMUR 卫星 · 气象 / 海事 AIS / 航空追踪 · 数据订阅</div>
+          <div class="chip-tags"><span class="tag">LEMUR-2</span><span class="tag">GNSS-RO气象</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">Maxar（私）</div>
+          <div class="chip-name">Maxar Technologies</div>
+          <div class="chip-role">高分辨率 WorldView 系列 · NGA/政府主要供应商 · 2023 被收购退市</div>
+          <div class="chip-tags"><span class="tag">WorldView Legion</span><span class="tag">NGA 合同</span></div>
+          <div class="chip-badges"><span class="badge b-private">私有</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">BKSY</div>
+          <div class="chip-name">BlackSky Technology</div>
+          <div class="chip-role">高频次重访 · 政府 ISR 合同 · AI 分析平台</div>
+          <div class="chip-tags"><span class="tag">Gen-3 卫星</span><span class="tag">Spectra AI</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">SRTX</div>
+          <div class="chip-name">Satellogic</div>
+          <div class="chip-role">超光谱成像 · 低成本 EO 卫星制造 · 新兴市场政府客户</div>
+          <div class="chip-tags"><span class="tag">NewSat</span><span class="tag">超光谱</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">BWXT</div>
+          <div class="chip-name">BWX Technologies</div>
+          <div class="chip-role">核热推进（NTP）用于深空 · 太空核反应堆 · NASA DRACO 项目</div>
+          <div class="chip-tags"><span class="tag">DRACO NTP</span><span class="tag">核推进</span></div>
+          <div class="chip-badges"><span class="badge b-new">长期深空布局</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑥ Ground Systems / Infrastructure -->
+    <div class="layer ly-ground">
+      <div class="layer-hd">
+        <span class="layer-icon">🏭</span>
+        <span class="layer-name">地面系统 / 运控中心 / 终端</span>
+        <span class="layer-amt">~$18B</span>&nbsp;
+        <span class="layer-pct">11%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:11%"></div></div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">KTOS</div>
+          <div class="chip-name">Kratos Defense</div>
+          <div class="chip-role">卫星地面站系统 OpenSpace · 虚拟化运控软件 · Spectral 卫星调制解调器</div>
+          <div class="chip-tags"><span class="tag">OpenSpace</span><span class="tag">Spectral</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">地面系统龙头</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">VSAT</div>
+          <div class="chip-name">ViaSat — 地面终端</div>
+          <div class="chip-role">Ka波段终端设备 · 政府战术链路 · PACE 军用调制解调器</div>
+          <div class="chip-tags"><span class="tag">ViaSat-3 终端</span><span class="tag">PACE</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">MAXR（私）</div>
+          <div class="chip-name">Maxar 地面系统</div>
+          <div class="chip-role">卫星影像地面处理 · WorldView 地面站网络</div>
+          <div class="chip-tags"><span class="tag">Radiant 平台</span></div>
+          <div class="chip-badges"><span class="badge b-private">私有</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">AWS GC</div>
+          <div class="chip-name">AWS Ground Station</div>
+          <div class="chip-role">云化卫星地面站服务 · 按分钟计费 · 配合 AWS 卫星数据处理</div>
+          <div class="chip-tags"><span class="tag">AWS AMZN</span><span class="tag">云地面站</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">IRDM</div>
+          <div class="chip-name">Iridium — 地面终端</div>
+          <div class="chip-role">Iridium GO! 热点设备 · 工业物联网调制解调器 · 航空终端</div>
+          <div class="chip-tags"><span class="tag">Certus 100/700</span><span class="tag">IoT</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">MOG.A</div>
+          <div class="chip-name">Moog Inc</div>
+          <div class="chip-role">卫星推进阀门 / 姿控系统 · 发射台液体控制 · 军用飞控</div>
+          <div class="chip-tags"><span class="tag">推进阀门</span><span class="tag">RCS</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑦ Materials / Propulsion / Components -->
+    <div class="layer ly-mat">
+      <div class="layer-hd">
+        <span class="layer-icon">🔬</span>
+        <span class="layer-name">材料 / 推进 / 关键航天器件</span>
+        <span class="layer-amt">~$16B</span>&nbsp;
+        <span class="layer-pct">10%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:10%"></div></div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">HXL</div>
+          <div class="chip-name">Hexcel Corporation</div>
+          <div class="chip-role">碳纤维复合材料 · 火箭整流罩 / 卫星结构 / 太阳能板基板 · F-35 机身</div>
+          <div class="chip-tags"><span class="tag">HexPly 预浸料</span><span class="tag">航天级 CFRP</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">航天材料不可替代</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">TDG</div>
+          <div class="chip-name">TransDigm Group</div>
+          <div class="chip-role">专有航空航天零部件 · 超强定价权 · 太空/国防/商业三线受益</div>
+          <div class="chip-tags"><span class="tag">独家零部件</span><span class="tag">高毛利</span></div>
+          <div class="chip-badges"><span class="badge b-sm-strong">定价护城河</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">HEI</div>
+          <div class="chip-name">Heico Corporation</div>
+          <div class="chip-role">FAA认证航空零部件 PMA · 航天器电子MRO · 国防电子设备修理</div>
+          <div class="chip-tags"><span class="tag">PMA 零部件</span><span class="tag">MRO</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">持续增长</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">CRS</div>
+          <div class="chip-name">Carpenter Technology</div>
+          <div class="chip-role">高性能合金 / 超合金 · 火箭发动机涡轮盘 · 航天器结构件</div>
+          <div class="chip-tags"><span class="tag">Inconel</span><span class="tag">Waspaloy</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">ATI</div>
+          <div class="chip-name">ATI Inc</div>
+          <div class="chip-role">钛合金 / 镍超合金 · 发动机热端材料 · 卫星结构钛件</div>
+          <div class="chip-tags"><span class="tag">钛合金板材</span><span class="tag">发动机材料</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">DCO</div>
+          <div class="chip-name">Ducommun</div>
+          <div class="chip-role">火箭 / 卫星结构蒙皮 · 电子战载荷组件 · 复合材料组件</div>
+          <div class="chip-tags"><span class="tag">结构组件</span><span class="tag">复合材料</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end col-layers -->
+
+  <!-- ARROW RIGHT -->
+  <div class="col-arr-r">
+    <svg class="arr-svg" viewBox="0 0 50 80" fill="none">
+      <path d="M8 40 H38" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-dasharray="7 4" class="flow-anim" style="animation-delay:.5s"/>
+      <path d="M30 33 L42 40 L30 47" stroke="rgba(255,255,255,.2)" stroke-width="1.5" fill="none"/>
+    </svg>
+  </div>
+
+  <!-- DOWNSTREAM -->
+  <div class="col-down">
+    <div class="col-label">DOWNSTREAM</div>
+    <div class="down-card" style="border-left-color:rgba(96,176,255,.45)"><div class="down-lbl">NAVIGATION / GPS</div><div class="down-name">全球导航 · 精准农业 · 自动驾驶</div><div class="down-detail">GPS 使用者 40亿+，导航芯片年出货 20亿</div></div>
+    <div class="down-card" style="border-left-color:rgba(76,255,143,.45)"><div class="down-lbl">EARTH OBSERVATION</div><div class="down-name">卫星遥感 · 气候监测 · 城市规划</div><div class="down-detail">农业 / 保险 / 政府决策数据来源</div></div>
+    <div class="down-card" style="border-left-color:rgba(0,229,255,.45)"><div class="down-lbl">CONNECTIVITY</div><div class="down-name">Starlink · Kuiper · IRDM 用户</div><div class="down-detail">偏远地区 / 航空 / 船舶宽带</div></div>
+    <div class="down-card" style="border-left-color:rgba(255,107,53,.45)"><div class="down-lbl">DEFENSE / ISR</div><div class="down-name">卫星侦察 · 导弹预警 · C2</div><div class="down-detail">国家安全应用，政府最大买家</div></div>
+    <div class="down-card" style="border-left-color:rgba(199,125,255,.45)"><div class="down-lbl">SPACE TOURISM</div><div class="down-name">Blue Origin · Virgin Galactic</div><div class="down-detail">高净值亚轨道体验 · 商业空间站</div></div>
+    <div class="down-card"><div class="down-lbl">IN-SPACE ECONOMY</div><div class="down-name">轨道加注 · 小行星采矿</div><div class="down-detail">2030+ 新兴市场：卫星维修/延寿</div></div>
+    <div class="down-card"><div class="down-lbl">WEATHER / CLIMATE</div><div class="down-name">GOES 气象卫星数据</div><div class="down-detail">全球 NWP 模型 · 航空气象</div></div>
+  </div>
+
+</div><!-- end flow-wrap -->
+
+<!-- ═══════════════════════════════════
+     BOTTLENECKS
+     ═══════════════════════════════════ -->
+<div class="section-card">
+  <div class="section-hd" style="background:rgba(255,77,109,.04)">
+    <span style="font-size:16px">⚠</span>
+    <span class="section-hd-title" style="color:var(--red)">太空板块核心风险 / 瓶颈</span>
+    <span style="margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--muted)">红色 = 最关键</span>
+  </div>
+  <div class="bottle-grid">
+    <div class="b-item" style="background:rgba(255,77,109,.03)">
+      <div class="b-name" style="color:var(--red)">① SpaceX 私有 — 无直接投资路径</div>
+      <div class="b-badges"><span class="badge b-warn">上市不确定</span><span class="badge b-private">私有 $350B+</span></div>
+      <div class="b-desc">SpaceX 主导全球发射市场 60%+、LEO 宽带 Starlink 用户 400万+，但仍为私有。Musk 曾表示 Starlink 或独立 IPO，但时间窗口不明。次优替代：RKLB（发射）、IRDM（竞对/受益）、ASTS（直连手机）。</div>
+      <div class="b-who">替代布局：RKLB · IRDM · ASTS · GSAT</div>
+    </div>
+    <div class="b-item" style="background:rgba(255,209,102,.03)">
+      <div class="b-name" style="color:var(--nrg,#ffd166)">② 频谱稀缺 — ITU 监管</div>
+      <div class="b-badges"><span class="badge b-amber">监管风险</span><span class="badge b-amber">轨位竞争</span></div>
+      <div class="b-desc">LEO 轨位和无线电频谱资源有限，ITU 规则"先到先得"。SpaceX 抢占大量频段后，ASTS、Amazon Kuiper、OneWeb 的频谱谈判日趋复杂。干扰和协调成本将上升。</div>
+      <div class="b-who">受影响：ASTS · VSAT · GSAT</div>
+    </div>
+    <div class="b-item" style="background:rgba(255,77,109,.03)">
+      <div class="b-name" style="color:var(--red)">③ 发射成本 — 卫星寿命</div>
+      <div class="b-badges"><span class="badge b-warn">Starship 改变游戏</span></div>
+      <div class="b-desc">Starship 如实现完全可复用目标，发射成本可能降至 $10/kg（Falcon 9 约 $2700/kg），将使大型卫星星座经济性重塑。对 RKLB 和 ULA 现有发射商价格体系形成冲击。</div>
+      <div class="b-who">受益：RKLB（竞争更激烈）; LMT · NOC（大型卫星订单）</div>
+    </div>
+    <div class="b-item" style="background:rgba(255,209,102,.03)">
+      <div class="b-name" style="color:var(--amber,#ffa030)">④ 太空碎片 / Kessler 效应</div>
+      <div class="b-badges"><span class="badge b-amber">长期系统风险</span></div>
+      <div class="b-desc">在轨卫星和碎片数量激增，低轨道拥堵加剧。Starlink v2 卫星改用离子推进主动规避，但整体碰撞风险仍上升。需要太空交通管理（STM）新法规和轨道碎片清除技术。</div>
+      <div class="b-who">新机会：轨道清洁技术公司（ASTRO 等）</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SpaceX IPO SCENARIO
+     ═══════════════════════════════════ -->
+<div class="section-card">
+  <div class="section-hd" style="background:rgba(199,125,255,.04)">
+    <span style="font-size:16px">🚀</span>
+    <span class="section-hd-title" style="color:var(--sat)">SpaceX / SPCX 上市场景：如何布局上下游</span>
+  </div>
+  <div class="tvi-grid">
+    <div class="tvi-col">
+      <div class="tvi-label" style="color:var(--launch)">📋 SpaceX IPO 前 — 替代标的</div>
+      <div class="tvi-row"><span class="tvi-icon">🚀</span><span class="tvi-text"><strong>发射替代</strong>：<span style="color:var(--launch)">RKLB</span> — 唯一纯发射上市公司，Electron 已商业化，Neutron 2026 首飞</span></div>
+      <div class="tvi-row"><span class="tvi-icon">📡</span><span class="tvi-text"><strong>Starlink 竞对/受益</strong>：<span style="color:var(--comms)">IRDM</span>（互补，非竞争）· <span style="color:var(--comms)">ASTS</span>（直连手机，差异化）</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🛡️</span><span class="tvi-text"><strong>国防合同</strong>：<span style="color:var(--defense)">LMT · NOC · RTX · LHX</span> — SpaceX 不做的军用高密级项目</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🌍</span><span class="tvi-text"><strong>数据应用层</strong>：<span style="color:var(--obs)">PL · SPIR</span> — 卫星数据订阅，下游受益独立于谁发射</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🔬</span><span class="tvi-text"><strong>材料上游</strong>：<span style="color:var(--mat)">HXL · TDG · HEI</span> — 无论谁造卫星都要买复合材料和航空零部件</span></div>
+    </div>
+    <div class="tvi-col">
+      <div class="tvi-label" style="color:var(--sat)">🎯 SpaceX / SPCX 上市后 — 影响</div>
+      <div class="tvi-row"><span class="tvi-icon">📈</span><span class="tvi-text"><strong>板块联动上涨</strong>：SpaceX IPO 将带动整个太空赛道估值重估，RKLB · ASTS · PL 预期显著受益</span></div>
+      <div class="tvi-row"><span class="tvi-icon">⚡</span><span class="tvi-text"><strong>Starlink 竞争加剧</strong>：<span style="color:var(--red)">VSAT</span> 和 <span style="color:var(--red)">GSAT</span> 面临更多透明度压力；Starlink 实际财务披露将重新定价竞争格局</span></div>
+      <div class="tvi-row"><span class="tvi-icon">💰</span><span class="tvi-text"><strong>ETF 资金流入</strong>：SPCX ETF（ProShares）和 ARKX 成分权重调整，带动 RKLB · IRDM · PL 被动买盘</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🏭</span><span class="tvi-text"><strong>供应链公开</strong>：SpaceX 供应商关系上市后披露，或揭示 <span style="color:var(--mat)">HXL · ATI · DCO</span> 的实际订单规模</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🌐</span><span class="tvi-text"><strong>估值锚定</strong>：Starlink 独立IPO（估值预期 $150B+）将拉动 ASTS · IRDM 等 LEO 通信标的重新定价</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SPCX ETF HOLDINGS
+     ═══════════════════════════════════ -->
+<div class="section-card">
+  <div class="section-hd" style="background:rgba(76,255,143,.04)">
+    <span style="font-size:16px">📊</span>
+    <span class="section-hd-title" style="color:var(--obs)">SPCX ETF / 太空板块代表性成分股分类</span>
+    <span style="margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--muted)">ProShares S-Network Space Index 参考</span>
+  </div>
+  <div class="etf-grid">
+    <div class="etf-col">
+      <div class="etf-sub" style="color:var(--defense)">🛡️ 国防 / 大型承包商</div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--defense)">LMT</div><div class="etf-name">Lockheed Martin</div></div><div class="etf-wt">~12%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--defense)">NOC</div><div class="etf-name">Northrop Grumman</div></div><div class="etf-wt">~10%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--defense)">RTX</div><div class="etf-name">Raytheon Technologies</div></div><div class="etf-wt">~9%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--defense)">BA</div><div class="etf-name">Boeing</div></div><div class="etf-wt">~6%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--defense)">LHX</div><div class="etf-name">L3Harris</div></div><div class="etf-wt">~5%</div></div>
+      <br>
+      <div class="etf-sub" style="color:var(--launch)">🚀 发射 / 纯太空</div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--launch)">RKLB</div><div class="etf-name">Rocket Lab USA</div></div><div class="etf-wt">~8%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--launch)">KTOS</div><div class="etf-name">Kratos Defense</div></div><div class="etf-wt">~4%</div></div>
+    </div>
+    <div class="etf-col">
+      <div class="etf-sub" style="color:var(--comms)">📡 卫星通信</div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--comms)">IRDM</div><div class="etf-name">Iridium Communications</div></div><div class="etf-wt">~7%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--comms)">VSAT</div><div class="etf-name">ViaSat</div></div><div class="etf-wt">~5%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--comms)">GSAT</div><div class="etf-name">Globalstar</div></div><div class="etf-wt">~3%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--comms)">ASTS</div><div class="etf-name">AST SpaceMobile</div></div><div class="etf-wt">~3%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--comms)">SATS</div><div class="etf-name">EchoStar / HughesNet</div></div><div class="etf-wt">~2%</div></div>
+      <br>
+      <div class="etf-sub" style="color:var(--obs)">🌍 地球观测 / 数据</div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--obs)">PL</div><div class="etf-name">Planet Labs</div></div><div class="etf-wt">~4%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--obs)">SPIR</div><div class="etf-name">Spire Global</div></div><div class="etf-wt">~2%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--obs)">BKSY</div><div class="etf-name">BlackSky Technology</div></div><div class="etf-wt">~1%</div></div>
+    </div>
+    <div class="etf-col" style="border-right:none">
+      <div class="etf-sub" style="color:var(--mat)">🔬 航天材料 / 器件</div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--mat)">HXL</div><div class="etf-name">Hexcel — 复合材料</div></div><div class="etf-wt">~3%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--mat)">TDG</div><div class="etf-name">TransDigm — 专有零件</div></div><div class="etf-wt">~3%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--mat)">HEI</div><div class="etf-name">Heico — 航空MRO</div></div><div class="etf-wt">~2%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--mat)">MOG.A</div><div class="etf-name">Moog — 飞控/阀门</div></div><div class="etf-wt">~2%</div></div>
+      <br>
+      <div class="etf-sub" style="color:var(--ground)">🏭 地面 / 系统集成</div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--ground)">LDOS</div><div class="etf-name">Leidos — 系统集成</div></div><div class="etf-wt">~3%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--ground)">BAH</div><div class="etf-name">Booz Allen — 国防IT</div></div><div class="etf-wt">~2%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--ground)">BWXT</div><div class="etf-name">BWX — 核推进</div></div><div class="etf-wt">~1%</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SMART MONEY
+     ═══════════════════════════════════ -->
+<div class="section-card">
+  <div class="section-hd" style="background:rgba(199,125,255,.04)">
+    <span style="font-size:16px">💰</span>
+    <span class="section-hd-title" style="color:var(--sat)">机构资金信号 — 太空板块主要持仓（2025–2026 H1）</span>
+    <a href="../smart_money/" style="margin-left:auto;font-family:var(--mono);font-size:9.5px;color:rgba(199,125,255,.7);text-decoration:none">查看完整追踪器 →</a>
+  </div>
+  <table class="sm-table">
+    <thead>
+      <tr>
+        <th style="width:70px">TICKER</th>
+        <th style="width:150px">公司</th>
+        <th style="width:110px">信号</th>
+        <th style="width:150px">代表性动向</th>
+        <th>主要机构</th>
+        <th style="width:120px">所在层级</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><div class="sm-tkr" style="color:var(--defense)">LMT</div></td><td style="color:rgba(200,210,228,.9)">Lockheed Martin</td><td><span class="badge b-sm-strong" style="font-size:9.5px">强持有 ↑↑</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--obs)">Berkshire 大仓 · 防御性配置</td><td><span class="buyer-pill">Berkshire</span><span class="buyer-pill">Vanguard</span><span class="buyer-pill">BlackRock</span></td><td style="font-size:10px;color:var(--muted2)">国防+卫星制造</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--defense)">NOC</div></td><td style="color:rgba(200,210,228,.9)">Northrop Grumman</td><td><span class="badge b-sm-buy" style="font-size:9.5px">买入 ↑</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--obs)">GBSD 合同 · 太空预算增长</td><td><span class="buyer-pill">State Street</span><span class="buyer-pill">JPMorgan</span></td><td style="font-size:10px;color:var(--muted2)">国防+发射+卫星</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--launch)">RKLB</div></td><td style="color:rgba(200,210,228,.9)">Rocket Lab</td><td><span class="badge b-new" style="font-size:9.5px">新建仓 ★</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--obs)">ARK · Cathie Wood 旗舰持仓</td><td><span class="buyer-pill">ARK Invest</span><span class="buyer-pill">成长型基金</span></td><td style="font-size:10px;color:var(--muted2)">发射+卫星制造</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--comms)">IRDM</div></td><td style="color:rgba(200,210,228,.9)">Iridium Comms</td><td><span class="badge b-sm-strong" style="font-size:9.5px">强买 ↑↑</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--obs)">稳定现金流 · 股息</td><td><span class="buyer-pill">ValueAct</span><span class="buyer-pill">Fidelity</span></td><td style="font-size:10px;color:var(--muted2)">LEO 卫星通信</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--comms)">ASTS</div></td><td style="color:rgba(200,210,228,.9)">AST SpaceMobile</td><td><span class="badge b-new" style="font-size:9.5px">新建仓 ★</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--obs)">AT&T / Verizon 协议催化</td><td><span class="buyer-pill">ARK</span><span class="buyer-pill">成长型</span></td><td style="font-size:10px;color:var(--muted2)">直连手机 LEO</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--obs)">PL</div></td><td style="color:rgba(200,210,228,.9)">Planet Labs</td><td><span class="badge b-sm-buy" style="font-size:9.5px">买入 ↑</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--obs)">政府订单 + SaaS 转型</td><td><span class="buyer-pill">ARK</span><span class="buyer-pill">专题基金</span></td><td style="font-size:10px;color:var(--muted2)">地球观测数据</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--mat)">HXL</div></td><td style="color:rgba(200,210,228,.9)">Hexcel</td><td><span class="badge b-sm-buy" style="font-size:9.5px">持有 ↑</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--obs)">航空+太空双线复合材料</td><td><span class="buyer-pill">BlackRock</span><span class="buyer-pill">T. Rowe</span></td><td style="font-size:10px;color:var(--muted2)">材料上游</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>
+  <span>数据基于公开资料、行业估算及分析师报告，仅供参考，不构成投资建议 · SpaceX 数据为估算</span>
+  <span>2026E · May 2026 · <a href="../ai-capex-flow/">AI Capex →</a> · <a href="../smart_money/">Smart Money →</a></span>
+</footer>
+
+</div><!-- end wrap -->
+
+<script>
+/* ── STARS ── */
+(function(){
+  const c = document.getElementById('starsContainer');
+  for(let i=0;i<120;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const sz=Math.random()*1.8+0.4;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:-${Math.random()*4}s`;
+    c.appendChild(s);
+  }
+})();
+
+/* ── BAR ANIMATIONS ── */
+function animateBars() {
+  document.querySelectorAll('.capex-bar, .layer-bar-fill').forEach((el, i) => {
+    const w = el.style.width;
+    el.style.width = '0';
+    el.style.transition = 'none';
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        el.style.transition = 'width 1.3s cubic-bezier(.16,1,.3,1)';
+        el.style.width = w;
+      }, 120 + i * 55);
+    });
+  });
+}
+animateBars();
+</script>
+</body>
+</html>
