@@ -1,0 +1,50 @@
+ticker,company,sector,fiscal_year_end
+AAPL,Apple Inc,Technology,Sep
+MSFT,Microsoft,Technology,Jun
+GOOGL,Alphabet Class A,Technology,Dec
+META,Meta Platforms,Technology,Dec
+AMZN,Amazon.com,Technology,Dec
+TSLA,Tesla,Consumer Discretionary,Dec
+NVDA,NVIDIA,Technology,Jan
+AMD,Advanced Micro Devices,Technology,Dec
+AVGO,Broadcom,Technology,Oct
+MRVL,Marvell Technology,Technology,Jan
+INTC,Intel,Technology,Dec
+QCOM,Qualcomm,Technology,Sep
+ARM,ARM Holdings,Technology,Mar
+ASML,ASML Holding,Technology,Dec
+AMAT,Applied Materials,Technology,Oct
+LRCX,Lam Research,Technology,Jun
+KLAC,KLA Corporation,Technology,Jun
+MU,Micron Technology,Technology,Aug
+SNDK,SanDisk,Technology,Dec
+JPM,JPMorgan Chase,Financials,Dec
+GS,Goldman Sachs,Financials,Dec
+MS,Morgan Stanley,Financials,Dec
+BAC,Bank of America,Financials,Dec
+BLK,BlackRock,Financials,Dec
+BX,Blackstone,Financials,Dec
+KKR,KKR & Co,Financials,Dec
+APO,Apollo Global Management,Financials,Dec
+ORCL,Oracle,Technology,May
+CRM,Salesforce,Technology,Jan
+NOW,ServiceNow,Technology,Dec
+ANET,Arista Networks,Technology,Dec
+CSCO,Cisco Systems,Technology,Jul
+COHR,Coherent Corp,Technology,Jun
+LITE,Lumentum,Technology,Jun
+EQIX,Equinix,Real Estate,Dec
+DLR,Digital Realty,Real Estate,Dec
+SMCI,Super Micro Computer,Technology,Jun
+VRT,Vertiv Holdings,Technology,Dec
+DELL,Dell Technologies,Technology,Jan
+HPE,HP Enterprise,Technology,Oct
+CEG,Constellation Energy,Utilities,Dec
+VST,Vistra Corp,Utilities,Dec
+GEV,GE Vernova,Industrials,Dec
+ETN,Eaton Corporation,Industrials,Dec
+PWR,Quanta Services,Industrials,Dec
+XOM,Exxon Mobil,Energy,Dec
+CVX,Chevron,Energy,Dec
+PLTR,Palantir Technologies,Technology,Dec
+APP,AppLovin,Technology,Dec

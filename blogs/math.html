@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathJax Matrix Example</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        packages: ['base', 'ams'], // Include AMS package for proper matrix formatting
+        inlineMath: [['\\(', '\\)'], ['$', '$']]
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+  <h1>MathJax Matrix Example</h1>
+  <p>
+    Here is a 2x2 matrix:
+    \[
+    \begin{pmatrix}
+    a & b \\
+    c & d
+    \end{pmatrix}
+    \]
+  </p>
+  <p>
+    And here is a 3x2 matrix:
+    \[
+    \begin{pmatrix}
+    1.0 & 0.2 \\
+    0.8 & 0.4 \\
+    0.5 & 1.0
+    \end{pmatrix}
+    \]
+  </p>
+</body>
+</html>

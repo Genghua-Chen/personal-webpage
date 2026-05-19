@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Money Tracker — LazySheepcapital</title>
+  <style>
+    :root {
+      --bg: #07070f;
+      --panel: rgba(255,255,255,0.05);
+      --text: #e8e8f0;
+      --muted: rgba(200,200,230,0.50);
+      --line: rgba(255,255,255,0.08);
+      --accent: #60a5fa;
+      --green: #4ade80;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --shadow: 0 18px 46px rgba(0,0,0,0.50);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+      line-height: 1.45;
+    }
+
+    .app { width: min(1260px, 94vw); margin: 28px auto 52px; }
+
+    /* ── Hero ── */
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 4px);
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      padding: 28px 30px 24px;
+      margin-bottom: 14px;
+    }
+    .hero-row { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    .hero h1 { margin: 0 0 5px; font-size: clamp(1.5rem,2.4vw,2rem); font-weight: 700; letter-spacing: -0.03em; }
+    .hero p  { margin: 0; color: var(--muted); font-size: 0.92rem; max-width: 64ch; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--line); border-radius: 999px;
+      padding: 6px 13px; font-size: 0.8rem; color: var(--muted); white-space: nowrap;
+    }
+    .hero-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; align-items: center;
+    }
+    .search-wrap {
+      flex: 1; min-width: 200px; max-width: 340px;
+      height: 42px; border-radius: 999px; border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05); padding: 0 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .search-wrap svg { flex-shrink: 0; opacity: .45; }
+    .search-wrap input { border: 0; outline: 0; background: transparent; color: var(--text); font-size: 0.9rem; width: 100%; }
+    .chip-group { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip {
+      border: 1px solid var(--line); background: rgba(255,255,255,0.05); border-radius: 999px;
+      padding: 6px 13px; cursor: pointer; color: var(--text); font-size: 0.82rem; font-weight: 500;
+      transition: background .14s, color .14s;
+    }
+    .chip:hover { background: rgba(255,255,255,0.06); }
+    .chip.active { border-color: var(--accent); background: rgba(96,165,250,.15); color: var(--accent); }
+
+    /* ── Summary cards ── */
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px; margin-bottom: 14px;
+    }
+    .sum-card {
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: var(--panel); padding: 14px 16px; box-shadow: var(--shadow);
+    }
+    .sum-card .sum-label { font-size: 0.74rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    .sum-card .sum-value { margin-top: 4px; font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
+    .sum-card .sum-value.green { color: var(--green); }
+    .sum-card .sum-value.red   { color: var(--red); }
+
+    /* ── Main grid ── */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 14px;
+    }
+
+    /* ── Institution list ── */
+    .panel {
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: var(--panel); backdrop-filter: blur(8px); box-shadow: var(--shadow); overflow: hidden;
+    }
+    .panel-head {
+      border-bottom: 1px solid var(--line); padding: 12px 16px;
+      font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 600;
+    }
+    .inst-list { max-height: 74vh; overflow-y: auto; }
+    .inst-row {
+      width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line);
+      background: transparent; padding: 11px 14px; cursor: pointer; display: flex;
+      justify-content: space-between; align-items: center; gap: 8px;
+    }
+    .inst-row:hover, .inst-row.active { background: rgba(255,255,255,.06); }
+    .inst-name { font-weight: 600; font-size: 0.9rem; display: block; }
+    .inst-cat  { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+    .inst-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
+    .badge {
+      border-radius: 999px; padding: 2px 9px; font-size: 0.73rem; font-weight: 600;
+      display: inline-block; white-space: nowrap;
+    }
+    .badge.q1   { background: rgba(59,130,246,.18); color: #60a5fa; }
+    .badge.q4   { background: rgba(251,191,36,.15); color: #fbbf24; }
+    .count-tag  { font-size: 0.75rem; color: var(--muted); }
+
+    /* ── Detail pane ── */
+    .detail { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+    .detail-head { padding: 18px 20px 14px; border-bottom: 1px solid var(--line); }
+    .detail-head h2 { margin: 0 0 3px; font-size: 1.15rem; font-weight: 700; }
+    .detail-head p  { margin: 0; font-size: 0.87rem; color: var(--muted); }
+    .detail-body { padding: 14px 20px 20px; overflow-y: auto; max-height: 71vh; }
+
+    /* ── Quarter tabs ── */
+    .qtabs { display: flex; gap: 6px; margin-bottom: 16px; }
+    .qtab {
+      padding: 6px 16px; border-radius: 999px; border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05); font-size: 0.82rem; font-weight: 500; cursor: pointer; color: var(--muted);
+    }
+    .qtab.active { background: rgba(96,165,250,.15); color: var(--accent); border-color: var(--accent); }
+
+    /* ── Positions table ── */
+    .pos-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .pos-table thead th {
+      text-align: left; padding: 7px 10px; font-size: 0.74rem;
+      color: var(--muted); text-transform: uppercase; letter-spacing: .05em;
+      border-bottom: 1px solid var(--line); font-weight: 600;
+    }
+    .pos-table tbody tr { border-bottom: 1px solid var(--line); transition: background .1s; }
+    .pos-table tbody tr:hover { background: rgba(255,255,255,.06); }
+    .pos-table tbody td { padding: 9px 10px; vertical-align: middle; }
+    .pos-table tbody tr:last-child { border-bottom: 0; }
+
+    .ticker-cell { font-weight: 700; letter-spacing: .03em; }
+    .action-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      border-radius: 999px; padding: 3px 10px; font-size: 0.76rem; font-weight: 600; white-space: nowrap;
+    }
+    .action-pill.new      { background: rgba(74,222,128,.14); color: #4ade80; }
+    .action-pill.added    { background: rgba(74,222,128,.09); color: #86efac; }
+    .action-pill.held     { background: rgba(255,255,255,.07); color: var(--muted); }
+    .action-pill.reduced  { background: rgba(248,113,113,.14); color: #fca5a5; }
+    .action-pill.exited   { background: rgba(248,113,113,.20); color: #f87171; }
+    .action-pill.mixed    { background: rgba(251,191,36,.14); color: #fbbf24; }
+    .action-pill.buy      { background: rgba(74,222,128,.14); color: #4ade80; }
+
+    .val-pos { color: var(--green); font-weight: 600; }
+    .val-neg { color: var(--red);   font-weight: 600; }
+    .val-neu { color: var(--muted); }
+
+    .notes-cell { color: var(--muted); font-size: 0.8rem; max-width: 260px; }
+    .timing-cell { font-size: 0.8rem; }
+    .timing-tag {
+      display: inline-block;
+      border-radius: 6px;
+      padding: 2px 8px; font-size: 0.75rem; font-weight: 500;
+    }
+    .timing-specific {
+      background: rgba(251,191,36,.12); color: #fbbf24;
+      border: 1px solid rgba(251,191,36,.28);
+    }
+    .timing-disclosure {
+      background: rgba(255,255,255,.06); color: var(--muted);
+      border: 1px solid var(--line);
+    }
+
+    .empty-msg { color: var(--muted); padding: 24px; font-size: 0.9rem; }
+
+    /* ── Heatmap section ── */
+    .section-title {
+      font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em;
+      font-weight: 600; margin: 22px 0 10px;
+    }
+    .heatmap-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px;
+    }
+    .heat-cell {
+      border-radius: 12px; padding: 10px 12px; border: 1px solid var(--line);
+    }
+    .heat-cell .heat-ticker  { font-weight: 700; font-size: 0.92rem; }
+    .heat-cell .heat-company { font-size: 0.72rem; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .heat-cell .heat-signal  { font-size: 0.75rem; font-weight: 600; margin-top: 6px; }
+    .heat-cell.buy-strong  { background: rgba(74,222,128,.18); border-color: rgba(74,222,128,.38); }
+    .heat-cell.buy-mild    { background: rgba(74,222,128,.09); border-color: rgba(74,222,128,.22); }
+    .heat-cell.hold        { background: var(--panel); border-color: var(--line); }
+    .heat-cell.sell-mild   { background: rgba(248,113,113,.10); border-color: rgba(248,113,113,.25); }
+    .heat-cell.sell-strong { background: rgba(248,113,113,.20); border-color: rgba(248,113,113,.40); }
+    .heat-cell.mixed       { background: rgba(251,191,36,.12); border-color: rgba(251,191,36,.30); }
+
+    /* ── Legend ── */
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; align-items: center; }
+    .leg-item { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; color: var(--muted); }
+    .leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+    /* ── Table filter bar ── */
+    .tfilter-bar {
+      display: flex; flex-wrap: wrap; gap: 8px 16px;
+      padding: 10px 14px 10px;
+      background: rgba(255,255,255,0.04); border-radius: 12px;
+      border: 1px solid var(--line);
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    .tfilter-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .tfilter-label {
+      font-size: 0.73rem; color: var(--muted); font-weight: 600;
+      text-transform: uppercase; letter-spacing: .05em; white-space: nowrap;
+    }
+    .tf-chip {
+      border: 1px solid var(--line); background: rgba(255,255,255,0.05); border-radius: 999px;
+      padding: 4px 11px; cursor: pointer; color: var(--text); font-size: 0.78rem; font-weight: 500;
+      transition: background .12s, color .12s; white-space: nowrap;
+    }
+    .tf-chip:hover { background: rgba(255,255,255,0.07); }
+    .tf-chip.active { border-color: var(--accent); background: rgba(96,165,250,.15); color: var(--accent); }
+    .tf-chip.active.green-chip { border-color: #4ade80; background: rgba(74,222,128,.15); color: #4ade80; }
+    .tf-chip.active.red-chip   { border-color: #f87171; background: rgba(248,113,113,.15); color: #f87171; }
+    .tf-chip.active.amber-chip { border-color: #fbbf24; background: rgba(251,191,36,.15); color: #fbbf24; }
+    .tf-divider { width: 1px; height: 18px; background: var(--line); flex-shrink: 0; }
+    .active-filters-count {
+      font-size: 0.72rem; background: var(--accent); color: #fff;
+      border-radius: 999px; padding: 1px 7px; font-weight: 600;
+    }
+
+    /* ── Global Heatmap ── */
+    .gmap-section {
+      margin-bottom: 14px;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 4px);
+      background: var(--panel);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .gmap-head {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+      padding: 13px 18px 11px;
+      border-bottom: 1px solid var(--line);
+    }
+    .gmap-title {
+      font-size: 0.8rem; font-weight: 700; letter-spacing: .02em; flex-shrink: 0;
+    }
+    .gmap-q-wrap { display: flex; gap: 6px; flex-wrap: wrap; }
+    .gmap-chip {
+      border: 1px solid var(--line); background: rgba(255,255,255,0.05); border-radius: 999px;
+      padding: 4px 11px; cursor: pointer; font-size: 0.76rem; font-weight: 500; color: var(--text);
+      transition: background .12s, color .12s;
+    }
+    .gmap-chip:hover { background: rgba(255,255,255,0.06); }
+    .gmap-chip.active { background: rgba(96,165,250,.15); color: var(--accent); border-color: var(--accent); }
+    .gmap-count { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+    .gmap-toggle {
+      margin-left: auto; display: flex; align-items: center; gap: 5px;
+      background: none; border: 1px solid var(--line); border-radius: 999px;
+      padding: 4px 11px; cursor: pointer; font-size: 0.76rem; color: var(--muted);
+      transition: background .12s, color .12s;
+    }
+    .gmap-toggle:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    .gmap-toggle svg { transition: transform .25s ease; }
+    .gmap-section.collapsed .gmap-toggle svg { transform: rotate(-90deg); }
+    .gmap-section.collapsed .gmap-legend,
+    .gmap-section.collapsed .gmap-grid { display: none; }
+
+    .gmap-legend {
+      display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+      padding: 8px 18px; border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.025);
+    }
+    .gl-item { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--muted); }
+    .gl-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+    .gmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+      gap: 7px;
+      padding: 14px 16px 16px;
+    }
+    .gmap-cell {
+      border-radius: 11px; padding: 10px 11px;
+      border: 1px solid var(--line);
+      cursor: default;
+      transition: transform .15s, box-shadow .15s;
+      position: relative; overflow: hidden;
+    }
+    .gmap-cell:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.10); }
+    .gmap-ticker  { font-weight: 700; font-size: 0.94rem; letter-spacing: .02em; }
+    .gmap-company { font-size: 0.7rem; color: inherit; opacity: .6; margin-top: 1px;
+                    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .gmap-signal  { font-size: 0.73rem; font-weight: 700; margin-top: 6px; }
+    .gmap-badges  { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+    .gmap-b  { font-size: 0.69rem; font-weight: 700; padding: 1px 5px; border-radius: 3px;
+               background: rgba(74,222,128,.15); color: #4ade80; }
+    .gmap-s  { font-size: 0.69rem; font-weight: 700; padding: 1px 5px; border-radius: 3px;
+               background: rgba(248,113,113,.15); color: #f87171; }
+    .gmap-inst { font-size: 0.66rem; color: inherit; opacity: .5; margin-top: 3px; }
+    .gmap-flow { font-size: 0.68rem; font-weight: 600; margin-top: 2px; }
+
+    /* Signal colours */
+    .gc-strong-buy  { background: rgba(74,222,128,.22); border-color: rgba(74,222,128,.45); }
+    .gc-strong-buy  .gmap-ticker,.gc-strong-buy  .gmap-signal { color:#4ade80; }
+    .gc-buy         { background: rgba(74,222,128,.14); border-color: rgba(74,222,128,.30); }
+    .gc-buy         .gmap-ticker,.gc-buy         .gmap-signal { color:#86efac; }
+    .gc-mild-buy    { background: rgba(74,222,128,.07); border-color: rgba(74,222,128,.18); }
+    .gc-mild-buy    .gmap-ticker,.gc-mild-buy    .gmap-signal { color:#a7f3d0; }
+    .gc-mixed       { background: rgba(251,191,36,.13); border-color: rgba(251,191,36,.32); }
+    .gc-mixed       .gmap-ticker,.gc-mixed       .gmap-signal { color:#fbbf24; }
+    .gc-mild-sell   { background: rgba(248,113,113,.10); border-color: rgba(248,113,113,.26); }
+    .gc-mild-sell   .gmap-ticker,.gc-mild-sell   .gmap-signal { color:#fca5a5; }
+    .gc-sell        { background: rgba(248,113,113,.20); border-color: rgba(248,113,113,.42); }
+    .gc-sell        .gmap-ticker,.gc-sell        .gmap-signal { color:#f87171; }
+
+    /* ── Back link ── */
+    .back-link { font-size: 0.84rem; color: var(--accent); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 14px; }
+    .back-link:hover { text-decoration: underline; }
+
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .inst-list  { max-height: 38vh; }
+      .detail-body { max-height: 60vh; }
+    }
+    @media (max-width: 560px) {
+      .hero { padding: 18px; }
+      .summary-row { grid-template-columns: 1fr 1fr; }
+      .pos-table thead th:nth-child(5),
+      .pos-table tbody td:nth-child(5) { display: none; }
+    }
+  </style>
+</head>
+<body>
+<main class="app">
+
+  <a class="back-link" href="../">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Market Briefing
+  </a>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-row">
+      <div>
+        <h1>Smart Money Tracker</h1>
+        <p>13F institutional position changes for H1 2026 — Q4 2025 (filed Feb 2026) and Q1 2026 (filed May 2026). Sources: SEC EDGAR 13F filings.</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="hero-badge"><span class="dot"></span>Q1 2026 Live</span>
+        <span class="hero-badge">5 Quarters · 2025–2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Global Heatmap -->
+  <section class="gmap-section">
+    <div class="gmap-head">
+      <span class="gmap-title">全市场信号热力图</span>
+      <div class="gmap-q-wrap" id="gmapQChips"></div>
+      <span class="gmap-count" id="gmapCount"></span>
+      <button class="gmap-toggle" id="gmapToggle">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        收起
+      </button>
+    </div>
+    <div class="gmap-legend">
+      <span class="gl-item"><span class="gl-swatch" style="background:rgba(74,222,128,.22);border:1px solid rgba(74,222,128,.45)"></span>强力买入</span>
+      <span class="gl-item"><span class="gl-swatch" style="background:rgba(74,222,128,.14);border:1px solid rgba(74,222,128,.35)"></span>买入</span>
+      <span class="gl-item"><span class="gl-swatch" style="background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.20)"></span>温和买入</span>
+      <span class="gl-item"><span class="gl-swatch" style="background:rgba(251,191,36,.13);border:1px solid rgba(251,191,36,.35)"></span>分歧 / 混合</span>
+      <span class="gl-item"><span class="gl-swatch" style="background:rgba(248,113,113,.10);border:1px solid rgba(248,113,113,.28)"></span>温和减持</span>
+      <span class="gl-item"><span class="gl-swatch" style="background:rgba(248,113,113,.20);border:1px solid rgba(248,113,113,.45)"></span>减持 / 清仓</span>
+      <span style="font-size:.73rem;color:var(--muted);margin-left:auto">↑ 买入次数 · ↓ 减持次数 · 机构数</span>
+    </div>
+    <div class="gmap-grid" id="gmapGrid"></div>
+  </section>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <label class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#888" stroke-width="1.8"/><path d="M13 13l3.5 3.5" stroke="#888" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input id="searchInput" type="search" autocomplete="off" placeholder="Search institution or ticker…">
+    </label>
+    <div id="catChips" class="chip-group"></div>
+    <div id="quarterChips" class="chip-group"></div>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="summary-row" id="summaryRow"></div>
+
+  <!-- Main grid -->
+  <div class="main-grid">
+    <aside class="panel">
+      <div class="panel-head">Institutions</div>
+      <div id="instList" class="inst-list"></div>
+    </aside>
+    <article class="panel detail" id="detailPanel">
+      <div class="empty-msg">Select an institution on the left to view position changes.</div>
+    </article>
+  </div>
+
+</main>
+
+<script>
+(function () {
+  /* ── State ── */
+  const state = {
+    rows: [],
+    query: "",
+    catFilter: "All",
+    qFilter: "All",
+    selectedInst: null,
+    activeQTab: "All",
+    // table-level column filters
+    actionF: "All",
+    valF:    "All",
+    pctF:    "All",
+    timingF: "All",
+    // global heatmap quarter filter
+    gmapQ: "Q1 2026",
+  };
+
+  const el = {
+    search:    document.getElementById("searchInput"),
+    catChips:  document.getElementById("catChips"),
+    qChips:    document.getElementById("quarterChips"),
+    summary:   document.getElementById("summaryRow"),
+    instList:  document.getElementById("instList"),
+    detail:    document.getElementById("detailPanel"),
+  };
+
+  /* ── CSV parser ── */
+  function parseCSV(text) {
+    const lines = text.trim().split("\n");
+    const headers = lines[0].split(",");
+    return lines.slice(1).map(line => {
+      const vals = splitCSVLine(line);
+      const obj = {};
+      headers.forEach((h, i) => { obj[h.trim()] = (vals[i] || "").trim(); });
+      return obj;
+    });
+  }
+
+  function splitCSVLine(line) {
+    const result = [];
+    let cur = "";
+    let inQuote = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQuote = !inQuote; }
+      else if (c === "," && !inQuote) { result.push(cur); cur = ""; }
+      else { cur += c; }
+    }
+    result.push(cur);
+    return result;
+  }
+
+  /* ── Helpers ── */
+  function esc(s) {
+    return String(s || "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
+  }
+
+  function actionClass(action) {
+    const a = (action || "").toLowerCase();
+    if (a.includes("new"))     return "new";
+    if (a.includes("added"))   return "added";
+    if (a.includes("held"))    return "held";
+    if (a.includes("reduced")) return "reduced";
+    if (a.includes("exited"))  return "exited";
+    if (a.includes("mixed"))   return "mixed";
+    if (a.includes("buy"))     return "buy";
+    return "held";
+  }
+
+  function actionIcon(action) {
+    const a = (action || "").toLowerCase();
+    if (a.includes("new"))     return "★";
+    if (a.includes("added"))   return "▲";
+    if (a.includes("held"))    return "—";
+    if (a.includes("reduced")) return "▼";
+    if (a.includes("exited"))  return "✕";
+    if (a.includes("mixed"))   return "◆";
+    if (a.includes("buy"))     return "▲";
+    return "—";
+  }
+
+  function fmtVal(v) {
+    if (v === "" || v == null) return '<span class="val-neu">—</span>';
+    const n = parseFloat(v);
+    if (isNaN(n)) return '<span class="val-neu">—</span>';
+    const abs = Math.abs(n);
+    const str = abs >= 1000 ? "$" + (abs/1000).toFixed(1) + "B" : "$" + abs + "M";
+    return n >= 0
+      ? `<span class="val-pos">+${str}</span>`
+      : `<span class="val-neg">−${str}</span>`;
+  }
+
+  function fmtPct(v) {
+    if (v === "" || v == null) return '<span class="val-neu">—</span>';
+    const n = parseFloat(v);
+    if (isNaN(n)) return '<span class="val-neu">—</span>';
+    const cls = n > 0 ? "val-pos" : n < 0 ? "val-neg" : "val-neu";
+    const sign = n > 0 ? "+" : "";
+    return `<span class="${cls}">${sign}${n}%</span>`;
+  }
+
+  /* ── Table-level column filters ── */
+  const ACTION_FILTERS = [
+    { key: "All",    label: "全部",    match: () => true },
+    { key: "New",    label: "★ 新建仓", color: "green-chip",
+      match: r => r.action === "New Position" || r.action === "Smart Money Buy" },
+    { key: "Added",  label: "▲ 增仓",  color: "green-chip",
+      match: r => r.action === "Added" },
+    { key: "Reduced",label: "▼ 减仓",  color: "red-chip",
+      match: r => r.action === "Reduced" },
+    { key: "Exited", label: "✕ 清仓",  color: "red-chip",
+      match: r => r.action === "Exited" },
+    { key: "Held",   label: "— 持有",  color: "",
+      match: r => r.action === "Held" || r.action === "Mixed Signal" },
+  ];
+
+  const VAL_FILTERS = [
+    { key: "All",      label: "全部",       match: () => true },
+    { key: "big-buy",  label: ">$1B 增仓",  color: "green-chip",
+      match: r => { const n = parseFloat(r.value_change_usd_mn); return !isNaN(n) && n >= 1000; } },
+    { key: "any-buy",  label: "增仓 ($+)",  color: "green-chip",
+      match: r => { const n = parseFloat(r.value_change_usd_mn); return (!isNaN(n) && n > 0) ||
+        r.action === "New Position" || r.action === "Added" || r.action === "Smart Money Buy"; } },
+    { key: "sell",     label: "减仓 ($−)",  color: "red-chip",
+      match: r => { const n = parseFloat(r.value_change_usd_mn); return (!isNaN(n) && n < 0) ||
+        r.action === "Reduced" || r.action === "Exited"; } },
+  ];
+
+  const PCT_FILTERS = [
+    { key: "All",    label: "全部",       match: () => true },
+    { key: "big-up", label: ">+50%",     color: "green-chip",
+      match: r => { const n = parseFloat(r.pct_change); return !isNaN(n) && n > 50; } },
+    { key: "up",     label: "+10~50%",   color: "green-chip",
+      match: r => { const n = parseFloat(r.pct_change); return !isNaN(n) && n >= 10 && n <= 50; } },
+    { key: "down",   label: "负变动",     color: "red-chip",
+      match: r => { const n = parseFloat(r.pct_change); return (!isNaN(n) && n < 0 && n > -100) || r.action === "Reduced"; } },
+    { key: "exit",   label: "清仓 -100%", color: "red-chip",
+      match: r => parseFloat(r.pct_change) === -100 || r.action === "Exited" },
+  ];
+
+  const TIMING_FILTERS = [
+    { key: "All",        label: "全部",     match: () => true },
+    { key: "specific",   label: "精确时间", color: "amber-chip",
+      match: r => r.timing_known && !r.timing_known.startsWith("披露日:") },
+    { key: "disclosure", label: "仅披露日", color: "",
+      match: r => !r.timing_known || r.timing_known.startsWith("披露日:") },
+  ];
+
+  function extractSortDate(row) {
+    const t = row.timing_known || '';
+    const d = t.match(/(\d{4}-\d{2}-\d{2})/);
+    if (d) return d[1];
+    const m = t.match(/(\d{4}-\d{2})/);
+    if (m) return m[1] + '-28';   // treat "YYYY-MM" as late in that month
+    return row.quarter_end_date || '';
+  }
+
+  function applyDetailFilters(rows) {
+    const af = ACTION_FILTERS.find(f => f.key === state.actionF) || ACTION_FILTERS[0];
+    const vf = VAL_FILTERS.find(f => f.key === state.valF)    || VAL_FILTERS[0];
+    const pf = PCT_FILTERS.find(f => f.key === state.pctF)    || PCT_FILTERS[0];
+    const tf = TIMING_FILTERS.find(f => f.key === state.timingF) || TIMING_FILTERS[0];
+    return rows.filter(r => af.match(r) && vf.match(r) && pf.match(r) && tf.match(r));
+  }
+
+  function activeFilterCount() {
+    return (state.actionF !== "All" ? 1 : 0) +
+           (state.valF    !== "All" ? 1 : 0) +
+           (state.pctF    !== "All" ? 1 : 0) +
+           (state.timingF !== "All" ? 1 : 0);
+  }
+
+  function renderFilterChips(containerId, defs, stateKey) {
+    const el2 = document.getElementById(containerId);
+    if (!el2) return;
+    el2.innerHTML = defs.map(f => {
+      const isActive = state[stateKey] === f.key;
+      const cls = "tf-chip" + (isActive ? " active " + (f.color || "") : "");
+      return `<button class="${cls}" data-fkey="${esc(f.key)}">${esc(f.label)}</button>`;
+    }).join("");
+    el2.querySelectorAll(".tf-chip").forEach(btn =>
+      btn.addEventListener("click", () => {
+        state[stateKey] = btn.dataset.fkey;
+        renderDetail();
+      })
+    );
+  }
+
+  /* ── Group rows by institution ── */
+  function groupByInst(rows) {
+    const map = {};
+    rows.forEach(r => {
+      if (!map[r.institution]) {
+        map[r.institution] = { institution: r.institution, category: r.category, quarters: new Set(), rows: [] };
+      }
+      map[r.institution].rows.push(r);
+      map[r.institution].quarters.add(r.quarter);
+    });
+    return Object.values(map);
+  }
+
+  /* ── Filter rows ── */
+  function filteredRows() {
+    const q = state.query.toLowerCase();
+    return state.rows.filter(r => {
+      const catOk = state.catFilter === "All" || r.category === state.catFilter;
+      const qOk   = state.qFilter === "All" || r.quarter === state.qFilter;
+      const srch  = q === "" ||
+        r.institution.toLowerCase().includes(q) ||
+        r.stock_ticker.toLowerCase().includes(q) ||
+        r.stock_company.toLowerCase().includes(q);
+      return catOk && qOk && srch;
+    });
+  }
+
+  /* ── Summary cards ── */
+  function renderSummary(rows) {
+    const insts   = new Set(rows.map(r => r.institution)).size;
+    const newPos  = rows.filter(r => r.action === "New Position").length;
+    const exits   = rows.filter(r => r.action === "Exited").length;
+    const added   = rows.filter(r => r.action === "Added").length;
+    el.summary.innerHTML = `
+      <div class="sum-card"><div class="sum-label">Institutions</div><div class="sum-value">${insts}</div></div>
+      <div class="sum-card"><div class="sum-label">New Positions</div><div class="sum-value green">${newPos}</div></div>
+      <div class="sum-card"><div class="sum-label">Additions</div><div class="sum-value green">${added}</div></div>
+      <div class="sum-card"><div class="sum-label">Full Exits</div><div class="sum-value red">${exits}</div></div>
+      <div class="sum-card"><div class="sum-label">Total Moves</div><div class="sum-value">${rows.length}</div></div>
+    `;
+  }
+
+  /* ── Category + Quarter chips ── */
+  function renderFilters() {
+    const cats = ["All", ...Array.from(new Set(state.rows.map(r => r.category))).sort()];
+    el.catChips.innerHTML = cats.map(c =>
+      `<button class="chip${state.catFilter===c?" active":""}" data-cat="${esc(c)}">${esc(c)}</button>`
+    ).join("");
+    el.catChips.querySelectorAll(".chip").forEach(btn =>
+      btn.addEventListener("click", () => {
+        state.catFilter = btn.dataset.cat;
+        update();
+      })
+    );
+
+    const quarters = ["All", "Q1 2026", "Q4 2025", "Q3 2025", "Q2 2025", "Q1 2025"];
+    el.qChips.innerHTML = quarters.map(q =>
+      `<button class="chip${state.qFilter===q?" active":""}" data-q="${esc(q)}">${esc(q)}</button>`
+    ).join("");
+    el.qChips.querySelectorAll(".chip").forEach(btn =>
+      btn.addEventListener("click", () => {
+        state.qFilter = btn.dataset.q;
+        update();
+      })
+    );
+  }
+
+  /* ── Institution list ── */
+  function renderInstList() {
+    const rows = filteredRows();
+    const groups = groupByInst(rows);
+
+    if (!groups.length) {
+      el.instList.innerHTML = '<div class="empty-msg">No matching institutions.</div>';
+      return;
+    }
+
+    el.instList.innerHTML = groups.map(g => {
+      const active = g.institution === state.selectedInst ? " active" : "";
+      const latestQ = [...g.quarters].sort().reverse()[0] || "";
+      const badgeCls = latestQ.includes("2026") ? "q1" : "q4";
+      const badge = `<span class="badge ${badgeCls}">${esc(latestQ)}</span>`;
+      return `
+        <button class="inst-row${active}" data-inst="${esc(g.institution)}">
+          <div>
+            <span class="inst-name">${esc(g.institution)}</span>
+            <span class="inst-cat">${esc(g.category)}</span>
+          </div>
+          <div class="inst-meta">${badge}<span class="count-tag">${g.rows.length} moves</span></div>
+        </button>
+      `;
+    }).join("");
+
+    el.instList.querySelectorAll(".inst-row").forEach(btn =>
+      btn.addEventListener("click", () => {
+        state.selectedInst = btn.dataset.inst;
+        state.activeQTab = "All";
+        state.actionF = "All";
+        state.valF    = "All";
+        state.pctF    = "All";
+        state.timingF = "All";
+        renderInstList();
+        renderDetail();
+      })
+    );
+  }
+
+  /* ── Detail pane ── */
+  function renderDetail() {
+    if (!state.selectedInst) {
+      el.detail.innerHTML = '<div class="empty-msg">Select an institution on the left to view position changes.</div>';
+      return;
+    }
+
+    // Use unfiltered rows for the detail pane so search text doesn't hide
+    // positions inside the selected institution (search only narrows the left list).
+    const allInstRows = state.rows.filter(r => {
+      const catOk = state.catFilter === "All" || r.category === state.catFilter;
+      return catOk && r.institution === state.selectedInst;
+    });
+    if (!allInstRows.length) {
+      el.detail.innerHTML = '<div class="empty-msg">No data for current filters.</div>';
+      return;
+    }
+
+    const inst = allInstRows[0];
+    const quarterOrder = ["Q1 2026","Q4 2025","Q3 2025","Q2 2025","Q1 2025"];
+    const quarters = quarterOrder.filter(q => allInstRows.some(r => r.quarter === q));
+
+    const qtabRows = state.activeQTab === "All"
+      ? allInstRows
+      : allInstRows.filter(r => r.quarter === state.activeQTab);
+
+    const visRows = applyDetailFilters(qtabRows);
+
+    const qTabsHtml = ["All", ...quarters].map(q => {
+      const cnt = q === "All" ? allInstRows.length : allInstRows.filter(r => r.quarter === q).length;
+      return `<button class="qtab${state.activeQTab===q?" active":""}" data-qtab="${esc(q)}">${esc(q)} (${cnt})</button>`;
+    }).join("");
+
+    const sortedRows = [...visRows].sort((a, b) =>
+      extractSortDate(b).localeCompare(extractSortDate(a))
+    );
+
+    const tableRows = sortedRows.map(r => {
+      let timingHtml;
+      const t = r.timing_known || '';
+      if (!t) {
+        timingHtml = '<span class="val-neu">—</span>';
+      } else if (t.startsWith('披露日:')) {
+        timingHtml = `<span class="timing-tag timing-disclosure">${esc(t)}</span>`;
+      } else {
+        timingHtml = `<span class="timing-tag timing-specific">${esc(t)}</span>`;
+      }
+      return `
+      <tr>
+        <td class="ticker-cell">${esc(r.stock_ticker)}</td>
+        <td>${esc(r.stock_company)}</td>
+        <td><span class="action-pill ${actionClass(r.action)}">${actionIcon(r.action)} ${esc(r.action)}</span></td>
+        <td>${fmtVal(r.value_change_usd_mn)}</td>
+        <td>${fmtPct(r.pct_change)}</td>
+        <td class="timing-cell">${timingHtml}</td>
+        <td class="notes-cell">${esc(r.notes)}</td>
+      </tr>
+      `;
+    }).join("");
+
+    /* heatmap of unique tickers in view */
+    const heatData = buildHeatmap(allInstRows);
+
+    el.detail.innerHTML = `
+      <div class="detail-head">
+        <h2>${esc(inst.institution)}</h2>
+        <p>${esc(inst.category)} &nbsp;·&nbsp; Latest filing: ${esc(inst.quarter_end_date)}</p>
+      </div>
+      <div class="detail-body">
+        <div class="qtabs" id="qtabsInner">${qTabsHtml}</div>
+
+        <div class="section-title">Signal Heatmap</div>
+        <div class="legend">
+          <span class="leg-item"><span class="leg-dot" style="background:#c8f0d8;border:1px solid #8dd5a8"></span>Strong Buy</span>
+          <span class="leg-item"><span class="leg-dot" style="background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.28)"></span>Mild Buy</span>
+          <span class="leg-item"><span class="leg-dot" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)"></span>Hold</span>
+          <span class="leg-item"><span class="leg-dot" style="background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.28)"></span>Mild Sell</span>
+          <span class="leg-item"><span class="leg-dot" style="background:rgba(248,113,113,.20);border:1px solid rgba(248,113,113,.42)"></span>Exited</span>
+          <span class="leg-item"><span class="leg-dot" style="background:rgba(251,191,36,.13);border:1px solid rgba(251,191,36,.32)"></span>Mixed</span>
+        </div>
+        <div class="heatmap-grid">${heatData}</div>
+
+        <div class="section-title" style="margin-top:22px">
+          Position Changes
+          ${activeFilterCount() > 0 ? `<span class="active-filters-count">${activeFilterCount()} filter${activeFilterCount()>1?'s':''} active</span>` : ''}
+        </div>
+
+        <div class="tfilter-bar">
+          <div class="tfilter-group">
+            <span class="tfilter-label">Action</span>
+            <div id="tfAction" class="chip-group"></div>
+          </div>
+          <div class="tf-divider"></div>
+          <div class="tfilter-group">
+            <span class="tfilter-label">Value Δ</span>
+            <div id="tfVal" class="chip-group"></div>
+          </div>
+          <div class="tf-divider"></div>
+          <div class="tfilter-group">
+            <span class="tfilter-label">% 变动</span>
+            <div id="tfPct" class="chip-group"></div>
+          </div>
+          <div class="tf-divider"></div>
+          <div class="tfilter-group">
+            <span class="tfilter-label">时间精度</span>
+            <div id="tfTiming" class="chip-group"></div>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="pos-table">
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Company</th>
+                <th>Action</th>
+                <th>Value Δ</th>
+                <th>% Chg</th>
+                <th>操作时间 ↓</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>${visRows.length ? tableRows : '<tr><td colspan="7" style="padding:16px;color:var(--muted);text-align:center;">无符合条件的记录</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>
+    `;
+
+    el.detail.querySelectorAll(".qtab").forEach(btn =>
+      btn.addEventListener("click", () => {
+        state.activeQTab = btn.dataset.qtab;
+        renderDetail();
+      })
+    );
+
+    renderFilterChips("tfAction", ACTION_FILTERS, "actionF");
+    renderFilterChips("tfVal",    VAL_FILTERS,    "valF");
+    renderFilterChips("tfPct",    PCT_FILTERS,    "pctF");
+    renderFilterChips("tfTiming", TIMING_FILTERS, "timingF");
+  }
+
+  function buildHeatmap(rows) {
+    const seen = {};
+    rows.forEach(r => {
+      if (!seen[r.stock_ticker]) seen[r.stock_ticker] = { ticker: r.stock_ticker, company: r.stock_company, actions: [] };
+      seen[r.stock_ticker].actions.push(r.action);
+    });
+
+    return Object.values(seen).filter(d => d.ticker && !d.ticker.includes(" ")).map(d => {
+      const acts = d.actions;
+      let cls = "hold";
+      let signal = "Hold";
+      const hasNew     = acts.some(a => a === "New Position");
+      const hasAdded   = acts.some(a => a === "Added");
+      const hasReduced = acts.some(a => a === "Reduced");
+      const hasExited  = acts.some(a => a === "Exited");
+      const hasMixed   = acts.some(a => a === "Mixed Signal");
+      const hasBuy     = acts.some(a => a === "Smart Money Buy");
+
+      if (hasMixed)  { cls = "mixed";       signal = "Mixed"; }
+      else if (hasExited && hasAdded) { cls = "mixed"; signal = "Conflict"; }
+      else if (hasExited)   { cls = "sell-strong"; signal = "Exited"; }
+      else if (hasReduced && !hasAdded) { cls = "sell-mild"; signal = "Trimmed"; }
+      else if (hasNew || hasBuy)  { cls = "buy-strong";  signal = "New/Buy"; }
+      else if (hasAdded)    { cls = "buy-mild";    signal = "Added"; }
+
+      return `
+        <div class="heat-cell ${cls}">
+          <div class="heat-ticker">${esc(d.ticker)}</div>
+          <div class="heat-company">${esc(d.company)}</div>
+          <div class="heat-signal">${signal}</div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  /* ══════════════════════════════════
+     GLOBAL HEATMAP
+     ══════════════════════════════════ */
+  const GMAP_QUARTERS = ["All", "Q1 2026", "Q4 2025", "Q3 2025", "Q2 2025", "Q1 2025"];
+  const SKIP_TICKERS  = new Set(["DATA CENTER","PRIVATE MARKETS","PRIVATE CREDIT","HEALTHCARE","PRIVATE MARKETS"]);
+
+  function isRealTicker(t) {
+    return t && !t.includes(" ") && t.length <= 7 && !SKIP_TICKERS.has(t.toUpperCase());
+  }
+
+  function renderGlobalHeatmap() {
+    const grid   = document.getElementById("gmapGrid");
+    const count  = document.getElementById("gmapCount");
+    const chips  = document.getElementById("gmapQChips");
+    if (!grid) return;
+
+    /* ── Quarter filter chips ── */
+    chips.innerHTML = GMAP_QUARTERS.map(q =>
+      `<button class="gmap-chip${state.gmapQ === q ? " active" : ""}" data-gq="${esc(q)}">${esc(q)}</button>`
+    ).join("");
+    chips.querySelectorAll(".gmap-chip").forEach(btn =>
+      btn.addEventListener("click", () => { state.gmapQ = btn.dataset.gq; renderGlobalHeatmap(); })
+    );
+
+    /* ── Aggregate ── */
+    const map = {};
+    state.rows.forEach(r => {
+      if (!isRealTicker(r.stock_ticker)) return;
+      if (state.gmapQ !== "All" && r.quarter !== state.gmapQ) return;
+
+      const tk = r.stock_ticker;
+      if (!map[tk]) map[tk] = {
+        ticker: tk, company: r.stock_company,
+        buys: 0, sells: 0, buyW: 0, sellW: 0,
+        institutions: new Set(), netVal: 0,
+      };
+
+      const d = map[tk];
+      d.institutions.add(r.institution);
+
+      const a = r.action;
+      const v = parseFloat(r.value_change_usd_mn) || 0;
+
+      if (a === "New Position" || a === "Smart Money Buy") {
+        d.buys++; d.buyW += 2; d.netVal += Math.max(v, 0);
+      } else if (a === "Added") {
+        d.buys++; d.buyW += 1; d.netVal += Math.max(v, 0);
+      } else if (a === "Exited") {
+        d.sells++; d.sellW += 2; d.netVal += Math.min(v, 0);
+      } else if (a === "Reduced") {
+        d.sells++; d.sellW += 1; d.netVal += Math.min(v, 0);
+      }
+      // Held / Mixed → no weight
+    });
+
+    /* ── Filter & sort ── */
+    const items = Object.values(map)
+      .filter(d => d.buys + d.sells > 0)
+      .map(d => {
+        const w = d.buyW + d.sellW;
+        const score = w > 0 ? (d.buyW - d.sellW) / w : 0;
+        return { ...d, score, instCount: d.institutions.size };
+      })
+      .sort((a, b) => b.score - a.score || b.instCount - a.instCount);
+
+    count.textContent = `${items.length} stocks · ${state.gmapQ}`;
+
+    /* ── Render ── */
+    grid.innerHTML = items.map(d => {
+      const cls   = gmapClass(d.score);
+      const label = gmapLabel(d.score);
+      const net   = d.netVal;
+      const netStr = net !== 0
+        ? `<div class="gmap-flow" style="color:${net>0?"var(--green)":"var(--red)"}">${net>0?"+":""}${Math.abs(net)>=1000?"$"+(Math.abs(net)/1000).toFixed(1)+"B":"$"+Math.round(Math.abs(net))+"M"}</div>`
+        : "";
+      return `
+        <div class="gmap-cell ${cls}" title="${esc(d.company)} | 买入信号:${d.buys} 卖出:${d.sells} 机构:${d.instCount}">
+          <div class="gmap-ticker">${esc(d.ticker)}</div>
+          <div class="gmap-company">${esc(d.company)}</div>
+          <div class="gmap-signal">${label}</div>
+          <div class="gmap-badges">
+            ${d.buys  > 0 ? `<span class="gmap-b">↑${d.buys}</span>`  : ""}
+            ${d.sells > 0 ? `<span class="gmap-s">↓${d.sells}</span>` : ""}
+          </div>
+          <div class="gmap-inst">${d.instCount} 家机构</div>
+          ${netStr}
+        </div>`;
+    }).join("");
+  }
+
+  function gmapClass(s) {
+    if (s >= 0.7)  return "gc-strong-buy";
+    if (s >= 0.3)  return "gc-buy";
+    if (s >= 0.01) return "gc-mild-buy";
+    if (s >= -0.3) return "gc-mixed";
+    if (s >= -0.7) return "gc-mild-sell";
+    return "gc-sell";
+  }
+
+  function gmapLabel(s) {
+    if (s >= 0.7)  return "强力买入 ★";
+    if (s >= 0.3)  return "买入 ▲";
+    if (s >= 0.01) return "温和买入";
+    if (s >= -0.3) return "分歧 ◆";
+    if (s >= -0.7) return "温和减持 ▼";
+    return "减持 / 清仓 ✕";
+  }
+
+  /* ── Master update ── */
+  function update() {
+    const rows = filteredRows();
+    renderFilters();
+    renderSummary(rows);
+    renderGlobalHeatmap();
+    const groups = groupByInst(rows);
+    if (!groups.some(g => g.institution === state.selectedInst)) {
+      state.selectedInst = groups[0] ? groups[0].institution : null;
+      state.activeQTab = "All";
+    }
+    renderInstList();
+    renderDetail();
+  }
+
+  /* ── Load CSV ── */
+  async function load() {
+    const res = await fetch("../data/smart_money_positions.csv");
+    if (!res.ok) throw new Error("CSV not found");
+    const text = await res.text();
+    state.rows = parseCSV(text);
+    state.selectedInst = state.rows[0] ? state.rows[0].institution : null;
+    update();
+  }
+
+  /* ── Heatmap toggle ── */
+  document.getElementById("gmapToggle").addEventListener("click", () => {
+    const sec = document.querySelector(".gmap-section");
+    const btn = document.getElementById("gmapToggle");
+    const collapsed = sec.classList.toggle("collapsed");
+    btn.childNodes[btn.childNodes.length - 1].textContent = collapsed ? " 展开" : " 收起";
+  });
+
+  /* ── Bind search ── */
+  el.search.addEventListener("input", e => {
+    state.query = e.target.value;
+    state.selectedInst = null;
+    state.activeQTab = "All";
+    update();
+  });
+
+  /* ── Boot ── */
+  load().catch(() => {
+    el.detail.innerHTML = '<div class="empty-msg" style="padding:24px">Failed to load data. Please serve this page through a local web server (e.g. <code>python3 -m http.server</code>).</div>';
+  });
+})();
+</script>
+</body>
+</html>

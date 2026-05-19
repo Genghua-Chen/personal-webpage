@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transformer - Genghua's Log</title>
+  <link rel="icon" href="imgs/Pigman.png" type="image/x-icon">
+
+  <!-- Fonts and existing styles -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../static/css/style.css"/>
+
+  <!-- Marked Library -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+
+  <!-- MathJax (for LaTeX, if needed) -->
+  <script>
+    window.MathJax = {
+      tex: {
+        packages: ['base', 'ams', 'newcommand', 'autoload'],
+        inlineMath: [['\\(', '\\)'], ['$', '$']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']],
+        processEscapes: true
+      },
+      startup: {
+        pageReady: () => {
+          console.log('MathJax is ready');
+          return MathJax.startup.defaultPageReady();
+        }
+      },
+      options: {
+        enableMenu: true  // Enables right-click menu for debugging
+      }
+    };
+    </script>
+    <script 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" 
+      onerror="console.error('Failed to load MathJax')"
+      onload="console.log('MathJax loaded successfully')"
+    ></script>
+  
+    <style>
+      /* Basic container styles */
+      .content-container, .post-content, .post-item {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+  
+      .content-container {
+        padding: 2rem 1rem;
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: left;
+        overflow: hidden !important;
+      }
+  
+      .post-content {
+        line-height: 1.8;
+        text-align: left;
+        padding: 0;
+      }
+  
+      /* Table of Contents Styles */
+      #markdown-content > ul:first-of-type {
+        border-left: 4px solid #ccc;
+        padding-left: 1rem;
+        margin-bottom: 2rem;
+        list-style: none;
+      }
+  
+      #markdown-content > ul:first-of-type li {
+        margin-bottom: 0.5rem;
+        position: relative;
+      }
+  
+      #markdown-content > ul:first-of-type a {
+        text-decoration: none;
+        color: #333;
+        transition: color 0.3s ease, transform 0.3s ease;
+        position: relative;
+      }
+  
+      #markdown-content > ul:first-of-type a::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 0;
+        height: 2px;
+        background-color: #007BFF;
+        transition: width 0.3s ease, background-color 0.3s ease;
+      }
+  
+      #markdown-content > ul:first-of-type a:hover::after {
+        width: 100%;
+        background-color: #FF5722;
+      }
+  
+      #markdown-content > ul:first-of-type a:hover {
+        color: #FF5722;
+        transform: scale(1.05);
+      }
+  
+      /* Headers */
+      #markdown-content h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+  
+      #markdown-content h2 {
+        font-size: 1.5rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+      }
+  
+      /* Post Meta */
+      #markdown-content > p:first-of-type {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 2rem;
+      }
+  
+      /* Image Styles */
+      #markdown-content img {
+        display: block;
+        margin: 1rem auto;
+        max-width: 300px;
+        width: 100%;
+        height: auto;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+      }
+  
+      .image-description {
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+  
+      #markdown-content figure {
+        margin: 2rem 0;
+        text-align: center;
+      }
+  
+      /* Paragraphs */
+      #markdown-content p {
+        margin-bottom: 1rem;
+        line-height: 1.8;
+      }
+  
+      /* Table Styles */
+      .table-container {
+        overflow-x: auto;
+        margin: 1em 0;
+      }
+  
+      .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+        font-size: 1rem;
+      }
+  
+      .custom-table thead {
+        background-color: #f5f5f5;
+      }
+  
+      .custom-table th,
+      .custom-table td {
+        border: 1px solid #ccc;
+        padding: 0.5em 1em;
+      }
+  
+      /* Math Formula Styles */
+      /* Display Math (standalone equations) */
+      mjx-container[jax="CHTML"][display="true"] {
+        display: flex !important;
+        justify-content: center !important;
+        margin: 1rem 0 !important;
+        width: 100% !important;
+        overflow: visible !important;
+      }
+  
+      /* Inline Math (within text) */
+      mjx-container[jax="CHTML"]:not([display="true"]) {
+        display: inline !important;
+        text-align: left !important;
+        margin: 0 !important;
+      }
+  
+      /* Container for math content */
+      #markdown-content {
+          overflow-x: hidden !important;
+        }
+
+        .logo {
+        display: flex;
+        align-items: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: #333;
+      }
+      .logo img {
+        margin-right: 0.5rem;
+        width: 30px; /* Reduced size */
+        height: 30px; /* Reduced size */
+      }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+  <header>
+    <div class="header-container">
+      <a href="../index.html" class="logo">
+        <img src="imgs/Pigman.png" alt="Logo">
+        Genghua's Log
+      </a>
+      <nav>
+        <a href="../index.html">Home</a>
+        <a href="../topics/index.html">Topics</a>
+        <a href="../author.html">Author</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="content-container">
+      <div id="markdown-content"></div>
+      <a href="../index.html" class="back-link">&larr; Back to Home</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 GenghuasLog</p>
+  </footer>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof marked === 'undefined') {
+      console.error('Marked library not loaded');
+      return;
+    }
+
+    const renderer = new marked.Renderer();
+
+    renderer.table = function(header, body) {
+      return (
+        '<div class="table-container">' +
+          '<table class="custom-table">' +
+            '<thead>' + header + '</thead>' +
+            '<tbody>' + body + '</tbody>' +
+          '</table>' +
+        '</div>'
+      );
+    };
+
+    renderer.tablerow = function(content) {
+      return '<tr>' + content + '</tr>\n';
+    };
+
+    renderer.tablecell = function(content, flags) {
+      const tag = flags.header ? 'th' : 'td';
+      const alignAttr = flags.align ? ' style="text-align:' + flags.align + '"' : '';
+      return '<' + tag + alignAttr + '>' + content + '</' + tag + '>\n';
+    };
+
+    renderer.heading = function(text, level) {
+      const id = text
+        .toLowerCase()
+        .replace(/[^\w]+/g, '-');
+      return '<h' + level + ' id="' + id + '">' + text + '</h' + level + '>';
+    };
+
+    renderer.image = function(src, title, alt) {
+      return (
+        '<img src="' + src + '" alt="' + alt + '">' +
+        '<p class="image-description">' + alt + '</p>'
+      );
+    };
+
+    renderer.link = function(href, title, text) {
+      if (href.startsWith('#')) {
+        return (
+          '<a href="' + href + '" ' +
+          'onclick="scrollToSection(\'' + href.substring(1) + '\'); return false;">' +
+          text + '</a>'
+        );
+      } else {
+        return '<a href="' + href + '">' + text + '</a>';
+      }
+    };
+
+    marked.use({
+      breaks: true,
+      gfm: true,
+      mangle: false,
+      headerIds: true,
+      headerPrefix: '',
+      smartypants: true,
+      renderer: renderer
+    });
+
+    fetch('llm_memory_estimations.md')
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error('HTTP error! status: ' + response.status);
+        }
+        return response.text();
+      })
+      .then(function(markdown) {
+        const htmlContent = marked.parse(markdown);
+        var contentDiv = document.getElementById('markdown-content');
+        contentDiv.innerHTML = htmlContent;
+
+        var tocList = contentDiv.querySelector('ul:first-of-type');
+        if (tocList) {
+          tocList.insertAdjacentHTML('beforebegin', '<h2>Table of Contents</h2>');
+        }
+
+        if (window.MathJax) {
+          window.MathJax.typeset();
+        }
+
+        if (window.location.hash) {
+          scrollToSection(window.location.hash.substring(1));
+        }
+      })
+      .catch(function(error) {
+        console.error('Error loading markdown:', error);
+        document.getElementById('markdown-content').innerHTML =
+          '<p>Error loading content: ' + error.message + '</p>';
+      });
+  });
+
+  function scrollToSection(id) {
+    var element = document.getElementById(id);
+    if (element) {
+      var headerHeight = document.querySelector('header').offsetHeight;
+      var elementPosition = element.getBoundingClientRect().top;
+      var offsetPosition = elementPosition + window.pageYOffset - headerHeight - 20;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }
+</script>
+</body>
+</html>

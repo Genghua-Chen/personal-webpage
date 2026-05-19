@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Calendar — LazySheepcapital</title>
+  <style>
+    :root {
+      --bg: #07070f;
+      --panel: #0e0e1a;
+      --text: #e8e8f0;
+      --muted: rgba(200,200,230,0.50);
+      --line: rgba(255,255,255,0.08);
+      --accent: #60a5fa;
+      --shadow: 0 2px 16px rgba(0,0,0,.50);
+      --radius: 16px;
+      --c-earn: #3b82f6;  --cb-earn: rgba(59,130,246,.18);
+      --c-fomc: #f87171;  --cb-fomc: rgba(248,113,113,.16);
+      --c-13f:  #a78bfa;  --cb-13f:  rgba(167,139,250,.16);
+      --c-econ: #34d399;  --cb-econ: rgba(52,211,153,.15);
+      --c-div:  #fbbf24;  --cb-div:  rgba(251,191,36,.15);
+      --c-ipo:  #f472b6;  --cb-ipo:  rgba(244,114,182,.15);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; line-height: 1.45;
+    }
+
+    .app { max-width: 1280px; margin: 0 auto; padding: 24px 20px 48px; }
+
+    /* ── nav ── */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: .84rem; color: var(--accent); text-decoration: none;
+      margin-bottom: 16px;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    /* ── hero ── */
+    .hero {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 22px;
+      padding: 24px 28px 20px; margin-bottom: 14px; box-shadow: var(--shadow);
+    }
+    .hero h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -.03em; margin-bottom: 4px; }
+    .hero p  { font-size: .9rem; color: var(--muted); }
+
+    /* ── filter chips ── */
+    .filters {
+      display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; align-items: center;
+    }
+    .fc {
+      border: 1.5px solid var(--line); background: var(--panel);
+      border-radius: 999px; padding: 6px 14px; cursor: pointer;
+      font-size: .8rem; font-weight: 600; color: var(--muted);
+      display: flex; align-items: center; gap: 5px;
+      transition: all .14s;
+    }
+    .fc .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .fc.active { color: #fff; border-color: transparent; }
+    .fc.active.earn { background: var(--c-earn); }
+    .fc.active.fomc { background: var(--c-fomc); }
+    .fc.active.f13f { background: var(--c-13f); }
+    .fc.active.econ { background: var(--c-econ); }
+    .fc.active.div  { background: var(--c-div);  }
+
+    /* ── main layout ── */
+    .main { display: grid; grid-template-columns: 1fr 310px; gap: 14px; }
+
+    /* ── calendar ── */
+    .cal-panel {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+    }
+    .cal-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px 12px; border-bottom: 1px solid var(--line);
+    }
+    .cal-nav-title { font-size: 1.1rem; font-weight: 700; }
+    .cal-nav-btns  { display: flex; gap: 8px; }
+    .nav-btn {
+      border: 1px solid var(--line); background: transparent; border-radius: 8px;
+      padding: 5px 10px; cursor: pointer; font-size: .82rem; color: var(--text);
+      transition: background .12s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,.05); }
+    .nav-btn.today { color: var(--accent); font-weight: 600; }
+
+    .weekdays {
+      display: grid; grid-template-columns: repeat(7,1fr);
+      padding: 0 12px; border-bottom: 1px solid var(--line);
+    }
+    .wd {
+      text-align: center; font-size: .72rem; font-weight: 600;
+      color: var(--muted); letter-spacing: .05em; padding: 8px 0;
+    }
+    .wd.weekend { color: var(--c-fomc); }
+
+    .grid {
+      display: grid; grid-template-columns: repeat(7,1fr);
+      gap: 0; padding: 8px 12px 12px;
+    }
+    .day {
+      min-height: 88px; border-radius: 10px; padding: 6px 7px 5px;
+      cursor: pointer; position: relative;
+      transition: background .12s;
+    }
+    .day:hover { background: rgba(255,255,255,.04); }
+    .day.other-month .day-num { opacity: .3; }
+    .day.today .day-num {
+      background: var(--accent); color: #fff;
+      border-radius: 50%; width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .day.selected { background: rgba(96,165,250,.12); outline: 1.5px solid var(--accent); }
+    .day-num { font-size: .82rem; font-weight: 600; margin-bottom: 4px; display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; }
+    .day.weekend .day-num { color: var(--c-fomc); }
+    .day.weekend.today .day-num { background: var(--c-fomc); color: #fff; }
+
+    .event-pills { display: flex; flex-direction: column; gap: 2px; }
+    .ep {
+      border-radius: 4px; padding: 1px 5px;
+      font-size: .68rem; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      cursor: pointer;
+    }
+    .ep.earn { background: var(--cb-earn); color: var(--c-earn); }
+    .ep.fomc { background: var(--cb-fomc); color: var(--c-fomc); }
+    .ep.f13f { background: var(--cb-13f);  color: var(--c-13f);  }
+    .ep.econ { background: var(--cb-econ); color: var(--c-econ); }
+    .ep.div  { background: var(--cb-div);  color: var(--c-div);  }
+    .ep.more { background: rgba(255,255,255,.06); color: var(--muted); }
+
+    /* ── sidebar ── */
+    .sidebar { display: flex; flex-direction: column; gap: 10px; }
+
+    .side-card {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+    }
+    .side-head {
+      padding: 12px 16px; border-bottom: 1px solid var(--line);
+      font-size: .78rem; text-transform: uppercase; letter-spacing: .05em;
+      color: var(--muted); font-weight: 600;
+    }
+    .side-list { max-height: 420px; overflow-y: auto; }
+
+    .ev-item {
+      display: flex; gap: 10px; padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+      transition: background .1s; cursor: default;
+    }
+    .ev-item:last-child { border-bottom: 0; }
+    .ev-item:hover { background: rgba(255,255,255,.04); }
+    .ev-dot-col { padding-top: 3px; flex-shrink: 0; }
+    .ev-dot {
+      width: 10px; height: 10px; border-radius: 50%; display: block;
+    }
+    .ev-dot.earn { background: var(--c-earn); }
+    .ev-dot.fomc { background: var(--c-fomc); }
+    .ev-dot.f13f { background: var(--c-13f);  }
+    .ev-dot.econ { background: var(--c-econ); }
+    .ev-dot.div  { background: var(--c-div);  }
+    .ev-content { flex: 1; min-width: 0; }
+    .ev-date  { font-size: .72rem; color: var(--muted); margin-bottom: 1px; }
+    .ev-title { font-size: .85rem; font-weight: 600; }
+    .ev-desc  { font-size: .76rem; color: var(--muted); margin-top: 1px; line-height: 1.4; }
+    .ev-badge {
+      font-size: .69rem; font-weight: 700; border-radius: 4px;
+      padding: 1px 6px; display: inline-block; margin-top: 3px;
+    }
+    .ev-badge.earn { background: var(--cb-earn); color: var(--c-earn); }
+    .ev-badge.fomc { background: var(--cb-fomc); color: var(--c-fomc); }
+    .ev-badge.f13f { background: var(--cb-13f);  color: var(--c-13f);  }
+    .ev-badge.econ { background: var(--cb-econ); color: var(--c-econ); }
+    .ev-badge.div  { background: var(--cb-div);  color: var(--c-div);  }
+    .ev-time-badge {
+      font-size: .67rem; font-weight: 700; border-radius: 3px;
+      padding: 1px 5px; display: inline-block; margin-top: 3px; margin-left: 4px;
+    }
+    .ev-time-badge.bmo { background: rgba(251,191,36,.15); color: #fbbf24; }
+    .ev-time-badge.amc { background: rgba(99,102,241,.18); color: #a5b4fc; }
+
+    .empty-side { padding: 20px 16px; font-size: .85rem; color: var(--muted); }
+
+    /* legend */
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      padding: 10px 16px; border-top: 1px solid var(--line);
+      background: rgba(255,255,255,.025);
+    }
+    .leg { display: flex; align-items: center; gap: 5px; font-size: .75rem; color: var(--muted); }
+    .leg-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+    @media(max-width:900px){
+      .main { grid-template-columns: 1fr; }
+      .side-list { max-height: 260px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <a class="back-link" href="../">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Market Briefing
+  </a>
+
+  <div class="hero">
+    <h1>Financial Calendar</h1>
+    <p>财报日 · FOMC 会议 · 13F 申报截止 · 经济数据 · 2025–2027</p>
+  </div>
+
+  <div class="filters" id="filters"></div>
+
+  <div class="main">
+    <div class="cal-panel">
+      <div class="cal-nav">
+        <div class="cal-nav-title" id="calTitle"></div>
+        <div class="cal-nav-btns">
+          <button class="nav-btn today" id="btnToday">今天</button>
+          <button class="nav-btn" id="btnPrev">‹</button>
+          <button class="nav-btn" id="btnNext">›</button>
+        </div>
+      </div>
+      <div class="weekdays">
+        <div class="wd weekend">日</div>
+        <div class="wd">一</div><div class="wd">二</div><div class="wd">三</div>
+        <div class="wd">四</div><div class="wd">五</div>
+        <div class="wd weekend">六</div>
+      </div>
+      <div class="grid" id="calGrid"></div>
+      <div class="legend">
+        <span class="leg"><span class="leg-dot" style="background:var(--c-earn)"></span>财报</span>
+        <span class="leg"><span class="leg-dot" style="background:var(--c-fomc)"></span>FOMC</span>
+        <span class="leg"><span class="leg-dot" style="background:var(--c-13f)"></span>13F 截止</span>
+        <span class="leg"><span class="leg-dot" style="background:var(--c-econ)"></span>经济数据</span>
+        <span class="leg"><span class="leg-dot" style="background:var(--c-div)"></span>分红除息</span>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="side-card">
+        <div class="side-head" id="sideHead">近期事件</div>
+        <div class="side-list" id="sideList"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════
+   CSV PARSER (minimal)
+   ═══════════════════════════════════ */
+function parseCSV(text) {
+  const lines = text.trim().split("\n");
+  const headers = lines[0].split(",");
+  return lines.slice(1).map(line => {
+    const vals = line.split(",");
+    const obj = {};
+    headers.forEach((h, i) => { obj[h.trim()] = (vals[i] || "").trim(); });
+    return obj;
+  });
+}
+
+/* ═══════════════════════════════════
+   EVENT DATA
+   ═══════════════════════════════════ */
+const EVENTS = [
+  /* ── FOMC 2025 ── */
+  {d:"2025-01-28",t:"fomc",title:"FOMC 会议 (1月)",desc:"利率决议·鲍威尔新闻发布会"},
+  {d:"2025-01-29",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2025-03-18",t:"fomc",title:"FOMC 会议 (3月)",desc:"利率决议·SEP 点阵图"},
+  {d:"2025-03-19",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2025-05-06",t:"fomc",title:"FOMC 会议 (5月)",desc:"利率决议"},
+  {d:"2025-05-07",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2025-06-17",t:"fomc",title:"FOMC 会议 (6月)",desc:"利率决议·SEP 点阵图"},
+  {d:"2025-06-18",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2025-07-29",t:"fomc",title:"FOMC 会议 (7月)",desc:"利率决议"},
+  {d:"2025-07-30",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2025-09-16",t:"fomc",title:"FOMC 会议 (9月)",desc:"利率决议·SEP 点阵图"},
+  {d:"2025-09-17",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2025-10-28",t:"fomc",title:"FOMC 会议 (10月)",desc:"利率决议"},
+  {d:"2025-10-29",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2025-12-09",t:"fomc",title:"FOMC 会议 (12月)",desc:"利率决议·SEP 点阵图"},
+  {d:"2025-12-10",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+
+  /* ── FOMC 2026 ── */
+  {d:"2026-01-27",t:"fomc",title:"FOMC 会议 (1月)",desc:"利率决议"},
+  {d:"2026-01-28",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2026-03-17",t:"fomc",title:"FOMC 会议 (3月)",desc:"利率决议·SEP 点阵图"},
+  {d:"2026-03-18",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2026-05-05",t:"fomc",title:"FOMC 会议 (5月)",desc:"利率决议"},
+  {d:"2026-05-06",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2026-06-16",t:"fomc",title:"FOMC 会议 (6月)",desc:"利率决议·SEP 点阵图"},
+  {d:"2026-06-17",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2026-07-28",t:"fomc",title:"FOMC 会议 (7月)",desc:"利率决议"},
+  {d:"2026-07-29",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2026-09-15",t:"fomc",title:"FOMC 会议 (9月)",desc:"利率决议·SEP 点阵图"},
+  {d:"2026-09-16",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2026-10-27",t:"fomc",title:"FOMC 会议 (10月)",desc:"利率决议"},
+  {d:"2026-10-28",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+  {d:"2026-12-08",t:"fomc",title:"FOMC 会议 (12月)",desc:"利率决议·SEP 点阵图"},
+  {d:"2026-12-09",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
+
+  /* ── 13F 申报截止 ── */
+  {d:"2025-05-15",t:"f13f",title:"13F 截止 — Q1 2025",desc:"机构持仓申报截止（3月31日快照）"},
+  {d:"2025-08-14",t:"f13f",title:"13F 截止 — Q2 2025",desc:"机构持仓申报截止（6月30日快照）"},
+  {d:"2025-11-14",t:"f13f",title:"13F 截止 — Q3 2025",desc:"机构持仓申报截止（9月30日快照）"},
+  {d:"2026-02-17",t:"f13f",title:"13F 截止 — Q4 2025",desc:"机构持仓申报截止（12月31日快照）"},
+  {d:"2026-05-15",t:"f13f",title:"13F 截止 — Q1 2026",desc:"机构持仓申报截止（3月31日快照）"},
+  {d:"2026-08-14",t:"f13f",title:"13F 截止 — Q2 2026",desc:"机构持仓申报截止（6月30日快照）"},
+  {d:"2026-11-16",t:"f13f",title:"13F 截止 — Q3 2026",desc:"机构持仓申报截止（9月30日快照）"},
+  {d:"2027-02-15",t:"f13f",title:"13F 截止 — Q4 2026",desc:"机构持仓申报截止（12月31日快照）"},
+
+  /* ── 经济数据 2025 ── */
+  {d:"2025-01-10",t:"econ",title:"非农就业",desc:"2024年12月非农就业人数"},
+  {d:"2025-01-15",t:"econ",title:"CPI",desc:"2024年12月通胀数据"},
+  {d:"2025-01-30",t:"econ",title:"GDP Q4 2024 初值",desc:"美国Q4 2024 GDP初步估算"},
+  {d:"2025-02-07",t:"econ",title:"非农就业",desc:"2025年1月非农就业人数"},
+  {d:"2025-02-12",t:"econ",title:"CPI",desc:"2025年1月通胀数据"},
+  {d:"2025-03-07",t:"econ",title:"非农就业",desc:"2025年2月非农就业人数"},
+  {d:"2025-03-12",t:"econ",title:"CPI",desc:"2025年2月通胀数据"},
+  {d:"2025-03-28",t:"econ",title:"PCE 核心通胀",desc:"美联储偏好通胀指标"},
+  {d:"2025-04-04",t:"econ",title:"非农就业",desc:"2025年3月非农就业人数"},
+  {d:"2025-04-10",t:"econ",title:"CPI",desc:"2025年3月通胀数据"},
+  {d:"2025-04-30",t:"econ",title:"GDP Q1 2025 初值",desc:"美国Q1 2025 GDP初步估算"},
+  {d:"2025-05-02",t:"econ",title:"非农就业",desc:"2025年4月非农就业人数"},
+  {d:"2025-05-13",t:"econ",title:"CPI",desc:"2025年4月通胀数据"},
+  {d:"2025-06-06",t:"econ",title:"非农就业",desc:"2025年5月非农就业人数"},
+  {d:"2025-06-11",t:"econ",title:"CPI",desc:"2025年5月通胀数据"},
+  {d:"2025-07-03",t:"econ",title:"非农就业",desc:"2025年6月非农就业人数"},
+  {d:"2025-07-15",t:"econ",title:"CPI",desc:"2025年6月通胀数据"},
+  {d:"2025-07-30",t:"econ",title:"GDP Q2 2025 初值",desc:"美国Q2 2025 GDP初步估算"},
+  {d:"2025-08-01",t:"econ",title:"非农就业",desc:"2025年7月非农就业人数"},
+  {d:"2025-08-13",t:"econ",title:"CPI",desc:"2025年7月通胀数据"},
+  {d:"2025-09-05",t:"econ",title:"非农就业",desc:"2025年8月非农就业人数"},
+  {d:"2025-09-10",t:"econ",title:"CPI",desc:"2025年8月通胀数据"},
+  {d:"2025-10-03",t:"econ",title:"非农就业",desc:"2025年9月非农就业人数"},
+  {d:"2025-10-09",t:"econ",title:"CPI",desc:"2025年9月通胀数据"},
+  {d:"2025-10-30",t:"econ",title:"GDP Q3 2025 初值",desc:"美国Q3 2025 GDP初步估算"},
+  {d:"2025-11-07",t:"econ",title:"非农就业",desc:"2025年10月非农就业人数"},
+  {d:"2025-11-13",t:"econ",title:"CPI",desc:"2025年10月通胀数据"},
+  {d:"2025-12-05",t:"econ",title:"非农就业",desc:"2025年11月非农就业人数"},
+  {d:"2025-12-11",t:"econ",title:"CPI",desc:"2025年11月通胀数据"},
+
+  /* ── 经济数据 2026 ── */
+  {d:"2026-01-09",t:"econ",title:"非农就业",desc:"2025年12月非农就业人数"},
+  {d:"2026-01-14",t:"econ",title:"CPI",desc:"2025年12月通胀数据"},
+  {d:"2026-01-29",t:"econ",title:"GDP Q4 2025 初值",desc:"美国Q4 2025 GDP初步估算"},
+  {d:"2026-02-06",t:"econ",title:"非农就业",desc:"2026年1月非农就业人数"},
+  {d:"2026-02-11",t:"econ",title:"CPI",desc:"2026年1月通胀数据"},
+  {d:"2026-03-06",t:"econ",title:"非农就业",desc:"2026年2月非农就业人数"},
+  {d:"2026-03-11",t:"econ",title:"CPI",desc:"2026年2月通胀数据"},
+  {d:"2026-03-27",t:"econ",title:"PCE 核心通胀",desc:"美联储偏好通胀指标"},
+  {d:"2026-04-03",t:"econ",title:"非农就业",desc:"2026年3月非农就业人数"},
+  {d:"2026-04-10",t:"econ",title:"CPI",desc:"2026年3月通胀数据"},
+  {d:"2026-04-29",t:"econ",title:"GDP Q1 2026 初值",desc:"美国Q1 2026 GDP初步估算"},
+  {d:"2026-05-01",t:"econ",title:"非农就业",desc:"2026年4月非农就业人数"},
+  {d:"2026-05-13",t:"econ",title:"CPI",desc:"2026年4月通胀数据"},
+  {d:"2026-06-05",t:"econ",title:"非农就业",desc:"2026年5月非农就业人数"},
+  {d:"2026-06-10",t:"econ",title:"CPI",desc:"2026年5月通胀数据"},
+  {d:"2026-07-02",t:"econ",title:"非农就业",desc:"2026年6月非农就业人数"},
+  {d:"2026-07-14",t:"econ",title:"CPI",desc:"2026年6月通胀数据"},
+  {d:"2026-07-30",t:"econ",title:"GDP Q2 2026 初值",desc:"美国Q2 2026 GDP初步估算"},
+  {d:"2026-08-07",t:"econ",title:"非农就业",desc:"2026年7月非农就业人数"},
+  {d:"2026-08-12",t:"econ",title:"CPI",desc:"2026年7月通胀数据"},
+  {d:"2026-09-04",t:"econ",title:"非农就业",desc:"2026年8月非农就业人数"},
+  {d:"2026-09-09",t:"econ",title:"CPI",desc:"2026年8月通胀数据"},
+  {d:"2026-10-02",t:"econ",title:"非农就业",desc:"2026年9月非农就业人数"},
+  {d:"2026-10-14",t:"econ",title:"CPI",desc:"2026年9月通胀数据"},
+  {d:"2026-10-29",t:"econ",title:"GDP Q3 2026 初值",desc:"美国Q3 2026 GDP初步估算"},
+  {d:"2026-11-06",t:"econ",title:"非农就业",desc:"2026年10月非农就业人数"},
+  {d:"2026-11-12",t:"econ",title:"CPI",desc:"2026年10月通胀数据"},
+  {d:"2026-12-04",t:"econ",title:"非农就业",desc:"2026年11月非农就业人数"},
+  {d:"2026-12-10",t:"econ",title:"CPI",desc:"2026年11月通胀数据"},
+
+  /* ── 主要股息除息日（估算） ── */
+  {d:"2025-08-08",t:"div",title:"AAPL 除息",desc:"苹果 Q3 2025 股息"},
+  {d:"2025-11-07",t:"div",title:"AAPL 除息",desc:"苹果 Q4 2025 股息"},
+  {d:"2026-02-06",t:"div",title:"AAPL 除息",desc:"苹果 Q1 2026 股息"},
+  {d:"2026-05-08",t:"div",title:"AAPL 除息",desc:"苹果 Q2 2026 股息"},
+  {d:"2025-09-05",t:"div",title:"MSFT 除息",desc:"微软 Q1 FY2026 股息"},
+  {d:"2025-11-21",t:"div",title:"MSFT 除息",desc:"微软 Q2 FY2026 股息"},
+  {d:"2026-02-20",t:"div",title:"MSFT 除息",desc:"微软 Q3 FY2026 股息"},
+  {d:"2026-05-15",t:"div",title:"MSFT 除息",desc:"微软 Q4 FY2026 股息"},
+  {d:"2026-08-14",t:"div",title:"MSFT 除息",desc:"微软 Q1 FY2027 股息"},
+  {d:"2026-03-06",t:"div",title:"JPM 除息",desc:"摩根大通 Q1 2026 股息"},
+  {d:"2026-06-05",t:"div",title:"JPM 除息",desc:"摩根大通 Q2 2026 股息"},
+  {d:"2026-09-04",t:"div",title:"JPM 除息",desc:"摩根大通 Q3 2026 股息"},
+  {d:"2026-12-04",t:"div",title:"JPM 除息",desc:"摩根大通 Q4 2026 股息"},
+];
+
+/* ═══════════════════════════════════
+   APP STATE
+   ═══════════════════════════════════ */
+const today = new Date();
+today.setHours(0,0,0,0);
+const todayStr = fmtDate(today);
+
+let curYear  = today.getFullYear();
+let curMonth = today.getMonth();   // 0-indexed
+let selected = todayStr;
+
+// Active filters (all on by default)
+const filters = { earn:true, fomc:true, f13f:true, econ:true, div:true };
+
+/* ═══════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════ */
+function fmtDate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function parseDate(s) {
+  const [y,m,d] = s.split("-").map(Number);
+  return new Date(y,m-1,d);
+}
+function visibleEvents() {
+  return EVENTS.filter(e => filters[e.t]);
+}
+function eventsOn(dateStr) {
+  return visibleEvents().filter(e => e.d === dateStr);
+}
+function upcomingEvents(n=25) {
+  const now = todayStr;
+  return visibleEvents()
+    .filter(e => e.d >= now)
+    .sort((a,b)=>a.d.localeCompare(b.d))
+    .slice(0,n);
+}
+function typeLabel(t) {
+  return {earn:"财报",fomc:"FOMC",f13f:"13F",econ:"经济数据",div:"股息"}[t]||t;
+}
+function fmtDisplayDate(s) {
+  const d = parseDate(s);
+  const days = ["日","一","二","三","四","五","六"];
+  return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} 周${days[d.getDay()]}`;
+}
+
+/* ═══════════════════════════════════
+   RENDER FILTERS
+   ═══════════════════════════════════ */
+function renderFilters() {
+  const defs = [
+    {k:"earn",label:"财报",cls:"earn"},
+    {k:"fomc",label:"FOMC 会议",cls:"fomc"},
+    {k:"f13f",label:"13F 截止",cls:"f13f"},
+    {k:"econ",label:"经济数据",cls:"econ"},
+    {k:"div", label:"股息除息",cls:"div"},
+  ];
+  const wrap = document.getElementById("filters");
+  wrap.innerHTML = defs.map(f=>`
+    <button class="fc ${f.cls}${filters[f.k]?" active":""}" data-key="${f.k}">
+      <span class="dot" style="background:var(--c-${f.cls})"></span>${f.label}
+    </button>
+  `).join("") +
+  `<span style="font-size:.78rem;color:var(--muted);margin-left:4px">点击筛选类型</span>`;
+
+  wrap.querySelectorAll(".fc").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const k = btn.dataset.key;
+      filters[k] = !filters[k];
+      renderFilters();
+      renderCalendar();
+      renderSidebar();
+    });
+  });
+}
+
+/* ═══════════════════════════════════
+   RENDER CALENDAR
+   ═══════════════════════════════════ */
+function renderCalendar() {
+  const MONTHS = ["一月","二月","三月","四月","五月","六月",
+                  "七月","八月","九月","十月","十一月","十二月"];
+  document.getElementById("calTitle").textContent =
+    `${curYear}年 ${MONTHS[curMonth]}`;
+
+  const grid = document.getElementById("calGrid");
+  const firstDay = new Date(curYear, curMonth, 1);
+  const lastDay  = new Date(curYear, curMonth+1, 0);
+  const startDow = firstDay.getDay(); // 0=Sun
+  const daysInMonth = lastDay.getDate();
+
+  const cells = [];
+  // Leading blank days (from prev month)
+  const prevLast = new Date(curYear, curMonth, 0);
+  for(let i=startDow-1; i>=0; i--){
+    cells.push({date:new Date(curYear,curMonth-1,prevLast.getDate()-i), other:true});
+  }
+  // Current month
+  for(let d=1; d<=daysInMonth; d++){
+    cells.push({date:new Date(curYear,curMonth,d), other:false});
+  }
+  // Trailing days
+  const trailCount = (7 - cells.length%7) % 7;
+  for(let d=1; d<=trailCount; d++){
+    cells.push({date:new Date(curYear,curMonth+1,d), other:true});
+  }
+
+  grid.innerHTML = cells.map(c=>{
+    const ds = fmtDate(c.date);
+    const dow = c.date.getDay();
+    const isToday = ds === todayStr;
+    const isSel   = ds === selected;
+    const isWknd  = dow===0||dow===6;
+    const evs = eventsOn(ds);
+
+    const pills = evs.slice(0,3).map(e=>{
+      const timePrefix = e.earTime === "BMO" ? "▲ " : e.earTime === "AMC" ? "▼ " : "";
+      return `<div class="ep ${e.t}" title="${e.title}">${timePrefix}${e.title}</div>`;
+    }).join("");
+    const more = evs.length>3 ? `<div class="ep more">+${evs.length-3}</div>` : "";
+
+    return `
+      <div class="day${c.other?" other-month":""}${isToday?" today":""}${isSel?" selected":""}${isWknd?" weekend":""}"
+           data-date="${ds}">
+        <span class="day-num">${c.date.getDate()}</span>
+        <div class="event-pills">${pills}${more}</div>
+      </div>`;
+  }).join("");
+
+  grid.querySelectorAll(".day").forEach(el=>{
+    el.addEventListener("click",()=>{
+      selected = el.dataset.date;
+      renderCalendar();
+      renderSidebar();
+    });
+  });
+}
+
+/* ═══════════════════════════════════
+   RENDER SIDEBAR
+   ═══════════════════════════════════ */
+function renderSidebar() {
+  const selEvs = eventsOn(selected);
+  const head  = document.getElementById("sideHead");
+  const list  = document.getElementById("sideList");
+
+  if(selEvs.length){
+    head.textContent = fmtDisplayDate(selected) + " 的事件";
+    list.innerHTML = selEvs.map(e=>{
+      const timeBadge = e.earTime
+        ? `<span class="ev-time-badge ${e.earTime === "BMO" ? "bmo" : "amc"}">${e.earTime === "BMO" ? "▲ 盘前" : "▼ 盘后"}</span>`
+        : "";
+      return `
+      <div class="ev-item">
+        <div class="ev-dot-col"><span class="ev-dot ${e.t}"></span></div>
+        <div class="ev-content">
+          <div class="ev-title">${e.title}</div>
+          <div class="ev-desc">${e.desc}</div>
+          <span class="ev-badge ${e.t}">${typeLabel(e.t)}</span>${timeBadge}
+        </div>
+      </div>`;
+    }).join("");
+  } else {
+    head.textContent = "近期事件";
+    const ups = upcomingEvents(30);
+    if(!ups.length){
+      list.innerHTML = `<div class="empty-side">暂无符合条件的事件。</div>`;
+    } else {
+      list.innerHTML = ups.map(e=>{
+        const timeBadge = e.earTime
+          ? `<span class="ev-time-badge ${e.earTime === "BMO" ? "bmo" : "amc"}">${e.earTime === "BMO" ? "▲ 盘前" : "▼ 盘后"}</span>`
+          : "";
+        return `
+        <div class="ev-item">
+          <div class="ev-dot-col"><span class="ev-dot ${e.t}"></span></div>
+          <div class="ev-content">
+            <div class="ev-date">${fmtDisplayDate(e.d)}</div>
+            <div class="ev-title">${e.title}</div>
+            <div class="ev-desc">${e.desc}</div>
+            <span class="ev-badge ${e.t}">${typeLabel(e.t)}</span>${timeBadge}
+          </div>
+        </div>`;
+      }).join("");
+    }
+  }
+}
+
+/* ═══════════════════════════════════
+   CONTROLS
+   ═══════════════════════════════════ */
+document.getElementById("btnPrev").addEventListener("click",()=>{
+  curMonth--;
+  if(curMonth<0){curMonth=11;curYear--;}
+  renderCalendar(); renderSidebar();
+});
+document.getElementById("btnNext").addEventListener("click",()=>{
+  curMonth++;
+  if(curMonth>11){curMonth=0;curYear++;}
+  renderCalendar(); renderSidebar();
+});
+document.getElementById("btnToday").addEventListener("click",()=>{
+  curYear=today.getFullYear(); curMonth=today.getMonth();
+  selected=todayStr;
+  renderCalendar(); renderSidebar();
+});
+
+/* ── LOAD EARNINGS FROM CSV THEN BOOT ── */
+async function loadEarnings() {
+  try {
+    const res = await fetch("../data/earnings_dates.csv");
+    if (!res.ok) return;
+    const rows = parseCSV(await res.text());
+    rows.forEach(r => {
+      if (!r.report_date || !r.ticker) return;
+      const statusLabel = r.status === "reported" ? " ✓" : r.status === "confirmed" ? " 📌" : "";
+      EVENTS.push({
+        d: r.report_date,
+        t: "earn",
+        earTime: r.time,
+        title: `${r.ticker} 财报${statusLabel}`,
+        desc:  `${r.company} ${r.fiscal_quarter}${r.notes ? " · " + r.notes : ""}`,
+      });
+    });
+  } catch(e) { /* file not available in local open */ }
+  renderFilters();
+  renderCalendar();
+  renderSidebar();
+}
+
+loadEarnings();
+</script>
+</body>
+</html>

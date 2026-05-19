@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LazySheepcapital — Financial Intelligence</title>
+  <style>
+    :root {
+      --bg:           #07070f;
+      --bg2:          #0e0e1a;
+      --panel:        rgba(255,255,255,0.04);
+      --panel-h:      rgba(255,255,255,0.07);
+      --border:       rgba(255,255,255,0.08);
+      --border-h:     rgba(255,255,255,0.16);
+      --text:         #e8e8f0;
+      --muted:        rgba(200,200,230,0.5);
+      --dim:          rgba(200,200,230,0.28);
+      --accent:       #3b82f6;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 36px; height: 56px;
+      background: rgba(7,7,15,0.88);
+      backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 1rem; font-weight: 700; letter-spacing: -0.02em;
+      background: linear-gradient(100deg, #e8e8f0 0%, rgba(232,232,240,0.6) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-logo-icon { font-size: 1.15rem; -webkit-text-fill-color: initial; }
+    .nav-links { display: flex; gap: 2px; }
+    .nav-link {
+      padding: 6px 13px; border-radius: 8px;
+      font-size: 0.83rem; color: var(--muted);
+      text-decoration: none; transition: all .15s;
+      border: 1px solid transparent;
+    }
+    .nav-link:hover { color: var(--text); background: var(--panel); border-color: var(--border); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 88px 36px 72px;
+      max-width: 1180px; margin: 0 auto;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 999px;
+      padding: 5px 16px; margin-bottom: 28px;
+    }
+    .pulse-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #22c55e; display: inline-block;
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.8)} }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 5.5vw, 4.4rem);
+      font-weight: 800; letter-spacing: -0.045em;
+      line-height: 1.08; margin-bottom: 22px;
+    }
+    .grad-text {
+      background: linear-gradient(135deg, #c4b5fd 0%, #818cf8 35%, #38bdf8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 48ch; margin: 0 auto 52px;
+      line-height: 1.75;
+    }
+    .hero-stats {
+      display: flex; justify-content: center; gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 0;
+    }
+    .stat {
+      flex: 1; max-width: 160px; text-align: center;
+      border-right: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .stat:last-child { border-right: 0; }
+    .stat-num {
+      font-size: 1.7rem; font-weight: 800;
+      letter-spacing: -0.04em; color: var(--text);
+    }
+    .stat-label { font-size: 0.74rem; color: var(--muted); margin-top: 3px; letter-spacing: 0.02em; }
+
+    /* ── TOOLS ── */
+    .tools-section {
+      max-width: 1180px; margin: 0 auto;
+      padding: 60px 36px 72px;
+    }
+    .section-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--dim);
+      margin-bottom: 20px;
+    }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .tool-card {
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 28px;
+      text-decoration: none; color: inherit;
+      display: flex; flex-direction: column;
+      transition: transform .2s ease, border-color .2s, background .2s, box-shadow .2s;
+      overflow: hidden;
+    }
+    .tool-card::before {
+      content: '';
+      position: absolute; inset: 0; border-radius: 20px;
+      background: radial-gradient(ellipse at 25% 0%, var(--glow) 0%, transparent 60%);
+      pointer-events: none; opacity: 0; transition: opacity .3s;
+    }
+    .tool-card:hover { transform: translateY(-4px); border-color: var(--border-h); background: var(--panel-h); box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+    .tool-card:hover::before { opacity: 1; }
+
+    .tool-card.purple { --glow: rgba(168,85,247,.2);  --accent-c: #c084fc; }
+    .tool-card.cyan   { --glow: rgba(6,182,212,.18);  --accent-c: #22d3ee; }
+    .tool-card.blue   { --glow: rgba(59,130,246,.18); --accent-c: #60a5fa; }
+
+    .tool-icon {
+      width: 46px; height: 46px; border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.35rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      margin-bottom: 22px; flex-shrink: 0;
+    }
+    .tool-title {
+      font-size: 1.22rem; font-weight: 700;
+      letter-spacing: -0.025em; margin-bottom: 4px;
+    }
+    .tool-en {
+      font-size: 0.74rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 14px;
+    }
+    .tool-desc {
+      font-size: 0.87rem; color: var(--muted);
+      line-height: 1.65; flex: 1;
+    }
+    .tool-footer {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-top: 24px; padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+    .tool-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tool-tag {
+      font-size: 0.68rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 5px;
+      background: rgba(255,255,255,0.06); color: var(--muted);
+    }
+    .tool-cta {
+      font-size: 0.83rem; font-weight: 700;
+      color: var(--accent-c); white-space: nowrap;
+    }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      max-width: 1180px; margin: 0 auto;
+      padding: 0 36px 20px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .section-divider .div-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--dim); white-space: nowrap;
+    }
+    .section-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── BRIEFING ── */
+    .briefing {
+      max-width: 1180px; margin: 0 auto;
+      padding: 0 36px 72px;
+    }
+    .toolbar { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .search-wrap {
+      height: 44px; border-radius: 11px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      padding: 0 14px;
+      display: flex; align-items: center; gap: 10px;
+      transition: border-color .15s;
+    }
+    .search-wrap:focus-within { border-color: var(--border-h); }
+    .search-wrap svg { opacity: .35; flex-shrink: 0; }
+    .search-wrap input {
+      flex: 1; border: 0; outline: 0;
+      background: transparent; color: var(--text); font-size: 0.93rem;
+    }
+    .search-wrap input::placeholder { color: var(--muted); }
+    .filter-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      border: 1px solid var(--border); background: var(--panel);
+      border-radius: 8px; padding: 5px 12px;
+      cursor: pointer; color: var(--muted); font-size: 0.8rem;
+      transition: all .12s;
+    }
+    .chip:hover { color: var(--text); border-color: rgba(255,255,255,.18); }
+    .chip.active { border-color: var(--accent); background: rgba(59,130,246,.12); color: #93c5fd; }
+    .grid { display: grid; grid-template-columns: 290px 1fr; gap: 12px; }
+    .panel { border: 1px solid var(--border); border-radius: 16px; background: var(--panel); overflow: hidden; }
+    .list-head {
+      border-bottom: 1px solid var(--border); padding: 11px 15px;
+      color: var(--dim); text-transform: uppercase;
+      letter-spacing: 0.06em; font-size: 0.72rem; font-weight: 700;
+    }
+    .stock-list { max-height: 68vh; overflow: auto; }
+    .stock-list::-webkit-scrollbar { width: 4px; }
+    .stock-list::-webkit-scrollbar-track { background: transparent; }
+    .stock-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 4px; }
+    .stock-row {
+      width: 100%; text-align: left; border: 0;
+      border-bottom: 1px solid var(--border);
+      background: transparent; padding: 11px 14px;
+      cursor: pointer; color: var(--text); transition: background .1s;
+    }
+    .stock-row:hover, .stock-row.active { background: rgba(255,255,255,0.05); }
+    .stock-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .symbol { font-weight: 700; letter-spacing: 0.04em; font-size: 0.9rem; }
+    .company { margin-top: 3px; color: var(--muted); font-size: 0.82rem; }
+    .delta { color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
+    .detail { padding: 22px; }
+    .metrics { margin: 12px 0 14px; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; }
+    .metric { border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,.03); padding: 10px; }
+    .metric .label { font-size: 0.7rem; color: var(--dim); letter-spacing: 0.05em; text-transform: uppercase; }
+    .metric .value { margin-top: 4px; font-size: 0.94rem; font-weight: 700; }
+    .meta { margin: 0 0 12px; color: var(--muted); font-size: 0.84rem; }
+    .markdown h2 { font-size: 1rem; color: var(--text); margin: 0.9em 0 0.4em; letter-spacing: -.01em; }
+    .markdown h3 { font-size: 0.93rem; color: var(--text); margin: 0.8em 0 0.35em; }
+    .markdown p  { margin: 0.45em 0; color: rgba(200,200,230,.7); font-size: 0.88rem; }
+    .markdown ul { margin: 0.4em 0; padding-left: 1.1em; }
+    .markdown li { color: rgba(200,200,230,.7); font-size: 0.88rem; margin-bottom: 0.25em; }
+    .empty { color: var(--muted); padding: 20px; font-size: 0.88rem; }
+    a { color: #60a5fa; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    @media (max-width: 960px) {
+      .tools-grid { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 0; }
+    }
+    @media (max-width: 640px) {
+      .nav  { padding: 0 18px; }
+      .nav-links { display: none; }
+      .hero { padding: 52px 18px 48px; }
+      .tools-section, .briefing, .section-divider { padding-left: 18px; padding-right: 18px; }
+      .hero h1 { font-size: 2.2rem; }
+      .metrics { grid-template-columns: repeat(2,1fr); }
+      .hero-stats { flex-wrap: wrap; }
+      .stat { min-width: 50%; border-bottom: 1px solid var(--border); padding: 16px 0; }
+      .stat:nth-child(odd) { border-right: 1px solid var(--border); }
+      .stat:last-child { border-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav class="nav">
+    <span class="nav-logo">
+      <span class="nav-logo-icon">🐑</span>
+      LazySheepcapital
+    </span>
+    <div class="nav-links">
+      <a href="smart_money/" class="nav-link">聪明钱追踪</a>
+      <a href="ai-capex-flow/" class="nav-link">AI 流向图</a>
+      <a href="calendar/" class="nav-link">财报日历</a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="pulse-dot"></span>
+      2026 H1 · 数据持续更新中
+    </div>
+    <h1>专业级<span class="grad-text">金融情报</span><br>为独立投资者而生</h1>
+    <p class="hero-sub">追踪顶级机构持仓动向，可视化 AI 资本流向，<br>一站式掌握财报、FOMC 与宏观数据日历。</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">17</div>
+        <div class="stat-label">机构覆盖</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">5</div>
+        <div class="stat-label">季度数据</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">400+</div>
+        <div class="stat-label">持仓变化</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">50+</div>
+        <div class="stat-label">财报追踪</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TOOLS ── -->
+  <section class="tools-section">
+    <div class="section-label">核心工具</div>
+    <div class="tools-grid">
+
+      <a href="smart_money/" class="tool-card purple">
+        <div class="tool-icon">🏦</div>
+        <div class="tool-title">聪明钱追踪</div>
+        <div class="tool-en">Smart Money Tracker</div>
+        <div class="tool-desc">实时追踪 Bridgewater、Berkshire、Pershing Square 等 17 家顶级机构的 13F 季度持仓变化，量化聪明钱动向与信号强度，内置全市场热力图与机构横向对比。</div>
+        <div class="tool-footer">
+          <div class="tool-tags">
+            <span class="tool-tag">13F 披露</span>
+            <span class="tool-tag">Q1 2026</span>
+            <span class="tool-tag">热力图</span>
+          </div>
+          <span class="tool-cta">进入 →</span>
+        </div>
+      </a>
+
+      <a href="ai-capex-flow/" class="tool-card cyan">
+        <div class="tool-icon">⚡</div>
+        <div class="tool-title">AI 资本流向</div>
+        <div class="tool-en">AI Capex Flow</div>
+        <div class="tool-desc">桑基图可视化 AI 基础设施供应链资本支出路径，从超大规模云厂商到末端算力受益者，覆盖 GPU、网络交换、储能与光互联全链条，动态粒子演示资金流向。</div>
+        <div class="tool-footer">
+          <div class="tool-tags">
+            <span class="tool-tag">Sankey 图</span>
+            <span class="tool-tag">供应链</span>
+            <span class="tool-tag">2026E</span>
+          </div>
+          <span class="tool-cta">进入 →</span>
+        </div>
+      </a>
+
+      <a href="calendar/" class="tool-card blue">
+        <div class="tool-icon">📅</div>
+        <div class="tool-title">财报日历</div>
+        <div class="tool-en">Financial Calendar</div>
+        <div class="tool-desc">50+ 公司财报日期、FOMC 会议、非农与 CPI 等宏观数据一站式聚合，盘前 ▲ / 盘后 ▼ 清晰标注，支持月视图、事件类型筛选与近期事件速览。</div>
+        <div class="tool-footer">
+          <div class="tool-tags">
+            <span class="tool-tag">财报</span>
+            <span class="tool-tag">FOMC</span>
+            <span class="tool-tag">经济数据</span>
+          </div>
+          <span class="tool-cta">进入 →</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── MARKET BRIEFING ── -->
+  <div class="section-divider">
+    <span class="div-label">个股快报</span>
+  </div>
+  <section class="briefing">
+    <div class="toolbar">
+      <label class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+          <circle cx="6.5" cy="6.5" r="4.5" stroke-width="1.5"/>
+          <path d="M10.5 10.5L14 14" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input id="searchInput" type="search" autocomplete="off" placeholder="搜索股票代码或公司名 (AAPL, NVIDIA…)">
+      </label>
+      <div id="filterRow" class="filter-row"></div>
+    </div>
+    <section class="grid">
+      <aside class="panel">
+        <div class="list-head">Stocks</div>
+        <div id="stockList" class="stock-list"></div>
+      </aside>
+      <article class="panel detail">
+        <div id="detailPane" class="empty">从左侧选择股票查看详细数据与报告。</div>
+      </article>
+    </section>
+  </section>
+
+  <script id="stockManifest" type="application/json">
+    [
+      "stocks/aapl.md",
+      "stocks/msft.md",
+      "stocks/nvda.md",
+      "stocks/jnj.md",
+      "stocks/unh.md"
+    ]
+  </script>
+
+  <script>
+    const state = {
+      stocks: [], filtered: [],
+      sector: "All", query: "", selectedSymbol: null
+    };
+    const elements = {
+      search:     document.getElementById("searchInput"),
+      filterRow:  document.getElementById("filterRow"),
+      stockList:  document.getElementById("stockList"),
+      detailPane: document.getElementById("detailPane")
+    };
+    function textToHtmlSafe(v) {
+      return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
+    function markdownInlineToHtml(line) {
+      return textToHtmlSafe(line)
+        .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+        .replace(/\*(.+?)\*/g,"<em>$1</em>")
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noreferrer">$1</a>');
+    }
+    function markdownToHtml(md) {
+      const lines = md.split("\n"), parts = []; let listOpen = false;
+      for (const line of lines) {
+        if (/^###\s+/.test(line)) { if(listOpen){parts.push("</ul>");listOpen=false;} parts.push(`<h3>${textToHtmlSafe(line.replace(/^###\s+/,""))}</h3>`); }
+        else if (/^##\s+/.test(line)) { if(listOpen){parts.push("</ul>");listOpen=false;} parts.push(`<h2>${textToHtmlSafe(line.replace(/^##\s+/,""))}</h2>`); }
+        else if (/^#\s+/.test(line))  { if(listOpen){parts.push("</ul>");listOpen=false;} parts.push(`<h1>${textToHtmlSafe(line.replace(/^#\s+/,""))}</h1>`); }
+        else if (/^-\s+/.test(line))  { if(!listOpen){parts.push("<ul>");listOpen=true;} parts.push(`<li>${markdownInlineToHtml(line.replace(/^-\s+/,""))}</li>`); }
+        else if (line.trim()==="") { if(listOpen){parts.push("</ul>");listOpen=false;} }
+        else { if(listOpen){parts.push("</ul>");listOpen=false;} parts.push(`<p>${markdownInlineToHtml(line)}</p>`); }
+      }
+      if(listOpen) parts.push("</ul>");
+      return parts.join("");
+    }
+    function parseFrontMatterMarkdown(content) {
+      const match = content.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+      if (!match) return null;
+      const meta = {};
+      for (const line of match[1].split("\n")) {
+        const idx = line.indexOf(":");
+        if (idx === -1) continue;
+        meta[line.slice(0,idx).trim()] = line.slice(idx+1).trim();
+      }
+      if (!meta.symbol || !meta.company || !meta.sector) return null;
+      return {
+        symbol: meta.symbol, company: meta.company, sector: meta.sector,
+        tags: meta.tags||"", price: meta.price||"-", change: meta.change||"-",
+        marketCap: meta.marketCap||"-", pe: meta.pe||"-",
+        summary: meta.summary||"", reportDate: meta.reportDate||"-",
+        markdown: match[2]
+      };
+    }
+    function normalize(t) { return String(t||"").toLowerCase(); }
+    function updateFiltered() {
+      const q = normalize(state.query);
+      state.filtered = state.stocks.filter(s => {
+        const secOk = state.sector==="All" || s.sector===state.sector;
+        const qOk   = q==="" || normalize(s.symbol).includes(q) || normalize(s.company).includes(q) || normalize(s.tags).includes(q);
+        return secOk && qOk;
+      });
+    }
+    function renderFilters() {
+      const sectors = ["All", ...Array.from(new Set(state.stocks.map(s=>s.sector))).sort()];
+      elements.filterRow.innerHTML = sectors.map(s =>
+        `<button type="button" class="chip${state.sector===s?" active":""}" data-sector="${s}">${s}</button>`
+      ).join("");
+      for (const chip of elements.filterRow.querySelectorAll(".chip")) {
+        chip.addEventListener("click", () => {
+          state.sector = chip.dataset.sector;
+          updateFiltered();
+          if (!state.filtered.some(s=>s.symbol===state.selectedSymbol))
+            state.selectedSymbol = state.filtered[0]?.symbol || null;
+          renderFilters(); renderStockList(); renderDetail();
+        });
+      }
+    }
+    function renderStockList() {
+      if (!state.filtered.length) { elements.stockList.innerHTML='<div class="empty">没有匹配的股票。</div>'; return; }
+      elements.stockList.innerHTML = state.filtered.map(s => `
+        <button type="button" class="stock-row${s.symbol===state.selectedSymbol?" active":""}" data-symbol="${s.symbol}">
+          <div class="stock-top">
+            <span class="symbol">${textToHtmlSafe(s.symbol)}</span>
+            <span class="delta">${textToHtmlSafe(s.change)}</span>
+          </div>
+          <div class="company">${textToHtmlSafe(s.company)}</div>
+        </button>`).join("");
+      for (const row of elements.stockList.querySelectorAll(".stock-row")) {
+        row.addEventListener("click", () => { state.selectedSymbol=row.dataset.symbol; renderStockList(); renderDetail(); });
+      }
+    }
+    function renderDetail() {
+      const s = state.stocks.find(s=>s.symbol===state.selectedSymbol);
+      if (!s) { elements.detailPane.innerHTML='<div class="empty">从左侧选择股票查看详细数据与报告。</div>'; return; }
+      elements.detailPane.innerHTML = `
+        <h2 style="margin:0 0 4px;font-size:1.15rem;letter-spacing:-.02em">${textToHtmlSafe(s.company)} <span style="color:var(--muted);font-weight:500;">(${textToHtmlSafe(s.symbol)})</span></h2>
+        <p style="margin:0 0 14px;color:var(--muted);font-size:.88rem">${textToHtmlSafe(s.summary)}</p>
+        <div class="metrics">
+          <div class="metric"><div class="label">Price</div><div class="value">${textToHtmlSafe(s.price)}</div></div>
+          <div class="metric"><div class="label">Change</div><div class="value">${textToHtmlSafe(s.change)}</div></div>
+          <div class="metric"><div class="label">Market Cap</div><div class="value">${textToHtmlSafe(s.marketCap)}</div></div>
+          <div class="metric"><div class="label">P/E</div><div class="value">${textToHtmlSafe(s.pe)}</div></div>
+        </div>
+        <p class="meta">Sector: ${textToHtmlSafe(s.sector)} · Report date: ${textToHtmlSafe(s.reportDate)}</p>
+        <div class="markdown">${markdownToHtml(s.markdown)}</div>`;
+    }
+    async function loadStocks() {
+      const paths = JSON.parse(document.getElementById("stockManifest").textContent);
+      const loaded = await Promise.all(paths.map(async p => {
+        const r = await fetch(p);
+        if (!r.ok) return null;
+        return parseFrontMatterMarkdown(await r.text());
+      }));
+      return loaded.filter(Boolean);
+    }
+    function bindSearch() {
+      elements.search.addEventListener("input", e => {
+        state.query = e.target.value;
+        updateFiltered();
+        if (!state.filtered.some(s=>s.symbol===state.selectedSymbol))
+          state.selectedSymbol = state.filtered[0]?.symbol || null;
+        renderStockList(); renderDetail();
+      });
+    }
+    async function start() {
+      try {
+        state.stocks = await loadStocks();
+        updateFiltered();
+        state.selectedSymbol = state.filtered[0]?.symbol || null;
+        renderFilters(); renderStockList(); renderDetail(); bindSearch();
+      } catch(e) {
+        elements.detailPane.innerHTML = '<div class="empty">无法加载数据，请通过本地 Web 服务器打开此页面。</div>';
+      }
+    }
+    start();
+  </script>
+</body>
+</html>
