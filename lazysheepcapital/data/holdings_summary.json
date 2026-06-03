@@ -748,92 +748,6 @@
       ]
     },
     {
-      "id": "NVIDIA",
-      "name": "NVIDIA Corp.",
-      "manager": "Institutional Ownership Tracker",
-      "emoji": "🎮",
-      "category": "AI Core Holdings",
-      "quarter": "Q1 2026",
-      "quarter_date": "2026-03-31",
-      "aum_bn": 378.45,
-      "num_holdings": 9,
-      "holdings": [
-        {
-          "ticker": "BLK",
-          "company": "BlackRock",
-          "value_mn": 335400,
-          "pct": 5.86,
-          "shares": 1930000000,
-          "activity": "Reduced"
-        },
-        {
-          "ticker": "GOLDMAN",
-          "company": "Goldman Sachs",
-          "value_mn": 31550,
-          "pct": 3.62,
-          "shares": 180908765,
-          "activity": "Added"
-        },
-        {
-          "ticker": "CITADEL",
-          "company": "Citadel Advisors",
-          "value_mn": 5910,
-          "pct": 0.96,
-          "shares": 18660000,
-          "activity": "Reduced"
-        },
-        {
-          "ticker": "TGM",
-          "company": "Tiger Global Management",
-          "value_mn": 2094,
-          "pct": 9.16,
-          "shares": 12011752,
-          "activity": "Added"
-        },
-        {
-          "ticker": "TWOSIGMA",
-          "company": "Two Sigma Investments",
-          "value_mn": 1950,
-          "pct": 1.57,
-          "shares": 11200000,
-          "activity": "Added"
-        },
-        {
-          "ticker": "BRIDGEWATER",
-          "company": "Bridgewater Associates",
-          "value_mn": 818,
-          "pct": 3.65,
-          "shares": 4693003,
-          "activity": "Added"
-        },
-        {
-          "ticker": "RENTECH",
-          "company": "Renaissance Technologies",
-          "value_mn": 440,
-          "pct": 0.69,
-          "shares": 2526948,
-          "activity": "Added"
-        },
-        {
-          "ticker": "AM",
-          "company": "Appaloosa Management",
-          "value_mn": 256,
-          "pct": 4.32,
-          "shares": 1471500,
-          "activity": "Reduced"
-        },
-        {
-          "ticker": "TP",
-          "company": "Third Point",
-          "value_mn": 33,
-          "pct": 1.59,
-          "shares": 190000,
-          "activity": "Reduced"
-        }
-      ],
-      "_note": "Each row = a fund holding NVDA. Value = their NVDA position size."
-    },
-    {
       "id": "BRK",
       "name": "Berkshire Hathaway",
       "manager": "Warren Buffett",
@@ -2578,6 +2492,75 @@
           "value_mn": 363,
           "pct": 1.62,
           "shares": 1077079,
+          "activity": "New"
+        }
+      ]
+    },
+    {
+      "id": "NVIDIA",
+      "name": "NVIDIA Corp.",
+      "manager": "Jensen Huang",
+      "emoji": "🎮",
+      "category": "AI Core Holdings",
+      "quarter": "Q1 2026",
+      "quarter_date": "2026-03-31",
+      "aum_bn": 18.37,
+      "num_holdings": 7,
+      "holdings": [
+        {
+          "ticker": "INTC",
+          "company": "Intel Corp",
+          "value_mn": 9478.09,
+          "pct": 51.58,
+          "shares": 214776632,
+          "activity": "Held"
+        },
+        {
+          "ticker": "CRWV",
+          "company": "CoreWeave Inc",
+          "value_mn": 3657.62,
+          "pct": 19.91,
+          "shares": 47213353,
+          "activity": "Added"
+        },
+        {
+          "ticker": "SNPS",
+          "company": "Synopsys Inc",
+          "value_mn": 1911.71,
+          "pct": 10.4,
+          "shares": 4821717,
+          "activity": "Held"
+        },
+        {
+          "ticker": "COHR",
+          "company": "Coherent Corp",
+          "value_mn": 1855.22,
+          "pct": 10.1,
+          "shares": 7788161,
+          "activity": "New"
+        },
+        {
+          "ticker": "NOK",
+          "company": "Nokia Corp",
+          "value_mn": 1337.77,
+          "pct": 7.28,
+          "shares": 166389351,
+          "activity": "Held"
+        },
+        {
+          "ticker": "YNDX",
+          "company": "Yandex NV",
+          "value_mn": 123.52,
+          "pct": 0.67,
+          "shares": 1190476,
+          "activity": "Held"
+        },
+        {
+          "ticker": "GENB",
+          "company": "Genie Energy",
+          "value_mn": 10.42,
+          "pct": 0.06,
+          "shares": 833325,
           "activity": "New"
         }
       ]

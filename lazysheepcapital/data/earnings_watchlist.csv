@@ -1,50 +1,53 @@
 ticker,company,sector,fiscal_year_end
-AAPL,Apple Inc,Technology,Sep
-MSFT,Microsoft,Technology,Jun
-GOOGL,Alphabet Class A,Technology,Dec
-META,Meta Platforms,Technology,Dec
-AMZN,Amazon.com,Technology,Dec
 TSLA,Tesla,Consumer Discretionary,Dec
-NVDA,NVIDIA,Technology,Jan
-AMD,Advanced Micro Devices,Technology,Dec
-AVGO,Broadcom,Technology,Oct
-MRVL,Marvell Technology,Technology,Jan
-INTC,Intel,Technology,Dec
-QCOM,Qualcomm,Technology,Sep
-ARM,ARM Holdings,Technology,Mar
-ASML,ASML Holding,Technology,Dec
-AMAT,Applied Materials,Technology,Oct
-LRCX,Lam Research,Technology,Jun
-KLAC,KLA Corporation,Technology,Jun
-MU,Micron Technology,Technology,Aug
-SNDK,SanDisk,Technology,Dec
-JPM,JPMorgan Chase,Financials,Dec
-GS,Goldman Sachs,Financials,Dec
-MS,Morgan Stanley,Financials,Dec
+CVX,Chevron,Energy,Dec
+XOM,Exxon Mobil,Energy,Dec
+APO,Apollo Global Management,Financials,Dec
 BAC,Bank of America,Financials,Dec
 BLK,BlackRock,Financials,Dec
 BX,Blackstone,Financials,Dec
+GS,Goldman Sachs,Financials,Dec
+JPM,JPMorgan Chase,Financials,Dec
 KKR,KKR & Co,Financials,Dec
-APO,Apollo Global Management,Financials,Dec
-ORCL,Oracle,Technology,May
-CRM,Salesforce,Technology,Jan
-NOW,ServiceNow,Technology,Dec
-ANET,Arista Networks,Technology,Dec
-CSCO,Cisco Systems,Technology,Jul
-COHR,Coherent Corp,Technology,Jun
-LITE,Lumentum,Technology,Jun
-EQIX,Equinix,Real Estate,Dec
+MS,Morgan Stanley,Financials,Dec
+ETN,Eaton Corporation,Industrials,Dec
+GEV,GE Vernova,Industrials,Dec
+PWR,Quanta Services,Industrials,Dec
 DLR,Digital Realty,Real Estate,Dec
-SMCI,Super Micro Computer,Technology,Jun
-VRT,Vertiv Holdings,Technology,Dec
+EQIX,Equinix,Real Estate,Dec
+AAOI,Applied Optoelectronics,Technology,Dec
+AAPL,Apple Inc,Technology,Sep
+AMAT,Applied Materials,Technology,Oct
+AMD,Advanced Micro Devices,Technology,Dec
+AMZN,Amazon.com,Technology,Dec
+ANET,Arista Networks,Technology,Dec
+APP,AppLovin,Technology,Dec
+ARM,ARM Holdings,Technology,Mar
+ASML,ASML Holding,Technology,Dec
+AVGO,Broadcom,Technology,Oct
+AXTI,AXT Inc,Technology,Dec
+COHR,Coherent Corp,Technology,Jun
+CRM,Salesforce,Technology,Jan
+CSCO,Cisco Systems,Technology,Jul
 DELL,Dell Technologies,Technology,Jan
+GOOGL,Alphabet Class A,Technology,Dec
 HPE,HP Enterprise,Technology,Oct
+IBM,IBM,Technology,Dec
+INTC,Intel,Technology,Dec
+KLAC,KLA Corporation,Technology,Jun
+LITE,Lumentum,Technology,Jun
+LRCX,Lam Research,Technology,Jun
+META,Meta Platforms,Technology,Dec
+MRVL,Marvell Technology,Technology,Jan
+MSFT,Microsoft,Technology,Jun
+MU,Micron Technology,Technology,Aug
+NOW,ServiceNow,Technology,Dec
+NVDA,NVIDIA,Technology,Jan
+ORCL,Oracle,Technology,May
+PLTR,Palantir Technologies,Technology,Dec
+QCOM,Qualcomm,Technology,Sep
+SMCI,Super Micro Computer,Technology,Jun
+SNDK,SanDisk,Technology,Dec
+VRT,Vertiv Holdings,Technology,Dec
 CEG,Constellation Energy,Utilities,Dec
 VST,Vistra Corp,Utilities,Dec
-GEV,GE Vernova,Industrials,Dec
-ETN,Eaton Corporation,Industrials,Dec
-PWR,Quanta Services,Industrials,Dec
-XOM,Exxon Mobil,Energy,Dec
-CVX,Chevron,Energy,Dec
-PLTR,Palantir Technologies,Technology,Dec
-APP,AppLovin,Technology,Dec
