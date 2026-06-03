@@ -20,6 +20,7 @@
       --c-econ: #059669;  --cb-econ: #d1fae5;
       --c-div:  #d97706;  --cb-div:  #fef3c7;
       --c-ipo:  #db2777;  --cb-ipo:  #fce7f3;
+      --c-hol:  #6b7280;  --cb-hol:  #f1f1f1;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -64,6 +65,7 @@
     .fc.active.f13f { background: var(--c-13f); }
     .fc.active.econ { background: var(--c-econ); }
     .fc.active.div  { background: var(--c-div);  }
+    .fc.active.hol  { background: var(--c-hol);  }
 
     /* ── main layout ── */
     .main { display: grid; grid-template-columns: 1fr 310px; gap: 14px; }
@@ -130,7 +132,13 @@
     .ep.f13f { background: var(--cb-13f);  color: var(--c-13f);  }
     .ep.econ { background: var(--cb-econ); color: var(--c-econ); }
     .ep.div  { background: var(--cb-div);  color: var(--c-div);  }
+    .ep.hol  { background: var(--cb-hol);  color: var(--c-hol);  }
     .ep.more { background: var(--bg); color: var(--muted); }
+
+    /* NYSE holiday day styling */
+    .day.holiday { background: repeating-linear-gradient(135deg,#f9f9f9 0px,#f9f9f9 4px,#f1f1f1 4px,#f1f1f1 8px); }
+    .day.holiday .day-num { color: var(--c-hol); }
+    .day.holiday.other-month { opacity: .35; }
 
     /* ── sidebar ── */
     .sidebar { display: flex; flex-direction: column; gap: 10px; }
@@ -162,6 +170,7 @@
     .ev-dot.f13f { background: var(--c-13f);  }
     .ev-dot.econ { background: var(--c-econ); }
     .ev-dot.div  { background: var(--c-div);  }
+    .ev-dot.hol  { background: var(--c-hol);  }
     .ev-content { flex: 1; min-width: 0; }
     .ev-date  { font-size: .72rem; color: var(--muted); margin-bottom: 1px; }
     .ev-title { font-size: .85rem; font-weight: 600; }
@@ -175,6 +184,7 @@
     .ev-badge.f13f { background: var(--cb-13f);  color: var(--c-13f);  }
     .ev-badge.econ { background: var(--cb-econ); color: var(--c-econ); }
     .ev-badge.div  { background: var(--cb-div);  color: var(--c-div);  }
+    .ev-badge.hol  { background: var(--cb-hol);  color: var(--c-hol);  }
     .ev-time-badge {
       font-size: .67rem; font-weight: 700; border-radius: 3px;
       padding: 1px 5px; display: inline-block; margin-top: 3px; margin-left: 4px;
@@ -269,6 +279,30 @@ function parseCSV(text) {
    EVENT DATA
    ═══════════════════════════════════ */
 const EVENTS = [
+  /* ── NYSE Market Holidays 2025 ── */
+  {d:"2025-01-01",t:"hol",title:"🏛 元旦 · NYSE休市",desc:"New Year's Day — 股市休市"},
+  {d:"2025-01-20",t:"hol",title:"🏛 马丁路德金日 · NYSE休市",desc:"Martin Luther King Jr. Day — 股市休市"},
+  {d:"2025-02-17",t:"hol",title:"🏛 总统日 · NYSE休市",desc:"Presidents' Day — 股市休市"},
+  {d:"2025-04-18",t:"hol",title:"🏛 耶稣受难日 · NYSE休市",desc:"Good Friday — 股市休市"},
+  {d:"2025-05-26",t:"hol",title:"🏛 阵亡将士纪念日 · NYSE休市",desc:"Memorial Day — 股市休市"},
+  {d:"2025-06-19",t:"hol",title:"🏛 六月节 · NYSE休市",desc:"Juneteenth National Independence Day — 股市休市"},
+  {d:"2025-07-04",t:"hol",title:"🏛 独立日 · NYSE休市",desc:"Independence Day — 股市休市"},
+  {d:"2025-09-01",t:"hol",title:"🏛 劳动节 · NYSE休市",desc:"Labor Day — 股市休市"},
+  {d:"2025-11-27",t:"hol",title:"🏛 感恩节 · NYSE休市",desc:"Thanksgiving Day — 股市休市"},
+  {d:"2025-12-25",t:"hol",title:"🏛 圣诞节 · NYSE休市",desc:"Christmas Day — 股市休市"},
+
+  /* ── NYSE Market Holidays 2026 ── */
+  {d:"2026-01-01",t:"hol",title:"🏛 元旦 · NYSE休市",desc:"New Year's Day — 股市休市"},
+  {d:"2026-01-19",t:"hol",title:"🏛 马丁路德金日 · NYSE休市",desc:"Martin Luther King Jr. Day — 股市休市"},
+  {d:"2026-02-16",t:"hol",title:"🏛 总统日 · NYSE休市",desc:"Presidents' Day — 股市休市"},
+  {d:"2026-04-03",t:"hol",title:"🏛 耶稣受难日 · NYSE休市",desc:"Good Friday — 股市休市"},
+  {d:"2026-05-25",t:"hol",title:"🏛 阵亡将士纪念日 · NYSE休市",desc:"Memorial Day — 股市休市"},
+  {d:"2026-06-19",t:"hol",title:"🏛 六月节 · NYSE休市",desc:"Juneteenth National Independence Day — 股市休市"},
+  {d:"2026-07-03",t:"hol",title:"🏛 独立日 (观察日) · NYSE休市",desc:"Independence Day observed (July 4 = Saturday) — 股市休市"},
+  {d:"2026-09-07",t:"hol",title:"🏛 劳动节 · NYSE休市",desc:"Labor Day — 股市休市"},
+  {d:"2026-11-26",t:"hol",title:"🏛 感恩节 · NYSE休市",desc:"Thanksgiving Day — 股市休市"},
+  {d:"2026-12-25",t:"hol",title:"🏛 圣诞节 · NYSE休市",desc:"Christmas Day — 股市休市"},
+
   /* ── FOMC 2025 ── */
   {d:"2025-01-28",t:"fomc",title:"FOMC 会议 (1月)",desc:"利率决议·鲍威尔新闻发布会"},
   {d:"2025-01-29",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
@@ -405,7 +439,10 @@ let curMonth = today.getMonth();   // 0-indexed
 let selected = todayStr;
 
 // Active filters (all on by default)
-const filters = { earn:true, fomc:true, f13f:true, econ:true, div:true };
+const filters = { earn:true, fomc:true, f13f:true, econ:true, div:true, hol:true };
+
+/* Pre-built set of NYSE holiday date strings for fast cell lookup */
+const NYSE_HOLIDAYS = new Set(EVENTS.filter(e=>e.t==="hol").map(e=>e.d));
 
 /* ═══════════════════════════════════
    HELPERS
@@ -434,7 +471,7 @@ function upcomingEvents(n=25) {
     .slice(0,n);
 }
 function typeLabel(t) {
-  return {earn:"财报",fomc:"FOMC",f13f:"13F",econ:"经济数据",div:"股息"}[t]||t;
+  return {earn:"财报",fomc:"FOMC",f13f:"13F",econ:"经济数据",div:"股息",hol:"NYSE休市"}[t]||t;
 }
 function fmtDisplayDate(s) {
   const d = parseDate(s);
@@ -452,6 +489,7 @@ function renderFilters() {
     {k:"f13f",label:"13F 截止",cls:"f13f"},
     {k:"econ",label:"经济数据",cls:"econ"},
     {k:"div", label:"股息除息",cls:"div"},
+    {k:"hol", label:"NYSE 休市",cls:"hol"},
   ];
   const wrap = document.getElementById("filters");
   wrap.innerHTML = defs.map(f=>`
@@ -509,6 +547,7 @@ function renderCalendar() {
     const isToday = ds === todayStr;
     const isSel   = ds === selected;
     const isWknd  = dow===0||dow===6;
+    const isHol   = !isWknd && NYSE_HOLIDAYS.has(ds);
     const evs = eventsOn(ds);
 
     const pills = evs.slice(0,3).map(e=>{
@@ -518,7 +557,7 @@ function renderCalendar() {
     const more = evs.length>3 ? `<div class="ep more">+${evs.length-3}</div>` : "";
 
     return `
-      <div class="day${c.other?" other-month":""}${isToday?" today":""}${isSel?" selected":""}${isWknd?" weekend":""}"
+      <div class="day${c.other?" other-month":""}${isToday?" today":""}${isSel?" selected":""}${isWknd?" weekend":""}${isHol?" holiday":""}"
            data-date="${ds}">
         <span class="day-num">${c.date.getDate()}</span>
         <div class="event-pills">${pills}${more}</div>
