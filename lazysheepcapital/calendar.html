@@ -6,24 +6,24 @@
   <title>Financial Calendar — LazySheepcapital</title>
   <style>
     :root {
-      --bg: #f2f2f7;
-      --panel: #ffffff;
-      --text: #1d1d1f;
-      --muted: #6e6e73;
-      --line: rgba(20,20,22,.09);
-      --accent: #2c65d8;
-      --shadow: 0 2px 16px rgba(0,0,0,.07);
+      --bg:     #07070f;
+      --panel:  #0f0f1a;
+      --text:   #e8e8ed;
+      --muted:  #8e8e93;
+      --line:   rgba(255,255,255,.08);
+      --accent: #4a8aff;
+      --shadow: 0 2px 24px rgba(0,0,0,.5);
       --radius: 16px;
-      --c-earn: #2563eb;  --cb-earn: #dbeafe;
-      --c-fomc: #dc2626;  --cb-fomc: #fee2e2;
-      --c-13f:  #7c3aed;  --cb-13f:  #ede9fe;
-      --c-econ: #059669;  --cb-econ: #d1fae5;
-      --c-div:  #d97706;  --cb-div:  #fef3c7;
-      --c-ipo:  #db2777;  --cb-ipo:  #fce7f3;
-      --c-hol:  #6b7280;  --cb-hol:  #f1f1f1;
-      --c-opex: #ea580c;  --cb-opex: #ffedd5;
-      --c-rebal:#0891b2;  --cb-rebal:#e0f2fe;
-      --c-cta:  #7c3aed;  --cb-cta:  #ede9fe;
+      --c-earn: #60a5fa;  --cb-earn: #1e3a5f;
+      --c-fomc: #f87171;  --cb-fomc: #4a1515;
+      --c-13f:  #a78bfa;  --cb-13f:  #2d1f5e;
+      --c-econ: #34d399;  --cb-econ: #0d3326;
+      --c-div:  #fbbf24;  --cb-div:  #3d2a06;
+      --c-ipo:  #f472b6;  --cb-ipo:  #4a1030;
+      --c-hol:  #9ca3af;  --cb-hol:  #1f2937;
+      --c-opex: #fb923c;  --cb-opex: #3d1f08;
+      --c-rebal:#22d3ee;  --cb-rebal:#082d3d;
+      --c-cta:  #c084fc;  --cb-cta:  #2d1252;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -121,7 +121,7 @@
       border-radius: 50%; width: 24px; height: 24px;
       display: flex; align-items: center; justify-content: center;
     }
-    .day.selected { background: #f0f4ff; outline: 1.5px solid var(--accent); }
+    .day.selected { background: #1a1f3a; outline: 1.5px solid var(--accent); }
     .day-num { font-size: .82rem; font-weight: 600; margin-bottom: 4px; display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; }
     .day.weekend .day-num { color: var(--c-fomc); }
     .day.weekend.today .day-num { background: var(--c-fomc); color: #fff; }
@@ -145,15 +145,27 @@
     .ep.more { background: var(--bg); color: var(--muted); }
 
     /* NYSE holiday day styling */
-    .day.holiday { background: repeating-linear-gradient(135deg,#f9f9f9 0px,#f9f9f9 4px,#f1f1f1 4px,#f1f1f1 8px); }
+    .day.holiday { background: repeating-linear-gradient(135deg,#0f0f1a 0px,#0f0f1a 4px,#141420 4px,#141420 8px); }
     .day.holiday .day-num { color: var(--c-hol); }
     .day.holiday.other-month { opacity: .35; }
-    /* OPEX / Triple Witching subtle left border accent */
-    .day.opex-day { border-left: 3px solid var(--c-opex); }
-    /* Rebalancing subtle left border */
-    .day.rebal-day { border-left: 3px solid var(--c-rebal); }
-    /* CTA 调仓窗口 bottom border */
-    .day.cta-day { border-bottom: 3px solid var(--c-cta); }
+    /* OPEX / Triple Witching — orange dot top-left */
+    .day.opex-day::before {
+      content:''; position:absolute; top:5px; left:5px;
+      width:6px; height:6px; border-radius:50%;
+      background: var(--c-opex);
+    }
+    /* Rebalancing — teal dot top-right */
+    .day.rebal-day::before {
+      content:''; position:absolute; top:5px; right:5px;
+      width:6px; height:6px; border-radius:50%;
+      background: var(--c-rebal);
+    }
+    /* CTA — purple dot bottom-right */
+    .day.cta-day::before {
+      content:''; position:absolute; bottom:5px; right:5px;
+      width:5px; height:5px; border-radius:50%;
+      background: var(--c-cta); opacity:.8;
+    }
 
     /* ── sidebar ── */
     .sidebar { display: flex; flex-direction: column; gap: 10px; }
@@ -761,20 +773,21 @@ document.getElementById("btnToday").addEventListener("click",()=>{
 /* ── LOAD EARNINGS FROM CSV THEN BOOT ── */
 async function loadEarnings() {
   try {
-    const res = await fetch("data/earnings_dates.csv");
-    if (!res.ok) return;
-    const rows = parseCSV(await res.text());
-    rows.forEach(r => {
-      if (!r.report_date || !r.ticker) return;
-      const statusLabel = r.status === "reported" ? " ✓" : r.status === "confirmed" ? " 📌" : "";
-      EVENTS.push({
-        d: r.report_date,
-        t: "earn",
-        earTime: r.time,
-        title: `${r.ticker} 财报${statusLabel}`,
-        desc:  `${r.company} ${r.fiscal_quarter}${r.notes ? " · " + r.notes : ""}`,
+    const res = await fetch("../data/earnings_dates.csv");
+    if (res.ok) {
+      const rows = parseCSV(await res.text());
+      rows.forEach(r => {
+        if (!r.report_date || !r.ticker) return;
+        const statusLabel = r.status === "reported" ? " ✓" : r.status === "confirmed" ? " 📌" : "";
+        EVENTS.push({
+          d: r.report_date,
+          t: "earn",
+          earTime: r.time,
+          title: `${r.ticker} 财报${statusLabel}`,
+          desc:  `${r.company} ${r.fiscal_quarter}${r.notes ? " · " + r.notes : ""}`,
+        });
       });
-    });
+    }
   } catch(e) { /* file not available in local open */ }
   renderFilters();
   renderCalendar();

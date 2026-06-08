@@ -6,20 +6,24 @@
   <title>Financial Calendar — LazySheepcapital</title>
   <style>
     :root {
-      --bg: #07070f;
-      --panel: #0e0e1a;
-      --text: #e8e8f0;
-      --muted: rgba(200,200,230,0.50);
-      --line: rgba(255,255,255,0.08);
-      --accent: #60a5fa;
-      --shadow: 0 2px 16px rgba(0,0,0,.50);
+      --bg:     #07070f;
+      --panel:  #0f0f1a;
+      --text:   #e8e8ed;
+      --muted:  #8e8e93;
+      --line:   rgba(255,255,255,.08);
+      --accent: #4a8aff;
+      --shadow: 0 2px 24px rgba(0,0,0,.5);
       --radius: 16px;
-      --c-earn: #3b82f6;  --cb-earn: rgba(59,130,246,.18);
-      --c-fomc: #f87171;  --cb-fomc: rgba(248,113,113,.16);
-      --c-13f:  #a78bfa;  --cb-13f:  rgba(167,139,250,.16);
-      --c-econ: #34d399;  --cb-econ: rgba(52,211,153,.15);
-      --c-div:  #fbbf24;  --cb-div:  rgba(251,191,36,.15);
-      --c-ipo:  #f472b6;  --cb-ipo:  rgba(244,114,182,.15);
+      --c-earn: #60a5fa;  --cb-earn: #1e3a5f;
+      --c-fomc: #f87171;  --cb-fomc: #4a1515;
+      --c-13f:  #a78bfa;  --cb-13f:  #2d1f5e;
+      --c-econ: #34d399;  --cb-econ: #0d3326;
+      --c-div:  #fbbf24;  --cb-div:  #3d2a06;
+      --c-ipo:  #f472b6;  --cb-ipo:  #4a1030;
+      --c-hol:  #9ca3af;  --cb-hol:  #1f2937;
+      --c-opex: #fb923c;  --cb-opex: #3d1f08;
+      --c-rebal:#22d3ee;  --cb-rebal:#082d3d;
+      --c-cta:  #c084fc;  --cb-cta:  #2d1252;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -64,6 +68,10 @@
     .fc.active.f13f { background: var(--c-13f); }
     .fc.active.econ { background: var(--c-econ); }
     .fc.active.div  { background: var(--c-div);  }
+    .fc.active.hol  { background: var(--c-hol);  }
+    .fc.active.opex { background: var(--c-opex); }
+    .fc.active.rebal{ background: var(--c-rebal);}
+    .fc.active.cta  { background: var(--c-cta);  }
 
     /* ── main layout ── */
     .main { display: grid; grid-template-columns: 1fr 310px; gap: 14px; }
@@ -84,7 +92,7 @@
       padding: 5px 10px; cursor: pointer; font-size: .82rem; color: var(--text);
       transition: background .12s;
     }
-    .nav-btn:hover { background: rgba(255,255,255,.05); }
+    .nav-btn:hover { background: var(--bg); }
     .nav-btn.today { color: var(--accent); font-weight: 600; }
 
     .weekdays {
@@ -106,14 +114,14 @@
       cursor: pointer; position: relative;
       transition: background .12s;
     }
-    .day:hover { background: rgba(255,255,255,.04); }
+    .day:hover { background: var(--bg); }
     .day.other-month .day-num { opacity: .3; }
     .day.today .day-num {
       background: var(--accent); color: #fff;
       border-radius: 50%; width: 24px; height: 24px;
       display: flex; align-items: center; justify-content: center;
     }
-    .day.selected { background: rgba(96,165,250,.12); outline: 1.5px solid var(--accent); }
+    .day.selected { background: #1a1f3a; outline: 1.5px solid var(--accent); }
     .day-num { font-size: .82rem; font-weight: 600; margin-bottom: 4px; display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; }
     .day.weekend .day-num { color: var(--c-fomc); }
     .day.weekend.today .day-num { background: var(--c-fomc); color: #fff; }
@@ -130,7 +138,34 @@
     .ep.f13f { background: var(--cb-13f);  color: var(--c-13f);  }
     .ep.econ { background: var(--cb-econ); color: var(--c-econ); }
     .ep.div  { background: var(--cb-div);  color: var(--c-div);  }
-    .ep.more { background: rgba(255,255,255,.06); color: var(--muted); }
+    .ep.hol  { background: var(--cb-hol);  color: var(--c-hol);  }
+    .ep.opex { background: var(--cb-opex); color: var(--c-opex); font-weight:700; }
+    .ep.rebal{ background: var(--cb-rebal);color: var(--c-rebal);}
+    .ep.cta  { background: var(--cb-cta);  color: var(--c-cta);  font-weight:700; }
+    .ep.more { background: var(--bg); color: var(--muted); }
+
+    /* NYSE holiday day styling */
+    .day.holiday { background: repeating-linear-gradient(135deg,#0f0f1a 0px,#0f0f1a 4px,#141420 4px,#141420 8px); }
+    .day.holiday .day-num { color: var(--c-hol); }
+    .day.holiday.other-month { opacity: .35; }
+    /* OPEX / Triple Witching — orange dot top-left */
+    .day.opex-day::before {
+      content:''; position:absolute; top:5px; left:5px;
+      width:6px; height:6px; border-radius:50%;
+      background: var(--c-opex);
+    }
+    /* Rebalancing — teal dot top-right */
+    .day.rebal-day::before {
+      content:''; position:absolute; top:5px; right:5px;
+      width:6px; height:6px; border-radius:50%;
+      background: var(--c-rebal);
+    }
+    /* CTA — purple dot bottom-right */
+    .day.cta-day::before {
+      content:''; position:absolute; bottom:5px; right:5px;
+      width:5px; height:5px; border-radius:50%;
+      background: var(--c-cta); opacity:.8;
+    }
 
     /* ── sidebar ── */
     .sidebar { display: flex; flex-direction: column; gap: 10px; }
@@ -152,7 +187,7 @@
       transition: background .1s; cursor: default;
     }
     .ev-item:last-child { border-bottom: 0; }
-    .ev-item:hover { background: rgba(255,255,255,.04); }
+    .ev-item:hover { background: var(--bg); }
     .ev-dot-col { padding-top: 3px; flex-shrink: 0; }
     .ev-dot {
       width: 10px; height: 10px; border-radius: 50%; display: block;
@@ -162,6 +197,10 @@
     .ev-dot.f13f { background: var(--c-13f);  }
     .ev-dot.econ { background: var(--c-econ); }
     .ev-dot.div  { background: var(--c-div);  }
+    .ev-dot.hol  { background: var(--c-hol);  }
+    .ev-dot.opex { background: var(--c-opex); }
+    .ev-dot.rebal{ background: var(--c-rebal);}
+    .ev-dot.cta  { background: var(--c-cta);  }
     .ev-content { flex: 1; min-width: 0; }
     .ev-date  { font-size: .72rem; color: var(--muted); margin-bottom: 1px; }
     .ev-title { font-size: .85rem; font-weight: 600; }
@@ -175,12 +214,16 @@
     .ev-badge.f13f { background: var(--cb-13f);  color: var(--c-13f);  }
     .ev-badge.econ { background: var(--cb-econ); color: var(--c-econ); }
     .ev-badge.div  { background: var(--cb-div);  color: var(--c-div);  }
+    .ev-badge.hol  { background: var(--cb-hol);  color: var(--c-hol);  }
+    .ev-badge.opex { background: var(--cb-opex); color: var(--c-opex); }
+    .ev-badge.rebal{ background: var(--cb-rebal);color: var(--c-rebal);}
+    .ev-badge.cta  { background: var(--cb-cta);  color: var(--c-cta);  }
     .ev-time-badge {
       font-size: .67rem; font-weight: 700; border-radius: 3px;
       padding: 1px 5px; display: inline-block; margin-top: 3px; margin-left: 4px;
     }
-    .ev-time-badge.bmo { background: rgba(251,191,36,.15); color: #fbbf24; }
-    .ev-time-badge.amc { background: rgba(99,102,241,.18); color: #a5b4fc; }
+    .ev-time-badge.bmo { background: #fef3c7; color: #b45309; }
+    .ev-time-badge.amc { background: #e0e7ff; color: #4338ca; }
 
     .empty-side { padding: 20px 16px; font-size: .85rem; color: var(--muted); }
 
@@ -188,7 +231,7 @@
     .legend {
       display: flex; flex-wrap: wrap; gap: 10px;
       padding: 10px 16px; border-top: 1px solid var(--line);
-      background: rgba(255,255,255,.025);
+      background: rgba(0,0,0,.02);
     }
     .leg { display: flex; align-items: center; gap: 5px; font-size: .75rem; color: var(--muted); }
     .leg-dot { width: 9px; height: 9px; border-radius: 50%; }
@@ -202,7 +245,7 @@
 <body>
 <div class="app">
 
-  <a class="back-link" href="../">
+  <a class="back-link" href="index.html">
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
     Market Briefing
   </a>
@@ -269,6 +312,119 @@ function parseCSV(text) {
    EVENT DATA
    ═══════════════════════════════════ */
 const EVENTS = [
+  /* ── 期权到期 & 三重到期 OPEX / Triple Witching 2025 ── */
+  {d:"2025-01-17",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算，波动性提升"},
+  {d:"2025-02-21",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算，波动性提升"},
+  {d:"2025-03-21",t:"opex",title:"⚡ 三重到期 Triple Witching",desc:"Q1 三重到期：股指期货 + 股指期权 + 个股期权同时结算，成交量暴增"},
+  {d:"2025-04-17",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日（4月18日耶稣受难日休市，提前至4月17日）"},
+  {d:"2025-05-16",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2025-06-20",t:"opex",title:"⚡ 三重到期 Triple Witching",desc:"Q2 三重到期：股指期货 + 股指期权 + 个股期权同时结算，成交量暴增"},
+  {d:"2025-07-18",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2025-08-15",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2025-09-19",t:"opex",title:"⚡ 三重到期 Triple Witching",desc:"Q3 三重到期：股指期货 + 股指期权 + 个股期权同时结算，成交量暴增"},
+  {d:"2025-10-17",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2025-11-21",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2025-12-19",t:"opex",title:"⚡ 三重到期 Triple Witching",desc:"Q4 三重到期：股指期货 + 股指期权 + 个股期权同时结算，成交量暴增"},
+
+  /* ── 期权到期 & 三重到期 OPEX / Triple Witching 2026 ── */
+  {d:"2026-01-16",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2026-02-20",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2026-03-20",t:"opex",title:"⚡ 三重到期 Triple Witching",desc:"Q1 三重到期：股指期货 + 股指期权 + 个股期权同时结算，成交量暴增"},
+  {d:"2026-04-17",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2026-05-15",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2026-06-18",t:"opex",title:"⚡ 三重到期 Triple Witching",desc:"Q2 三重到期（提前至6月18日，6月19日六月节休市）— 股指期货+股指期权+个股期权同时结算"},
+  {d:"2026-07-17",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2026-08-21",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2026-09-18",t:"opex",title:"⚡ 三重到期 Triple Witching",desc:"Q3 三重到期：股指期货 + 股指期权 + 个股期权同时结算，成交量暴增"},
+  {d:"2026-10-16",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2026-11-20",t:"opex",title:"📅 月度 OPEX",desc:"月度期权到期日 — 标普500/个股期权结算"},
+  {d:"2026-12-18",t:"opex",title:"⚡ 三重到期 Triple Witching",desc:"Q4 三重到期：股指期货 + 股指期权 + 个股期权同时结算，成交量暴增"},
+
+  /* ── 机构调仓 Institutional Rebalancing 2025 ── */
+  {d:"2025-01-31",t:"rebal",title:"📊 月末调仓",desc:"月末最后交易日 — 养老金/保险/平衡基金回归目标配比，尾盘资金流动明显"},
+  {d:"2025-02-28",t:"rebal",title:"📊 月末调仓 + MSCI季度调整",desc:"MSCI季度再平衡生效（收盘后）+ 月末养老金调仓"},
+  {d:"2025-03-31",t:"rebal",title:"📊 季末调仓 Q1",desc:"Q1季末 — 最大规模调仓窗口：养老金+主权基金+共同基金回归目标配比，尾盘数百亿资金流动"},
+  {d:"2025-04-30",t:"rebal",title:"📊 月末调仓",desc:"月末最后交易日 — 养老金/保险/平衡基金回归目标配比"},
+  {d:"2025-05-23",t:"rebal",title:"📋 罗素初步名单 Rank Day",desc:"Russell 2000/1000/3000 年度重组：初步纳入/剔除名单公布，小盘股波动显著"},
+  {d:"2025-05-30",t:"rebal",title:"📊 月末调仓 + MSCI季度调整",desc:"MSCI季度再平衡生效（收盘后）+ 月末养老金调仓"},
+  {d:"2025-06-27",t:"rebal",title:"🔄 罗素年度重组 Russell Recon",desc:"Russell指数年度重组生效（收盘后）— ~$10万亿被动资产跟踪，全年最大单日指数调仓事件"},
+  {d:"2025-06-30",t:"rebal",title:"📊 季末调仓 Q2",desc:"Q2季末 — 最大规模调仓窗口：养老金+主权基金+共同基金回归目标配比"},
+  {d:"2025-07-31",t:"rebal",title:"📊 月末调仓",desc:"月末最后交易日 — 养老金/保险/平衡基金回归目标配比"},
+  {d:"2025-08-29",t:"rebal",title:"📊 月末调仓 + MSCI季度调整",desc:"MSCI季度再平衡生效（收盘后）+ 月末养老金调仓"},
+  {d:"2025-09-30",t:"rebal",title:"📊 季末调仓 Q3",desc:"Q3季末 — 最大规模调仓窗口：养老金+主权基金+共同基金回归目标配比"},
+  {d:"2025-10-31",t:"rebal",title:"📊 月末调仓",desc:"月末最后交易日 — 养老金/保险/平衡基金回归目标配比"},
+  {d:"2025-11-28",t:"rebal",title:"📊 月末调仓 + MSCI季度调整",desc:"MSCI季度再平衡生效（收盘后）+ 月末养老金调仓（感恩节次日，成交量偏低）"},
+  {d:"2025-12-31",t:"rebal",title:"📊 季末调仓 Q4 / 年末",desc:"Q4/年末最大调仓 — 养老金+主权基金年度再平衡，税损收割结束，新资金入市"},
+
+  /* ── 机构调仓 Institutional Rebalancing 2026 ── */
+  {d:"2026-01-30",t:"rebal",title:"📊 月末调仓",desc:"月末最后交易日 — 养老金/保险/平衡基金回归目标配比"},
+  {d:"2026-02-27",t:"rebal",title:"📊 月末调仓 + MSCI季度调整",desc:"MSCI季度再平衡生效（收盘后）+ 月末养老金调仓"},
+  {d:"2026-03-31",t:"rebal",title:"📊 季末调仓 Q1",desc:"Q1季末 — 最大规模调仓窗口：养老金+主权基金+共同基金回归目标配比"},
+  {d:"2026-04-30",t:"rebal",title:"📊 月末调仓",desc:"月末最后交易日 — 养老金/保险/平衡基金回归目标配比"},
+  {d:"2026-05-22",t:"rebal",title:"📋 罗素初步名单 Rank Day",desc:"Russell 2000/1000/3000 年度重组：初步纳入/剔除名单公布，小盘股波动显著"},
+  {d:"2026-05-29",t:"rebal",title:"📊 月末调仓 + MSCI季度调整",desc:"MSCI季度再平衡生效（收盘后）+ 月末养老金调仓"},
+  {d:"2026-06-26",t:"rebal",title:"🔄 罗素年度重组 Russell Recon",desc:"Russell指数年度重组生效（收盘后）— ~$10万亿被动资产跟踪，全年最大单日指数调仓事件"},
+  {d:"2026-06-30",t:"rebal",title:"📊 季末调仓 Q2",desc:"Q2季末 — 最大规模调仓窗口：养老金+主权基金+共同基金回归目标配比"},
+  {d:"2026-07-31",t:"rebal",title:"📊 月末调仓",desc:"月末最后交易日 — 养老金/保险/平衡基金回归目标配比"},
+  {d:"2026-08-31",t:"rebal",title:"📊 月末调仓 + MSCI季度调整",desc:"MSCI季度再平衡生效（收盘后）+ 月末养老金调仓"},
+  {d:"2026-09-30",t:"rebal",title:"📊 季末调仓 Q3",desc:"Q3季末 — 最大规模调仓窗口：养老金+主权基金+共同基金回归目标配比"},
+  {d:"2026-10-30",t:"rebal",title:"📊 月末调仓",desc:"月末最后交易日 — 养老金/保险/平衡基金回归目标配比"},
+  {d:"2026-11-30",t:"rebal",title:"📊 月末调仓 + MSCI季度调整",desc:"MSCI季度再平衡生效（收盘后）+ 月末养老金调仓"},
+  {d:"2026-12-31",t:"rebal",title:"📊 季末调仓 Q4 / 年末",desc:"Q4/年末最大调仓 — 养老金+主权基金年度再平衡，税损收割结束，新资金入市"},
+
+  /* ── CTA 系统性调仓 2025（月初新仓日）── */
+  /* CTA 趋势跟踪基金每月初更新信号并建立新仓位，月末收盘后更新模型，次月第一个交易日执行 */
+  {d:"2025-01-02",t:"cta",title:"🤖 CTA月初调仓 1月",desc:"月度CTA信号更新 — 趋势跟踪基金重新计算持仓比例，执行月度再平衡（约$3500亿CTA敞口调整）"},
+  {d:"2025-02-03",t:"cta",title:"🤖 CTA月初调仓 2月",desc:"月度CTA信号更新 — 趋势跟踪基金重新计算持仓比例，执行月度再平衡"},
+  {d:"2025-03-03",t:"cta",title:"🤖 CTA月初调仓 3月",desc:"月度CTA信号更新 — Q1季初，趋势信号重置，方向性资金流入明显"},
+  {d:"2025-04-01",t:"cta",title:"🤖 CTA月初调仓 4月",desc:"月度CTA信号更新 — Q2季初，养老金再平衡叠加CTA调仓，资金流放大"},
+  {d:"2025-05-01",t:"cta",title:"🤖 CTA月初调仓 5月",desc:"月度CTA信号更新 — 趋势跟踪基金执行再平衡"},
+  {d:"2025-06-02",t:"cta",title:"🤖 CTA月初调仓 6月",desc:"月度CTA信号更新 — Q2末前，趋势信号调整，三重到期前资金预布局"},
+  {d:"2025-07-01",t:"cta",title:"🤖 CTA月初调仓 7月",desc:"月度CTA信号更新 — Q3季初，趋势跟踪基金重新建仓"},
+  {d:"2025-08-01",t:"cta",title:"🤖 CTA月初调仓 8月",desc:"月度CTA信号更新 — 夏季低流动性窗口，CTA调仓冲击更大"},
+  {d:"2025-09-02",t:"cta",title:"🤖 CTA月初调仓 9月",desc:"月度CTA信号更新 — Q3末前，三重到期在即，CTA+机构同向调仓"},
+  {d:"2025-10-01",t:"cta",title:"🤖 CTA月初调仓 10月",desc:"月度CTA信号更新 — Q4季初，全年收益博弈阶段，趋势信号敏感"},
+  {d:"2025-11-03",t:"cta",title:"🤖 CTA月初调仓 11月",desc:"月度CTA信号更新 — 美联储会议后首个交易周，CTA与宏观信号叠加"},
+  {d:"2025-12-01",t:"cta",title:"🤖 CTA月初调仓 12月",desc:"月度CTA信号更新 — 年末税损收割 + CTA调仓 + 流动性下降，波动率抬升"},
+
+  /* ── CTA 系统性调仓 2026（月初新仓日）── */
+  {d:"2026-01-02",t:"cta",title:"🤖 CTA月初调仓 1月",desc:"月度CTA信号更新 — 新年首个交易日，年度趋势信号重置，资金方向性强"},
+  {d:"2026-02-02",t:"cta",title:"🤖 CTA月初调仓 2月",desc:"月度CTA信号更新 — 趋势跟踪基金执行再平衡"},
+  {d:"2026-03-02",t:"cta",title:"🤖 CTA月初调仓 3月",desc:"月度CTA信号更新 — Q1季初，趋势信号重置"},
+  {d:"2026-04-01",t:"cta",title:"🤖 CTA月初调仓 4月",desc:"月度CTA信号更新 — Q2季初，养老金再平衡叠加CTA调仓"},
+  {d:"2026-05-01",t:"cta",title:"🤖 CTA月初调仓 5月",desc:"月度CTA信号更新 — 罗素Rank Day前，小盘股敞口调整"},
+  {d:"2026-06-01",t:"cta",title:"🤖 CTA月初调仓 6月",desc:"月度CTA信号更新 — 罗素重组前最后调仓，三重到期(6/18)前预布局"},
+  {d:"2026-07-01",t:"cta",title:"🤖 CTA月初调仓 7月",desc:"月度CTA信号更新 — Q3季初，趋势跟踪基金重新建仓"},
+  {d:"2026-08-03",t:"cta",title:"🤖 CTA月初调仓 8月",desc:"月度CTA信号更新 — 夏季低流动性，CTA调仓冲击放大"},
+  {d:"2026-09-01",t:"cta",title:"🤖 CTA月初调仓 9月",desc:"月度CTA信号更新 — Q3末前，三重到期(9/18)在即，CTA+机构同向调仓"},
+  {d:"2026-10-01",t:"cta",title:"🤖 CTA月初调仓 10月",desc:"月度CTA信号更新 — Q4季初，全年收益博弈，趋势信号敏感"},
+  {d:"2026-11-02",t:"cta",title:"🤖 CTA月初调仓 11月",desc:"月度CTA信号更新 — 趋势跟踪基金执行再平衡"},
+  {d:"2026-12-01",t:"cta",title:"🤖 CTA月初调仓 12月",desc:"月度CTA信号更新 — 年末税损收割 + CTA调仓 + 流动性下降，波动放大"},
+
+  /* ── NYSE Market Holidays 2025 ── */
+  {d:"2025-01-01",t:"hol",title:"🏛 元旦 · NYSE休市",desc:"New Year's Day — 股市休市"},
+  {d:"2025-01-20",t:"hol",title:"🏛 马丁路德金日 · NYSE休市",desc:"Martin Luther King Jr. Day — 股市休市"},
+  {d:"2025-02-17",t:"hol",title:"🏛 总统日 · NYSE休市",desc:"Presidents' Day — 股市休市"},
+  {d:"2025-04-18",t:"hol",title:"🏛 耶稣受难日 · NYSE休市",desc:"Good Friday — 股市休市"},
+  {d:"2025-05-26",t:"hol",title:"🏛 阵亡将士纪念日 · NYSE休市",desc:"Memorial Day — 股市休市"},
+  {d:"2025-06-19",t:"hol",title:"🏛 六月节 · NYSE休市",desc:"Juneteenth National Independence Day — 股市休市"},
+  {d:"2025-07-04",t:"hol",title:"🏛 独立日 · NYSE休市",desc:"Independence Day — 股市休市"},
+  {d:"2025-09-01",t:"hol",title:"🏛 劳动节 · NYSE休市",desc:"Labor Day — 股市休市"},
+  {d:"2025-11-27",t:"hol",title:"🏛 感恩节 · NYSE休市",desc:"Thanksgiving Day — 股市休市"},
+  {d:"2025-12-25",t:"hol",title:"🏛 圣诞节 · NYSE休市",desc:"Christmas Day — 股市休市"},
+
+  /* ── NYSE Market Holidays 2026 ── */
+  {d:"2026-01-01",t:"hol",title:"🏛 元旦 · NYSE休市",desc:"New Year's Day — 股市休市"},
+  {d:"2026-01-19",t:"hol",title:"🏛 马丁路德金日 · NYSE休市",desc:"Martin Luther King Jr. Day — 股市休市"},
+  {d:"2026-02-16",t:"hol",title:"🏛 总统日 · NYSE休市",desc:"Presidents' Day — 股市休市"},
+  {d:"2026-04-03",t:"hol",title:"🏛 耶稣受难日 · NYSE休市",desc:"Good Friday — 股市休市"},
+  {d:"2026-05-25",t:"hol",title:"🏛 阵亡将士纪念日 · NYSE休市",desc:"Memorial Day — 股市休市"},
+  {d:"2026-06-19",t:"hol",title:"🏛 六月节 · NYSE休市",desc:"Juneteenth National Independence Day — 股市休市"},
+  {d:"2026-07-03",t:"hol",title:"🏛 独立日 (观察日) · NYSE休市",desc:"Independence Day observed (July 4 = Saturday) — 股市休市"},
+  {d:"2026-09-07",t:"hol",title:"🏛 劳动节 · NYSE休市",desc:"Labor Day — 股市休市"},
+  {d:"2026-11-26",t:"hol",title:"🏛 感恩节 · NYSE休市",desc:"Thanksgiving Day — 股市休市"},
+  {d:"2026-12-25",t:"hol",title:"🏛 圣诞节 · NYSE休市",desc:"Christmas Day — 股市休市"},
+
   /* ── FOMC 2025 ── */
   {d:"2025-01-28",t:"fomc",title:"FOMC 会议 (1月)",desc:"利率决议·鲍威尔新闻发布会"},
   {d:"2025-01-29",t:"fomc",title:"FOMC 决议日",desc:"联邦基金利率公布"},
@@ -405,7 +561,10 @@ let curMonth = today.getMonth();   // 0-indexed
 let selected = todayStr;
 
 // Active filters (all on by default)
-const filters = { earn:true, fomc:true, f13f:true, econ:true, div:true };
+const filters = { earn:true, fomc:true, f13f:true, econ:true, div:true, hol:true, opex:true, rebal:true, cta:true };
+
+/* Pre-built set of NYSE holiday date strings for fast cell lookup */
+const NYSE_HOLIDAYS = new Set(EVENTS.filter(e=>e.t==="hol").map(e=>e.d));
 
 /* ═══════════════════════════════════
    HELPERS
@@ -434,7 +593,7 @@ function upcomingEvents(n=25) {
     .slice(0,n);
 }
 function typeLabel(t) {
-  return {earn:"财报",fomc:"FOMC",f13f:"13F",econ:"经济数据",div:"股息"}[t]||t;
+  return {earn:"财报",fomc:"FOMC",f13f:"13F",econ:"经济数据",div:"股息",hol:"NYSE休市",opex:"期权到期",rebal:"机构调仓",cta:"CTA调仓"}[t]||t;
 }
 function fmtDisplayDate(s) {
   const d = parseDate(s);
@@ -452,6 +611,10 @@ function renderFilters() {
     {k:"f13f",label:"13F 截止",cls:"f13f"},
     {k:"econ",label:"经济数据",cls:"econ"},
     {k:"div", label:"股息除息",cls:"div"},
+    {k:"hol", label:"NYSE 休市",cls:"hol"},
+    {k:"opex",label:"⚡ 期权到期 OPEX",cls:"opex"},
+    {k:"rebal",label:"📊 机构调仓",cls:"rebal"},
+    {k:"cta",  label:"🤖 CTA调仓", cls:"cta"},
   ];
   const wrap = document.getElementById("filters");
   wrap.innerHTML = defs.map(f=>`
@@ -509,6 +672,11 @@ function renderCalendar() {
     const isToday = ds === todayStr;
     const isSel   = ds === selected;
     const isWknd  = dow===0||dow===6;
+    const isHol    = !isWknd && NYSE_HOLIDAYS.has(ds);
+    const allEvs   = EVENTS.filter(e => e.d === ds);
+    const isOpex   = allEvs.some(e => e.t === "opex");
+    const isRebal  = allEvs.some(e => e.t === "rebal");
+    const isCta    = allEvs.some(e => e.t === "cta");
     const evs = eventsOn(ds);
 
     const pills = evs.slice(0,3).map(e=>{
@@ -518,7 +686,7 @@ function renderCalendar() {
     const more = evs.length>3 ? `<div class="ep more">+${evs.length-3}</div>` : "";
 
     return `
-      <div class="day${c.other?" other-month":""}${isToday?" today":""}${isSel?" selected":""}${isWknd?" weekend":""}"
+      <div class="day${c.other?" other-month":""}${isToday?" today":""}${isSel?" selected":""}${isWknd?" weekend":""}${isHol?" holiday":""}${isOpex?" opex-day":""}${isRebal?" rebal-day":""}${isCta?" cta-day":""}"
            data-date="${ds}">
         <span class="day-num">${c.date.getDate()}</span>
         <div class="event-pills">${pills}${more}</div>
@@ -606,19 +774,20 @@ document.getElementById("btnToday").addEventListener("click",()=>{
 async function loadEarnings() {
   try {
     const res = await fetch("../data/earnings_dates.csv");
-    if (!res.ok) return;
-    const rows = parseCSV(await res.text());
-    rows.forEach(r => {
-      if (!r.report_date || !r.ticker) return;
-      const statusLabel = r.status === "reported" ? " ✓" : r.status === "confirmed" ? " 📌" : "";
-      EVENTS.push({
-        d: r.report_date,
-        t: "earn",
-        earTime: r.time,
-        title: `${r.ticker} 财报${statusLabel}`,
-        desc:  `${r.company} ${r.fiscal_quarter}${r.notes ? " · " + r.notes : ""}`,
+    if (res.ok) {
+      const rows = parseCSV(await res.text());
+      rows.forEach(r => {
+        if (!r.report_date || !r.ticker) return;
+        const statusLabel = r.status === "reported" ? " ✓" : r.status === "confirmed" ? " 📌" : "";
+        EVENTS.push({
+          d: r.report_date,
+          t: "earn",
+          earTime: r.time,
+          title: `${r.ticker} 财报${statusLabel}`,
+          desc:  `${r.company} ${r.fiscal_quarter}${r.notes ? " · " + r.notes : ""}`,
+        });
       });
-    });
+    }
   } catch(e) { /* file not available in local open */ }
   renderFilters();
   renderCalendar();
