@@ -23,6 +23,7 @@
       --c-hol:  #6b7280;  --cb-hol:  #f1f1f1;
       --c-opex: #ea580c;  --cb-opex: #ffedd5;
       --c-rebal:#0891b2;  --cb-rebal:#e0f2fe;
+      --c-cta:  #7c3aed;  --cb-cta:  #ede9fe;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -70,6 +71,7 @@
     .fc.active.hol  { background: var(--c-hol);  }
     .fc.active.opex { background: var(--c-opex); }
     .fc.active.rebal{ background: var(--c-rebal);}
+    .fc.active.cta  { background: var(--c-cta);  }
 
     /* ── main layout ── */
     .main { display: grid; grid-template-columns: 1fr 310px; gap: 14px; }
@@ -139,6 +141,7 @@
     .ep.hol  { background: var(--cb-hol);  color: var(--c-hol);  }
     .ep.opex { background: var(--cb-opex); color: var(--c-opex); font-weight:700; }
     .ep.rebal{ background: var(--cb-rebal);color: var(--c-rebal);}
+    .ep.cta  { background: var(--cb-cta);  color: var(--c-cta);  font-weight:700; }
     .ep.more { background: var(--bg); color: var(--muted); }
 
     /* NYSE holiday day styling */
@@ -149,6 +152,8 @@
     .day.opex-day { border-left: 3px solid var(--c-opex); }
     /* Rebalancing subtle left border */
     .day.rebal-day { border-left: 3px solid var(--c-rebal); }
+    /* CTA 调仓窗口 bottom border */
+    .day.cta-day { border-bottom: 3px solid var(--c-cta); }
 
     /* ── sidebar ── */
     .sidebar { display: flex; flex-direction: column; gap: 10px; }
@@ -183,6 +188,7 @@
     .ev-dot.hol  { background: var(--c-hol);  }
     .ev-dot.opex { background: var(--c-opex); }
     .ev-dot.rebal{ background: var(--c-rebal);}
+    .ev-dot.cta  { background: var(--c-cta);  }
     .ev-content { flex: 1; min-width: 0; }
     .ev-date  { font-size: .72rem; color: var(--muted); margin-bottom: 1px; }
     .ev-title { font-size: .85rem; font-weight: 600; }
@@ -199,6 +205,7 @@
     .ev-badge.hol  { background: var(--cb-hol);  color: var(--c-hol);  }
     .ev-badge.opex { background: var(--cb-opex); color: var(--c-opex); }
     .ev-badge.rebal{ background: var(--cb-rebal);color: var(--c-rebal);}
+    .ev-badge.cta  { background: var(--cb-cta);  color: var(--c-cta);  }
     .ev-time-badge {
       font-size: .67rem; font-weight: 700; border-radius: 3px;
       padding: 1px 5px; display: inline-block; margin-top: 3px; margin-left: 4px;
@@ -352,6 +359,35 @@ const EVENTS = [
   {d:"2026-10-30",t:"rebal",title:"📊 月末调仓",desc:"月末最后交易日 — 养老金/保险/平衡基金回归目标配比"},
   {d:"2026-11-30",t:"rebal",title:"📊 月末调仓 + MSCI季度调整",desc:"MSCI季度再平衡生效（收盘后）+ 月末养老金调仓"},
   {d:"2026-12-31",t:"rebal",title:"📊 季末调仓 Q4 / 年末",desc:"Q4/年末最大调仓 — 养老金+主权基金年度再平衡，税损收割结束，新资金入市"},
+
+  /* ── CTA 系统性调仓 2025（月初新仓日）── */
+  /* CTA 趋势跟踪基金每月初更新信号并建立新仓位，月末收盘后更新模型，次月第一个交易日执行 */
+  {d:"2025-01-02",t:"cta",title:"🤖 CTA月初调仓 1月",desc:"月度CTA信号更新 — 趋势跟踪基金重新计算持仓比例，执行月度再平衡（约$3500亿CTA敞口调整）"},
+  {d:"2025-02-03",t:"cta",title:"🤖 CTA月初调仓 2月",desc:"月度CTA信号更新 — 趋势跟踪基金重新计算持仓比例，执行月度再平衡"},
+  {d:"2025-03-03",t:"cta",title:"🤖 CTA月初调仓 3月",desc:"月度CTA信号更新 — Q1季初，趋势信号重置，方向性资金流入明显"},
+  {d:"2025-04-01",t:"cta",title:"🤖 CTA月初调仓 4月",desc:"月度CTA信号更新 — Q2季初，养老金再平衡叠加CTA调仓，资金流放大"},
+  {d:"2025-05-01",t:"cta",title:"🤖 CTA月初调仓 5月",desc:"月度CTA信号更新 — 趋势跟踪基金执行再平衡"},
+  {d:"2025-06-02",t:"cta",title:"🤖 CTA月初调仓 6月",desc:"月度CTA信号更新 — Q2末前，趋势信号调整，三重到期前资金预布局"},
+  {d:"2025-07-01",t:"cta",title:"🤖 CTA月初调仓 7月",desc:"月度CTA信号更新 — Q3季初，趋势跟踪基金重新建仓"},
+  {d:"2025-08-01",t:"cta",title:"🤖 CTA月初调仓 8月",desc:"月度CTA信号更新 — 夏季低流动性窗口，CTA调仓冲击更大"},
+  {d:"2025-09-02",t:"cta",title:"🤖 CTA月初调仓 9月",desc:"月度CTA信号更新 — Q3末前，三重到期在即，CTA+机构同向调仓"},
+  {d:"2025-10-01",t:"cta",title:"🤖 CTA月初调仓 10月",desc:"月度CTA信号更新 — Q4季初，全年收益博弈阶段，趋势信号敏感"},
+  {d:"2025-11-03",t:"cta",title:"🤖 CTA月初调仓 11月",desc:"月度CTA信号更新 — 美联储会议后首个交易周，CTA与宏观信号叠加"},
+  {d:"2025-12-01",t:"cta",title:"🤖 CTA月初调仓 12月",desc:"月度CTA信号更新 — 年末税损收割 + CTA调仓 + 流动性下降，波动率抬升"},
+
+  /* ── CTA 系统性调仓 2026（月初新仓日）── */
+  {d:"2026-01-02",t:"cta",title:"🤖 CTA月初调仓 1月",desc:"月度CTA信号更新 — 新年首个交易日，年度趋势信号重置，资金方向性强"},
+  {d:"2026-02-02",t:"cta",title:"🤖 CTA月初调仓 2月",desc:"月度CTA信号更新 — 趋势跟踪基金执行再平衡"},
+  {d:"2026-03-02",t:"cta",title:"🤖 CTA月初调仓 3月",desc:"月度CTA信号更新 — Q1季初，趋势信号重置"},
+  {d:"2026-04-01",t:"cta",title:"🤖 CTA月初调仓 4月",desc:"月度CTA信号更新 — Q2季初，养老金再平衡叠加CTA调仓"},
+  {d:"2026-05-01",t:"cta",title:"🤖 CTA月初调仓 5月",desc:"月度CTA信号更新 — 罗素Rank Day前，小盘股敞口调整"},
+  {d:"2026-06-01",t:"cta",title:"🤖 CTA月初调仓 6月",desc:"月度CTA信号更新 — 罗素重组前最后调仓，三重到期(6/18)前预布局"},
+  {d:"2026-07-01",t:"cta",title:"🤖 CTA月初调仓 7月",desc:"月度CTA信号更新 — Q3季初，趋势跟踪基金重新建仓"},
+  {d:"2026-08-03",t:"cta",title:"🤖 CTA月初调仓 8月",desc:"月度CTA信号更新 — 夏季低流动性，CTA调仓冲击放大"},
+  {d:"2026-09-01",t:"cta",title:"🤖 CTA月初调仓 9月",desc:"月度CTA信号更新 — Q3末前，三重到期(9/18)在即，CTA+机构同向调仓"},
+  {d:"2026-10-01",t:"cta",title:"🤖 CTA月初调仓 10月",desc:"月度CTA信号更新 — Q4季初，全年收益博弈，趋势信号敏感"},
+  {d:"2026-11-02",t:"cta",title:"🤖 CTA月初调仓 11月",desc:"月度CTA信号更新 — 趋势跟踪基金执行再平衡"},
+  {d:"2026-12-01",t:"cta",title:"🤖 CTA月初调仓 12月",desc:"月度CTA信号更新 — 年末税损收割 + CTA调仓 + 流动性下降，波动放大"},
 
   /* ── NYSE Market Holidays 2025 ── */
   {d:"2025-01-01",t:"hol",title:"🏛 元旦 · NYSE休市",desc:"New Year's Day — 股市休市"},
@@ -513,7 +549,7 @@ let curMonth = today.getMonth();   // 0-indexed
 let selected = todayStr;
 
 // Active filters (all on by default)
-const filters = { earn:true, fomc:true, f13f:true, econ:true, div:true, hol:true, opex:true, rebal:true };
+const filters = { earn:true, fomc:true, f13f:true, econ:true, div:true, hol:true, opex:true, rebal:true, cta:true };
 
 /* Pre-built set of NYSE holiday date strings for fast cell lookup */
 const NYSE_HOLIDAYS = new Set(EVENTS.filter(e=>e.t==="hol").map(e=>e.d));
@@ -545,7 +581,7 @@ function upcomingEvents(n=25) {
     .slice(0,n);
 }
 function typeLabel(t) {
-  return {earn:"财报",fomc:"FOMC",f13f:"13F",econ:"经济数据",div:"股息",hol:"NYSE休市",opex:"期权到期",rebal:"机构调仓"}[t]||t;
+  return {earn:"财报",fomc:"FOMC",f13f:"13F",econ:"经济数据",div:"股息",hol:"NYSE休市",opex:"期权到期",rebal:"机构调仓",cta:"CTA调仓"}[t]||t;
 }
 function fmtDisplayDate(s) {
   const d = parseDate(s);
@@ -566,6 +602,7 @@ function renderFilters() {
     {k:"hol", label:"NYSE 休市",cls:"hol"},
     {k:"opex",label:"⚡ 期权到期 OPEX",cls:"opex"},
     {k:"rebal",label:"📊 机构调仓",cls:"rebal"},
+    {k:"cta",  label:"🤖 CTA调仓", cls:"cta"},
   ];
   const wrap = document.getElementById("filters");
   wrap.innerHTML = defs.map(f=>`
@@ -627,6 +664,7 @@ function renderCalendar() {
     const allEvs   = EVENTS.filter(e => e.d === ds);
     const isOpex   = allEvs.some(e => e.t === "opex");
     const isRebal  = allEvs.some(e => e.t === "rebal");
+    const isCta    = allEvs.some(e => e.t === "cta");
     const evs = eventsOn(ds);
 
     const pills = evs.slice(0,3).map(e=>{
@@ -636,7 +674,7 @@ function renderCalendar() {
     const more = evs.length>3 ? `<div class="ep more">+${evs.length-3}</div>` : "";
 
     return `
-      <div class="day${c.other?" other-month":""}${isToday?" today":""}${isSel?" selected":""}${isWknd?" weekend":""}${isHol?" holiday":""}${isOpex?" opex-day":""}${isRebal?" rebal-day":""}"
+      <div class="day${c.other?" other-month":""}${isToday?" today":""}${isSel?" selected":""}${isWknd?" weekend":""}${isHol?" holiday":""}${isOpex?" opex-day":""}${isRebal?" rebal-day":""}${isCta?" cta-day":""}"
            data-date="${ds}">
         <span class="day-num">${c.date.getDate()}</span>
         <div class="event-pills">${pills}${more}</div>
