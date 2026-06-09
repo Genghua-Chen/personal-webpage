@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LazySheepcapital — Financial Intelligence</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     :root {
       --bg:           #07070f;
@@ -193,6 +194,56 @@
       content: ''; flex: 1; height: 1px; background: var(--border);
     }
 
+    /* ── PRINCIPLES ── */
+    .principles-section {
+      max-width: 1180px; margin: 0 auto;
+      padding: 0 36px 80px;
+    }
+    .principles-list { display: flex; flex-direction: column; }
+    .principle-item {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 0 32px;
+      align-items: baseline;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+      transition: background .2s;
+      cursor: default;
+    }
+    .principle-item:first-child { border-top: 1px solid var(--border); }
+    .principle-item:hover .principle-idx { opacity: 1; }
+    .principle-item:hover .principle-body { opacity: 1; }
+    .principle-item.p-hidden { display: none; }
+    .principle-idx {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
+      background: linear-gradient(135deg, #c4b5fd, #38bdf8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      opacity: 0.45;
+      transition: opacity .2s;
+      padding-top: 2px;
+    }
+    .principle-body {
+      font-size: 0.95rem; color: var(--text);
+      line-height: 1.8; opacity: 0.55;
+      transition: opacity .2s;
+    }
+    .principles-toggle {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 24px;
+      background: none; border: 1px solid var(--border);
+      border-radius: 999px; padding: 9px 24px;
+      color: var(--muted); font-size: 0.83rem; cursor: pointer;
+      transition: border-color .2s, color .2s;
+      width: fit-content;
+    }
+    .principles-toggle:hover { border-color: var(--border-h); color: var(--text); }
+    .principles-toggle svg { transition: transform .3s ease; }
+    .principles-toggle.expanded svg { transform: rotate(180deg); }
+    @media (max-width: 600px) {
+      .principle-item { grid-template-columns: 48px 1fr; gap: 0 16px; }
+      .principle-body { font-size: 0.88rem; }
+    }
+
     /* ── BRIEFING ── */
     .briefing {
       max-width: 1180px; margin: 0 auto;
@@ -284,7 +335,7 @@
   <!-- ── NAV ── -->
   <nav class="nav">
     <span class="nav-logo">
-      <span class="nav-logo-icon">🐑</span>
+      <img src="favicon.svg" width="22" height="22" style="display:block;flex-shrink:0" alt="">
       LazySheepcapital
     </span>
     <div class="nav-links">
@@ -388,11 +439,36 @@
     </div>
   </section>
 
-  <!-- ── MARKET BRIEFING ── -->
+  <!-- ── PRINCIPLES ── -->
   <div class="section-divider">
+    <span class="div-label">投资原则</span>
+  </div>
+  <section class="principles-section">
+    <div class="principles-list">
+      <div class="principle-item"><span class="principle-idx">01</span><p class="principle-body">我不预测市场走向，我只针对现在的市场做出最合理的应对。</p></div>
+      <div class="principle-item"><span class="principle-idx">02</span><p class="principle-body">不做多任何散户扎堆的股票，除非被血洗完一轮之后，将弱散户洗完了，再进场。有大量弱散户的股票是不可能大幅上涨的。</p></div>
+      <div class="principle-item"><span class="principle-idx">03</span><p class="principle-body">每一笔投资都是新的、独立的开始。不要因为过去已经发生的盈亏而影响未来的决策。</p></div>
+      <div class="principle-item"><span class="principle-idx">04</span><p class="principle-body">仓位管理是我给自己最大的限制。在金融市场里，没有任何一笔交易值得我押上全部身家。</p></div>
+      <div class="principle-item"><span class="principle-idx">05</span><p class="principle-body">当市场因为巨大宏观周期出现低谷时，就是抄底的绝佳时机。视情况可以暂时废除原则第 4 条。当绝佳的时机出现时，应该重仓猛干。</p></div>
+      <div class="principle-item"><span class="principle-idx">06</span><p class="principle-body">投资的关键是不要被情绪吓跑。决定最终结果不仅仅是认知，还有坚持执行的毅力。做投资应该相信自己的投资原则。</p></div>
+      <div class="principle-item p-hidden"><span class="principle-idx">07</span><p class="principle-body">我只做自己看得懂的公司的股票，不理解的公司的股票不碰。</p></div>
+      <div class="principle-item p-hidden"><span class="principle-idx">08</span><p class="principle-body">我只专注于一个公司，不要买过多股票分散精力。</p></div>
+      <div class="principle-item p-hidden"><span class="principle-idx">09</span><p class="principle-body">当市场中没有合适的机会时，耐心空仓。</p></div>
+      <div class="principle-item p-hidden"><span class="principle-idx">10</span><p class="principle-body">价值终将回归基本面。基本面好的公司，股价跌了，终究会涨回去。基本面差的公司，价值虚高，终究会跌回去。</p></div>
+      <div class="principle-item p-hidden"><span class="principle-idx">11</span><p class="principle-body">仓位的方向要和股市的大趋势保持一致。在上升趋势中做多，在震荡趋势中做空波动率，在下跌趋势中空仓或做空。</p></div>
+      <div class="principle-item p-hidden"><span class="principle-idx">12</span><p class="principle-body">要有足够的耐心去空仓等待时机，这里指的并非是一天两天的空仓，而是持之以恒的、长久的空仓。</p></div>
+    </div>
+    <button class="principles-toggle" id="principlesToggle">
+      <svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span id="principlesToggleLabel">展开全部 · 12 条</span>
+    </button>
+  </section>
+
+  <!-- ── MARKET BRIEFING ── -->
+  <div class="section-divider" style="display:none">
     <span class="div-label">个股快报</span>
   </div>
-  <section class="briefing">
+  <section class="briefing" style="display:none">
     <div class="toolbar">
       <label class="search-wrap">
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor">
@@ -557,6 +633,23 @@
       }
     }
     start();
+  </script>
+
+  <script>
+    (function () {
+      const btn    = document.getElementById("principlesToggle");
+      const label  = document.getElementById("principlesToggleLabel");
+      const hidden = document.querySelectorAll(".principle-item.p-hidden");
+      const total  = document.querySelectorAll(".principle-item").length;
+      let expanded = false;
+      label.textContent = `展开全部 · ${total} 条`;
+      btn.addEventListener("click", () => {
+        expanded = !expanded;
+        hidden.forEach(el => el.style.display = expanded ? "grid" : "none");
+        label.textContent = expanded ? "收起" : `展开全部 · ${total} 条`;
+        btn.classList.toggle("expanded", expanded);
+      });
+    })();
   </script>
 </body>
 </html>
