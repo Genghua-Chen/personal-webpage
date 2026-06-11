@@ -1,0 +1,16 @@
+category,institution,quarter,quarter_end_date,stock_ticker,stock_company,action,value_change_usd_mn,pct_change,notes,timing_known
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,GOOGL,Alphabet A,Added,10014.2,204.0,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,BAC,Bank of America,Reduced,-3412.1,-0.7,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,V,Visa,Exited,-2910.0,-100,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,DELTA AIR LINES INC,Delta Air Lines Inc,New Position,2646.5,,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,CVX,Chevron,Reduced,-2379.8,-35.2,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,MA,Mastercard,Exited,-2275.9,-100,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,CONSTELLATION BRANDS INC,Constellation Brands Inc,Reduced,-1698.5,-95.1,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,UNH,UnitedHealth,Exited,-1663.6,-100,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,DOMINOS PIZZA INC,Dominos Pizza Inc,Exited,-1396.3,-100,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,AON PLC,Aon Plc,Exited,-1271.4,-100,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,GOOG,Alphabet C,New Position,1028.5,,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,DAVITA INC,Davita Inc,Reduced,1018.0,-5.2,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,NEW YORK TIMES CO MTN BE,New York Times Co Mtn Be,Added,916.6,199.0,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,POOL CORP,Pool Corp,Exited,-702.0,-100,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15
+Core Smart Money,Berkshire Hathaway,Q1 2026,2026-03-31,AMZN,Amazon,Exited,-525.3,-100,EDGAR 13F 自动生成，待人工复核,披露日: 2026-05-15

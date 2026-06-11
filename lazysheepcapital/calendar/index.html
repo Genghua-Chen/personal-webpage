@@ -245,8 +245,19 @@
       .side-list { max-height: 260px; }
     }
   </style>
+<style>
+/* ── 全站统一顶栏 ── */
+.site-nav{position:sticky;top:0;z-index:300;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 24px;height:52px;background:rgba(7,7,15,.88);backdrop-filter:blur(20px) saturate(160%);border-bottom:1px solid rgba(255,255,255,.08);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif}
+.site-nav .sn-logo{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;letter-spacing:-.02em;color:#e8e8f0;text-decoration:none;white-space:nowrap}
+.site-nav .sn-links{display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end}
+.site-nav .sn-link{padding:5px 11px;border-radius:8px;font-size:.78rem;color:rgba(200,200,230,.5);text-decoration:none;border:1px solid transparent;transition:all .15s;white-space:nowrap}
+.site-nav .sn-link:hover{color:#e8e8f0;background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
+.site-nav .sn-link.active{color:#e8e8f0;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)}
+@media(max-width:680px){.site-nav{height:auto;padding:8px 14px;flex-wrap:wrap}.site-nav .sn-links{justify-content:flex-start}}
+</style>
 </head>
 <body>
+<nav class="site-nav"><a class="sn-logo" href="../index.html"><img src="../favicon.svg" width="20" height="20" alt="">LazySheepcapital</a><div class="sn-links"><a href="../smart_money/" class="sn-link">聪明钱追踪</a><a href="../ai-capex-flow/index.html" class="sn-link">AI 流向图</a><a href="../space-flow/index.html" class="sn-link">太空板块</a><a href="../calendar/" class="sn-link active">财报日历</a><a href="../track-record/" class="sn-link">实盘记录</a></div></nav>
 <div class="app">
 
   <a class="back-link" href="../index.html">

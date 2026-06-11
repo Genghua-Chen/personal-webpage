@@ -105,13 +105,38 @@
       text-align: center; font-size: .76rem; color: var(--dim); margin-top: 28px;
     }
 
+    .pr-link {
+      color: var(--accent); text-decoration: none;
+      border-bottom: 1px dotted rgba(96,165,250,.5);
+    }
+    .pr-link:hover { border-bottom-style: solid; }
+
+    /* ── 净值曲线 ── */
+    .curve-wrap { padding: 16px 18px 10px; }
+    .curve-wrap svg { display: block; width: 100%; height: auto; }
+    .curve-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 18px 14px; font-size: .76rem; color: var(--muted);
+    }
+
     @media (max-width: 760px) {
       th:nth-child(4), td:nth-child(4),
       th:nth-child(5), td:nth-child(5) { display: none; }
     }
   </style>
+<style>
+/* ── 全站统一顶栏 ── */
+.site-nav{position:sticky;top:0;z-index:300;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 24px;height:52px;background:rgba(7,7,15,.88);backdrop-filter:blur(20px) saturate(160%);border-bottom:1px solid rgba(255,255,255,.08);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif}
+.site-nav .sn-logo{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;letter-spacing:-.02em;color:#e8e8f0;text-decoration:none;white-space:nowrap}
+.site-nav .sn-links{display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end}
+.site-nav .sn-link{padding:5px 11px;border-radius:8px;font-size:.78rem;color:rgba(200,200,230,.5);text-decoration:none;border:1px solid transparent;transition:all .15s;white-space:nowrap}
+.site-nav .sn-link:hover{color:#e8e8f0;background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
+.site-nav .sn-link.active{color:#e8e8f0;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)}
+@media(max-width:680px){.site-nav{height:auto;padding:8px 14px;flex-wrap:wrap}.site-nav .sn-links{justify-content:flex-start}}
+</style>
 </head>
 <body>
+<nav class="site-nav"><a class="sn-logo" href="../index.html"><img src="../favicon.svg" width="20" height="20" alt="">LazySheepcapital</a><div class="sn-links"><a href="../smart_money/" class="sn-link">聪明钱追踪</a><a href="../ai-capex-flow/index.html" class="sn-link">AI 流向图</a><a href="../space-flow/index.html" class="sn-link">太空板块</a><a href="../calendar/" class="sn-link">财报日历</a><a href="../track-record/" class="sn-link active">实盘记录</a></div></nav>
 <main class="app">
 
   <a class="back-link" href="../index.html">
@@ -121,10 +146,16 @@
 
   <section class="hero">
     <h1>实盘记录 <span class="grad">Track Record</span></h1>
-    <p>每一笔下注都公开。赢要赢得明白，输要输得服气。祖训第 6 条：相信自己的投资原则。</p>
+    <p>每一笔下注都公开。赢要赢得明白，输要输得服气。<a class="pr-link" href="../index.html#principle-06">祖训第 6 条</a>：相信自己的投资原则。</p>
   </section>
 
   <div class="stats-row" id="statsRow"></div>
+
+  <section class="panel">
+    <div class="panel-head">净值曲线 <span class="sub">已平仓累计收益（按仓位加权）</span></div>
+    <div class="curve-wrap" id="curveWrap"></div>
+    <div class="curve-meta" id="curveMeta"></div>
+  </section>
 
   <section class="panel">
     <div class="panel-head">当前持仓 <span class="sub" id="openSub"></span></div>
@@ -232,6 +263,11 @@
     return t.direction === "short" ? -raw : raw;
   }
   const fmtPnl = p => `<span class="${p >= 0 ? "pnl-pos" : "pnl-neg"}">${p >= 0 ? "+" : ""}${p.toFixed(1)}%</span>`;
+  /* 「祖训 02 / 11」→ 可点击锚点，跳回首页对应原则并高亮 */
+  const linkPrinciples = s => (s || "").replace(/祖训\s*((?:\d{2}\s*\/\s*)*\d{2})/g, (m, nums) =>
+    "祖训 " + nums.split("/").map(n => n.trim())
+      .map(n => `<a class="pr-link" href="../index.html#principle-${n}">${n}</a>`)
+      .join(" / "));
   const dirTag = d => d === "long"
     ? '<span class="dir long">做多 ▲</span>'
     : '<span class="dir short">做空 ▼</span>';
@@ -288,9 +324,61 @@
       <td class="date">${t.entryDate}<br>→ ${t.exitDate}</td>
       <td class="num">$${t.entryPrice}<br>→ $${t.exitPrice}</td>
       <td>${fmtPnl(pnlPct(t))}</td>
-      <td class="thesis">${t.lesson || t.thesis}</td>
+      <td class="thesis">${linkPrinciples(t.lesson || t.thesis)}</td>
     </tr>
   `).join("");
+
+  /* ── 净值曲线（纯 SVG） ── */
+  (function renderCurve() {
+    const pts = [...closed].sort((a, b) => a.exitDate.localeCompare(b.exitDate));
+    if (!pts.length) return;
+    let cum = 0;
+    const series = [{ label: "起点", date: pts[0].entryDate, v: 0 }];
+    pts.forEach(t => {
+      cum += pnlPct(t) * t.sizePct / 100;
+      series.push({ label: t.ticker, date: t.exitDate, v: cum });
+    });
+
+    const W = 640, H = 190, padL = 44, padR = 18, padT = 16, padB = 26;
+    const vs = series.map(p => p.v);
+    const vMin = Math.min(0, ...vs), vMax = Math.max(0, ...vs);
+    const span = (vMax - vMin) || 1;
+    const x = i => padL + i * (W - padL - padR) / (series.length - 1);
+    const y = v => padT + (vMax - v) * (H - padT - padB) / span;
+
+    const line = series.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ");
+    const area = `${line} L${x(series.length - 1).toFixed(1)},${y(vMin).toFixed(1)} L${x(0).toFixed(1)},${y(vMin).toFixed(1)} Z`;
+    const up = cum >= 0;
+    const c  = up ? "#4ade80" : "#f87171";
+
+    document.getElementById("curveWrap").innerHTML = `
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${c}" stop-opacity=".22"/>
+            <stop offset="100%" stop-color="${c}" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <line x1="${padL}" y1="${y(0)}" x2="${W - padR}" y2="${y(0)}"
+              stroke="rgba(255,255,255,.14)" stroke-dasharray="4 4"/>
+        <text x="${padL - 8}" y="${y(0) + 3}" text-anchor="end" font-size="10"
+              fill="rgba(200,200,230,.4)">0%</text>
+        <path d="${area}" fill="url(#cg)"/>
+        <path d="${line}" fill="none" stroke="${c}" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+        ${series.map((p, i) => `
+          <circle cx="${x(i)}" cy="${y(p.v)}" r="3.2" fill="#07070f" stroke="${c}" stroke-width="2">
+            <title>${p.label} ${p.date} · 累计 ${p.v >= 0 ? "+" : ""}${p.v.toFixed(1)}%</title>
+          </circle>
+          <text x="${x(i)}" y="${H - 8}" text-anchor="middle" font-size="9.5"
+                fill="rgba(200,200,230,.4)">${p.label}</text>`).join("")}
+        <text x="${x(series.length - 1)}" y="${y(cum) - 10}" text-anchor="end"
+              font-size="12" font-weight="700" fill="${c}">${cum >= 0 ? "+" : ""}${cum.toFixed(1)}%</text>
+      </svg>`;
+    document.getElementById("curveMeta").innerHTML =
+      `<span>${series[0].date} → ${series[series.length - 1].date}</span>
+       <span>每个节点 = 一笔平仓 · 悬停查看明细</span>`;
+  })();
 })();
 </script>
 </body>

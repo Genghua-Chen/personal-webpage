@@ -209,7 +209,13 @@
       border-bottom: 1px solid var(--border);
       transition: background .2s;
       cursor: default;
+      scroll-margin-top: 80px;
     }
+    .principle-item.flash {
+      background: linear-gradient(90deg, rgba(129,140,248,.10), transparent 70%);
+    }
+    .principle-item.flash .principle-idx,
+    .principle-item.flash .principle-body { opacity: 1; }
     .principle-item:first-child { border-top: 1px solid var(--border); }
     .principle-item:hover .principle-idx { opacity: 1; }
     .principle-item:hover .principle-body { opacity: 0.95; }
@@ -367,19 +373,19 @@
     <p class="hero-sub">追踪顶级机构持仓动向，可视化 AI 资本流向，<br>一站式掌握财报、FOMC 与宏观数据日历。</p>
     <div class="hero-stats">
       <div class="stat">
-        <div class="stat-num">17</div>
+        <div class="stat-num" id="statInst">21</div>
         <div class="stat-label">机构覆盖</div>
       </div>
       <div class="stat">
-        <div class="stat-num">5</div>
+        <div class="stat-num" id="statQuarters">5</div>
         <div class="stat-label">季度数据</div>
       </div>
       <div class="stat">
-        <div class="stat-num">400+</div>
+        <div class="stat-num" id="statMoves">400+</div>
         <div class="stat-label">持仓变化</div>
       </div>
       <div class="stat">
-        <div class="stat-num">50+</div>
+        <div class="stat-num" id="statEarnings">50+</div>
         <div class="stat-label">财报追踪</div>
       </div>
     </div>
@@ -456,18 +462,18 @@
   </div>
   <section class="principles-section">
     <div class="principles-list">
-      <div class="principle-item"><span class="principle-idx">01</span><span class="principle-title">应对，不预测</span><p class="principle-body">我不预测市场走向，我只针对现在的市场做出最合理的应对。</p></div>
-      <div class="principle-item"><span class="principle-idx">02</span><span class="principle-title">避开散户扎堆</span><p class="principle-body">不做多任何散户扎堆的股票，除非被血洗完一轮之后，将弱散户洗完了，再进场。有大量弱散户的股票是不可能大幅上涨的。</p></div>
-      <div class="principle-item"><span class="principle-idx">03</span><span class="principle-title">每笔交易独立</span><p class="principle-body">每一笔投资都是新的、独立的开始。不要因为过去已经发生的盈亏而影响未来的决策。</p></div>
-      <div class="principle-item"><span class="principle-idx">04</span><span class="principle-title">仓位纪律</span><p class="principle-body">仓位管理是我给自己最大的限制。在金融市场里，没有任何一笔交易值得我押上全部身家。</p></div>
-      <div class="principle-item"><span class="principle-idx">05</span><span class="principle-title">周期低谷重仓</span><p class="principle-body">当市场因为巨大宏观周期出现低谷时，就是抄底的绝佳时机。视情况可以暂时废除原则第 4 条。当绝佳的时机出现时，应该重仓猛干。</p></div>
-      <div class="principle-item"><span class="principle-idx">06</span><span class="principle-title">战胜情绪</span><p class="principle-body">投资的关键是不要被情绪吓跑。决定最终结果不仅仅是认知，还有坚持执行的毅力。做投资应该相信自己的投资原则。</p></div>
-      <div class="principle-item p-hidden"><span class="principle-idx">07</span><span class="principle-title">能力圈</span><p class="principle-body">我只做自己看得懂的公司的股票，不理解的公司的股票不碰。</p></div>
-      <div class="principle-item p-hidden"><span class="principle-idx">08</span><span class="principle-title">专注一家公司</span><p class="principle-body">我只专注于一个公司，不要买过多股票分散精力。</p></div>
-      <div class="principle-item p-hidden"><span class="principle-idx">09</span><span class="principle-title">耐心空仓</span><p class="principle-body">当市场中没有合适的机会时，耐心空仓。</p></div>
-      <div class="principle-item p-hidden"><span class="principle-idx">10</span><span class="principle-title">价值回归</span><p class="principle-body">价值终将回归基本面。基本面好的公司，股价跌了，终究会涨回去。基本面差的公司，价值虚高，终究会跌回去。</p></div>
-      <div class="principle-item p-hidden"><span class="principle-idx">11</span><span class="principle-title">顺势而为</span><p class="principle-body">仓位的方向要和股市的大趋势保持一致。在上升趋势中做多，在震荡趋势中做空波动率，在下跌趋势中空仓或做空。</p></div>
-      <div class="principle-item p-hidden"><span class="principle-idx">12</span><span class="principle-title">长久的等待</span><p class="principle-body">要有足够的耐心去空仓等待时机，这里指的并非是一天两天的空仓，而是持之以恒的、长久的空仓。</p></div>
+      <div class="principle-item" id="principle-01"><span class="principle-idx">01</span><span class="principle-title">应对，不预测</span><p class="principle-body">我不预测市场走向，我只针对现在的市场做出最合理的应对。</p></div>
+      <div class="principle-item" id="principle-02"><span class="principle-idx">02</span><span class="principle-title">避开散户扎堆</span><p class="principle-body">不做多任何散户扎堆的股票，除非被血洗完一轮之后，将弱散户洗完了，再进场。有大量弱散户的股票是不可能大幅上涨的。</p></div>
+      <div class="principle-item" id="principle-03"><span class="principle-idx">03</span><span class="principle-title">每笔交易独立</span><p class="principle-body">每一笔投资都是新的、独立的开始。不要因为过去已经发生的盈亏而影响未来的决策。</p></div>
+      <div class="principle-item" id="principle-04"><span class="principle-idx">04</span><span class="principle-title">仓位纪律</span><p class="principle-body">仓位管理是我给自己最大的限制。在金融市场里，没有任何一笔交易值得我押上全部身家。</p></div>
+      <div class="principle-item" id="principle-05"><span class="principle-idx">05</span><span class="principle-title">周期低谷重仓</span><p class="principle-body">当市场因为巨大宏观周期出现低谷时，就是抄底的绝佳时机。视情况可以暂时废除原则第 4 条。当绝佳的时机出现时，应该重仓猛干。</p></div>
+      <div class="principle-item" id="principle-06"><span class="principle-idx">06</span><span class="principle-title">战胜情绪</span><p class="principle-body">投资的关键是不要被情绪吓跑。决定最终结果不仅仅是认知，还有坚持执行的毅力。做投资应该相信自己的投资原则。</p></div>
+      <div class="principle-item p-hidden" id="principle-07"><span class="principle-idx">07</span><span class="principle-title">能力圈</span><p class="principle-body">我只做自己看得懂的公司的股票，不理解的公司的股票不碰。</p></div>
+      <div class="principle-item p-hidden" id="principle-08"><span class="principle-idx">08</span><span class="principle-title">专注一家公司</span><p class="principle-body">我只专注于一个公司，不要买过多股票分散精力。</p></div>
+      <div class="principle-item p-hidden" id="principle-09"><span class="principle-idx">09</span><span class="principle-title">耐心空仓</span><p class="principle-body">当市场中没有合适的机会时，耐心空仓。</p></div>
+      <div class="principle-item p-hidden" id="principle-10"><span class="principle-idx">10</span><span class="principle-title">价值回归</span><p class="principle-body">价值终将回归基本面。基本面好的公司，股价跌了，终究会涨回去。基本面差的公司，价值虚高，终究会跌回去。</p></div>
+      <div class="principle-item p-hidden" id="principle-11"><span class="principle-idx">11</span><span class="principle-title">顺势而为</span><p class="principle-body">仓位的方向要和股市的大趋势保持一致。在上升趋势中做多，在震荡趋势中做空波动率，在下跌趋势中空仓或做空。</p></div>
+      <div class="principle-item p-hidden" id="principle-12"><span class="principle-idx">12</span><span class="principle-title">长久的等待</span><p class="principle-body">要有足够的耐心去空仓等待时机，这里指的并非是一天两天的空仓，而是持之以恒的、长久的空仓。</p></div>
     </div>
     <button class="principles-toggle" id="principlesToggle">
       <svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -647,6 +653,34 @@
   </script>
 
   <script>
+    /* Hero 统计数字由真实数据文件计算，加载失败时保留 HTML 里的静态值 */
+    (async function () {
+      function splitLine(line) {
+        const out = []; let cur = "", q = false;
+        for (const c of line) {
+          if (c === '"') q = !q;
+          else if (c === "," && !q) { out.push(cur); cur = ""; }
+          else cur += c;
+        }
+        out.push(cur);
+        return out;
+      }
+      try {
+        const [smText, eaText] = await Promise.all([
+          fetch("data/smart_money_positions.csv").then(r => r.text()),
+          fetch("data/earnings_dates.csv").then(r => r.text()),
+        ]);
+        const smRows = smText.trim().split("\n").slice(1).map(splitLine);
+        const eaRows = eaText.trim().split("\n").slice(1).map(splitLine);
+        document.getElementById("statInst").textContent     = new Set(smRows.map(r => r[1])).size;
+        document.getElementById("statQuarters").textContent = new Set(smRows.map(r => r[2])).size;
+        document.getElementById("statMoves").textContent    = smRows.length;
+        document.getElementById("statEarnings").textContent = new Set(eaRows.map(r => r[0])).size;
+      } catch (e) { /* 静态值兜底 */ }
+    })();
+  </script>
+
+  <script>
     (function () {
       const btn    = document.getElementById("principlesToggle");
       const label  = document.getElementById("principlesToggleLabel");
@@ -660,6 +694,20 @@
         label.textContent = expanded ? "收起" : `展开全部 · ${total} 条`;
         btn.classList.toggle("expanded", expanded);
       });
+
+      /* 支持 #principle-XX 锚点：自动展开、滚动并高亮对应祖训 */
+      function revealFromHash() {
+        const m = location.hash.match(/^#principle-(\d{2})$/);
+        if (!m) return;
+        const item = document.getElementById("principle-" + m[1]);
+        if (!item) return;
+        if (!expanded && item.classList.contains("p-hidden")) btn.click();
+        item.scrollIntoView({ behavior: "smooth", block: "center" });
+        item.classList.add("flash");
+        setTimeout(() => item.classList.remove("flash"), 2600);
+      }
+      window.addEventListener("hashchange", revealFromHash);
+      revealFromHash();
     })();
   </script>
 </body>
