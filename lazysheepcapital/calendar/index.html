@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Financial Calendar — LazySheepcapital</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <style>
     :root {
       --bg:     #07070f;
@@ -36,11 +37,14 @@
 
     /* ── nav ── */
     .back-link {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: .84rem; color: var(--accent); text-decoration: none;
-      margin-bottom: 16px;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .8rem; color: var(--muted); text-decoration: none;
+      margin-bottom: 16px; padding: 7px 14px;
+      border: 1px solid var(--line); border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      transition: color .15s, background .15s, border-color .15s;
     }
-    .back-link:hover { text-decoration: underline; }
+    .back-link:hover { color: var(--text); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18); }
 
     /* ── hero ── */
     .hero {
@@ -247,7 +251,7 @@
 
   <a class="back-link" href="../index.html">
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Market Briefing
+    返回首页
   </a>
 
   <div class="hero">

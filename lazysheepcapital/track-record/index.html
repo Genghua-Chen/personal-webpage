@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>实盘记录 — LazySheepcapital</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <style>
+    :root {
+      --bg:      #07070f;
+      --panel:   rgba(255,255,255,0.04);
+      --panel-h: rgba(255,255,255,0.07);
+      --border:  rgba(255,255,255,0.08);
+      --border-h:rgba(255,255,255,0.16);
+      --text:    #e8e8f0;
+      --muted:   rgba(200,200,230,0.5);
+      --dim:     rgba(200,200,230,0.28);
+      --green:   #4ade80;
+      --red:     #f87171;
+      --accent:  #60a5fa;
+      --radius:  16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.5; min-height: 100vh;
+    }
+    .app { width: min(1180px, 94vw); margin: 24px auto 64px; }
+
+    .back-link {
+      font-size: .8rem; color: var(--muted); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px; margin-bottom: 18px;
+      padding: 7px 14px; border: 1px solid var(--border); border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      transition: color .15s, background .15s, border-color .15s;
+    }
+    .back-link:hover { color: var(--text); background: rgba(255,255,255,.08); border-color: var(--border-h); }
+
+    /* ── Hero ── */
+    .hero {
+      border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px);
+      background: var(--panel); padding: 26px 28px 22px; margin-bottom: 14px;
+    }
+    .hero h1 { font-size: clamp(1.5rem, 2.4vw, 2rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 5px; }
+    .hero h1 .grad {
+      background: linear-gradient(135deg, #c4b5fd, #38bdf8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p { color: var(--muted); font-size: .9rem; }
+
+    /* ── Stats ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px; margin-bottom: 14px;
+    }
+    .stat-card {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      background: var(--panel); padding: 14px 16px;
+    }
+    .stat-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .stat-value { margin-top: 4px; font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; }
+    .stat-value.green { color: var(--green); }
+    .stat-value.red   { color: var(--red); }
+
+    /* ── Panels ── */
+    .panel {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      background: var(--panel); overflow: hidden; margin-bottom: 14px;
+    }
+    .panel-head {
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border); padding: 13px 18px;
+      font-size: .8rem; font-weight: 700; letter-spacing: .04em;
+    }
+    .panel-head .sub { font-size: .74rem; color: var(--muted); font-weight: 500; }
+
+    table { width: 100%; border-collapse: collapse; font-size: .865rem; }
+    thead th {
+      text-align: left; padding: 9px 14px; font-size: .71rem;
+      color: var(--muted); text-transform: uppercase; letter-spacing: .05em;
+      border-bottom: 1px solid var(--border); font-weight: 600; white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: 0; }
+    tbody tr:hover { background: var(--panel-h); }
+    tbody td { padding: 11px 14px; vertical-align: top; }
+
+    .ticker { font-weight: 800; letter-spacing: .02em; white-space: nowrap; }
+    .company { font-size: .74rem; color: var(--muted); margin-top: 1px; }
+    .dir {
+      display: inline-block; border-radius: 6px; padding: 2px 9px;
+      font-size: .74rem; font-weight: 700; white-space: nowrap;
+    }
+    .dir.long  { background: rgba(74,222,128,.12); color: var(--green); }
+    .dir.short { background: rgba(248,113,113,.12); color: var(--red); }
+    .pnl-pos { color: var(--green); font-weight: 700; white-space: nowrap; }
+    .pnl-neg { color: var(--red);   font-weight: 700; white-space: nowrap; }
+    .num  { font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .date { font-size: .8rem; color: var(--muted); white-space: nowrap; }
+    .thesis { font-size: .8rem; color: var(--muted); line-height: 1.6; max-width: 320px; }
+    .size-tag { font-size: .78rem; color: var(--text); opacity: .7; white-space: nowrap; }
+
+    .disclaimer {
+      text-align: center; font-size: .76rem; color: var(--dim); margin-top: 28px;
+    }
+
+    @media (max-width: 760px) {
+      th:nth-child(4), td:nth-child(4),
+      th:nth-child(5), td:nth-child(5) { display: none; }
+    }
+  </style>
+</head>
+<body>
+<main class="app">
+
+  <a class="back-link" href="../index.html">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    返回首页
+  </a>
+
+  <section class="hero">
+    <h1>实盘记录 <span class="grad">Track Record</span></h1>
+    <p>每一笔下注都公开。赢要赢得明白，输要输得服气。祖训第 6 条：相信自己的投资原则。</p>
+  </section>
+
+  <div class="stats-row" id="statsRow"></div>
+
+  <section class="panel">
+    <div class="panel-head">当前持仓 <span class="sub" id="openSub"></span></div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>标的</th><th>方向</th><th>仓位</th><th>开仓日</th>
+            <th>成本价</th><th>现价</th><th>浮动盈亏</th><th>下注逻辑</th>
+          </tr>
+        </thead>
+        <tbody id="openBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">已平仓 <span class="sub" id="closedSub"></span></div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>标的</th><th>方向</th><th>仓位</th><th>持有区间</th>
+            <th>进出价</th><th>盈亏</th><th>复盘</th>
+          </tr>
+        </thead>
+        <tbody id="closedBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="disclaimer">以上为个人实盘记录 · 不构成任何投资建议 · 赌狗自负盈亏 🐑</p>
+
+</main>
+
+<script>
+(function () {
+  /* ════════════════════════════════════════
+     交易数据 — 直接在这里增删条目即可
+     direction: "long" | "short"
+     status:    "open" | "closed"
+     ════════════════════════════════════════ */
+  const TRADES = [
+    // —— 当前持仓 ——
+    {
+      status: "open", ticker: "NVDA", company: "Nvidia",
+      direction: "long", sizePct: 35,
+      entryDate: "2026-04-15", entryPrice: 152.3, currentPrice: 168.9,
+      thesis: "Q1 2026 13F 显示机构再度净增仓，AI capex 周期未见顶，顺势重仓。",
+    },
+    {
+      status: "open", ticker: "GOOGL", company: "Alphabet",
+      direction: "long", sizePct: 20,
+      entryDate: "2026-05-08", entryPrice: 178.2, currentPrice: 183.5,
+      thesis: "Gemini 商业化超预期，估值仍低于 Mag7 均值，聪明钱 Q1 集体加仓。",
+    },
+
+    // —— 已平仓 ——
+    {
+      status: "closed", ticker: "NVDA", company: "Nvidia",
+      direction: "long", sizePct: 40,
+      entryDate: "2025-09-12", entryPrice: 117.8,
+      exitDate: "2026-01-20", exitPrice: 148.6,
+      thesis: "13F 连续两季机构增仓，AI 主线。",
+      lesson: "跟随聪明钱 + 顺势而为，吃到主升浪。祖训 01 / 11 的胜利。",
+    },
+    {
+      status: "closed", ticker: "UNH", company: "UnitedHealth",
+      direction: "long", sizePct: 25,
+      entryDate: "2025-08-21", entryPrice: 271.4,
+      exitDate: "2025-12-18", exitPrice: 322.0,
+      thesis: "巴菲特 Q2 建仓，基本面被错杀。",
+      lesson: "价值回归（祖训 10）兑现，到目标位坚决离场。",
+    },
+    {
+      status: "closed", ticker: "TSLA", company: "Tesla",
+      direction: "short", sizePct: 20,
+      entryDate: "2026-03-05", entryPrice: 412.0,
+      exitDate: "2026-03-28", exitPrice: 376.5,
+      thesis: "下跌趋势确认，顺势做空。",
+      lesson: "祖训 11 执行到位，趋势走完及时落袋。",
+    },
+    {
+      status: "closed", ticker: "PLTR", company: "Palantir",
+      direction: "short", sizePct: 15,
+      entryDate: "2026-02-03", entryPrice: 92.5,
+      exitDate: "2026-02-19", exitPrice: 104.8,
+      thesis: "估值离谱，赌它回调。",
+      lesson: "❌ 逆势做空散户热门股，违反祖训 02 / 11。止损离场，学费。",
+    },
+    {
+      status: "closed", ticker: "SMCI", company: "Super Micro",
+      direction: "long", sizePct: 10,
+      entryDate: "2025-10-02", entryPrice: 41.2,
+      exitDate: "2025-10-30", exitPrice: 38.9,
+      thesis: "AI 服务器放量，便宜。",
+      lesson: "❌ 财务看不懂还是碰了，违反祖训 07。好在小仓试错，及时认错。",
+    },
+  ];
+
+  /* ── 计算 ── */
+  function pnlPct(t) {
+    const exit = t.status === "open" ? t.currentPrice : t.exitPrice;
+    const raw = (exit - t.entryPrice) / t.entryPrice * 100;
+    return t.direction === "short" ? -raw : raw;
+  }
+  const fmtPnl = p => `<span class="${p >= 0 ? "pnl-pos" : "pnl-neg"}">${p >= 0 ? "+" : ""}${p.toFixed(1)}%</span>`;
+  const dirTag = d => d === "long"
+    ? '<span class="dir long">做多 ▲</span>'
+    : '<span class="dir short">做空 ▼</span>';
+
+  const open   = TRADES.filter(t => t.status === "open");
+  const closed = TRADES.filter(t => t.status === "closed");
+
+  const wins     = closed.filter(t => pnlPct(t) > 0).length;
+  const winRate  = closed.length ? (wins / closed.length * 100) : 0;
+  /* 账户累计收益 = Σ(单笔盈亏 × 仓位权重) */
+  const totalRet = closed.reduce((s, t) => s + pnlPct(t) * t.sizePct / 100, 0);
+  const openPct  = open.reduce((s, t) => s + t.sizePct, 0);
+  const cashPct  = Math.max(0, 100 - openPct);
+  const best  = closed.length ? Math.max(...closed.map(pnlPct)) : 0;
+  const worst = closed.length ? Math.min(...closed.map(pnlPct)) : 0;
+
+  document.getElementById("statsRow").innerHTML = `
+    <div class="stat-card"><div class="stat-label">累计收益（已平仓）</div>
+      <div class="stat-value ${totalRet >= 0 ? "green" : "red"}">${totalRet >= 0 ? "+" : ""}${totalRet.toFixed(1)}%</div></div>
+    <div class="stat-card"><div class="stat-label">胜率</div>
+      <div class="stat-value">${winRate.toFixed(0)}%</div></div>
+    <div class="stat-card"><div class="stat-label">已平仓笔数</div>
+      <div class="stat-value">${closed.length}</div></div>
+    <div class="stat-card"><div class="stat-label">最佳 / 最差单笔</div>
+      <div class="stat-value" style="font-size:1.05rem;padding-top:5px">
+        <span class="pnl-pos">+${best.toFixed(1)}%</span> / <span class="pnl-neg">${worst.toFixed(1)}%</span></div></div>
+    <div class="stat-card"><div class="stat-label">当前现金</div>
+      <div class="stat-value">${cashPct}%</div></div>
+  `;
+
+  document.getElementById("openSub").textContent   = `${open.length} 笔 · 仓位 ${openPct}%`;
+  document.getElementById("closedSub").textContent = `${closed.length} 笔`;
+
+  document.getElementById("openBody").innerHTML = open.map(t => `
+    <tr>
+      <td><div class="ticker">${t.ticker}</div><div class="company">${t.company}</div></td>
+      <td>${dirTag(t.direction)}</td>
+      <td class="size-tag">${t.sizePct}%</td>
+      <td class="date">${t.entryDate}</td>
+      <td class="num">$${t.entryPrice}</td>
+      <td class="num">$${t.currentPrice}</td>
+      <td>${fmtPnl(pnlPct(t))}</td>
+      <td class="thesis">${t.thesis}</td>
+    </tr>
+  `).join("") || '<tr><td colspan="8" style="padding:18px;color:var(--muted);text-align:center">空仓中 · 耐心等待（祖训 09）</td></tr>';
+
+  document.getElementById("closedBody").innerHTML = closed
+    .sort((a, b) => b.exitDate.localeCompare(a.exitDate))
+    .map(t => `
+    <tr>
+      <td><div class="ticker">${t.ticker}</div><div class="company">${t.company}</div></td>
+      <td>${dirTag(t.direction)}</td>
+      <td class="size-tag">${t.sizePct}%</td>
+      <td class="date">${t.entryDate}<br>→ ${t.exitDate}</td>
+      <td class="num">$${t.entryPrice}<br>→ $${t.exitPrice}</td>
+      <td>${fmtPnl(pnlPct(t))}</td>
+      <td class="thesis">${t.lesson || t.thesis}</td>
+    </tr>
+  `).join("");
+})();
+</script>
+</body>
+</html>
