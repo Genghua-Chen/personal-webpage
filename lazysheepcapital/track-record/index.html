@@ -136,17 +136,17 @@
 </style>
 </head>
 <body>
-<nav class="site-nav"><a class="sn-logo" href="../index.html"><img src="../favicon.svg" width="20" height="20" alt="">LazySheepcapital</a><div class="sn-links"><a href="../smart_money/" class="sn-link">聪明钱追踪</a><a href="../ai-capex-flow/index.html" class="sn-link">AI 流向图</a><a href="../space-flow/index.html" class="sn-link">太空板块</a><a href="../calendar/" class="sn-link">财报日历</a><a href="../track-record/" class="sn-link active">实盘记录</a></div></nav>
+<nav class="site-nav"><a class="sn-logo" href="../"><img src="../favicon.svg" width="20" height="20" alt="">LazySheepcapital</a><div class="sn-links"><a href="../smart_money/" class="sn-link">聪明钱追踪</a><a href="../ai-capex-flow/" class="sn-link">AI 流向图</a><a href="../space-flow/" class="sn-link">太空板块</a><a href="../calendar/" class="sn-link">财报日历</a><a href="../track-record/" class="sn-link active">实盘记录</a></div></nav>
 <main class="app">
 
-  <a class="back-link" href="../index.html">
+  <a class="back-link" href="../">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
     返回首页
   </a>
 
   <section class="hero">
     <h1>实盘记录 <span class="grad">Track Record</span></h1>
-    <p>每一笔下注都公开。赢要赢得明白，输要输得服气。<a class="pr-link" href="../index.html#principle-06">祖训第 6 条</a>：相信自己的投资原则。</p>
+    <p>每一笔下注都公开。赢要赢得明白，输要输得服气。<a class="pr-link" href="../#principle-06">祖训第 6 条</a>：相信自己的投资原则。</p>
   </section>
 
   <div class="stats-row" id="statsRow"></div>
@@ -266,7 +266,7 @@
   /* 「祖训 02 / 11」→ 可点击锚点，跳回首页对应原则并高亮 */
   const linkPrinciples = s => (s || "").replace(/祖训\s*((?:\d{2}\s*\/\s*)*\d{2})/g, (m, nums) =>
     "祖训 " + nums.split("/").map(n => n.trim())
-      .map(n => `<a class="pr-link" href="../index.html#principle-${n}">${n}</a>`)
+      .map(n => `<a class="pr-link" href="../#principle-${n}">${n}</a>`)
       .join(" / "));
   const dirTag = d => d === "long"
     ? '<span class="dir long">做多 ▲</span>'
