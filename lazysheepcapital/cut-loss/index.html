@@ -30,32 +30,30 @@
     }
 
     /* ── NAV ── */
-    .nav {
-      position: sticky; top: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 36px; height: 56px;
-      background: rgba(7,7,15,0.88);
-      backdrop-filter: blur(24px) saturate(180%);
-      border-bottom: 1px solid var(--border);
+    .site-nav{position:sticky;top:0;z-index:300;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 24px;height:52px;background:rgba(7,7,15,.88);backdrop-filter:blur(20px) saturate(160%);border-bottom:1px solid rgba(255,255,255,.08);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif}
+    .site-nav .sn-logo{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;letter-spacing:-.02em;color:#e8e8f0;text-decoration:none;white-space:nowrap}
+    .site-nav .sn-links{display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end}
+    .site-nav .sn-link{padding:5px 11px;border-radius:8px;font-size:.78rem;color:rgba(200,200,230,.5);text-decoration:none;border:1px solid transparent;transition:all .15s;white-space:nowrap}
+    .site-nav .sn-link:hover{color:#e8e8f0;background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
+    .site-nav .sn-link.active{color:#e8e8f0;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)}
+    @media(max-width:680px){.site-nav{height:auto;padding:8px 14px;flex-wrap:wrap}.site-nav .sn-links{justify-content:flex-start}}
+
+    .back-link {
+      font-size: .8rem; color: var(--muted); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px; margin-bottom: 18px;
+      padding: 7px 14px; border: 1px solid var(--border); border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      align-self: flex-start;
+      transition: color .15s, background .15s, border-color .15s;
     }
-    .nav-logo {
-      font-size: 1rem; font-weight: 700; letter-spacing: -0.02em;
-      color: var(--text); text-decoration: none;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .nav-back {
-      font-size: 0.83rem; color: var(--muted); text-decoration: none;
-      padding: 6px 13px; border-radius: 8px;
-      border: 1px solid transparent; transition: all .15s;
-    }
-    .nav-back:hover { color: var(--text); background: var(--panel); border-color: var(--border); }
+    .back-link:hover { color: var(--text); background: rgba(255,255,255,.08); border-color: var(--border-h); }
 
     /* ── MAIN ── */
     .main {
       flex: 1;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 48px 20px 72px;
+      padding: 28px 20px 72px;
       max-width: 640px; margin: 0 auto; width: 100%;
     }
     .page-eyebrow {
@@ -169,15 +167,13 @@
 </head>
 <body>
 
-  <nav class="nav">
-    <a href="../" class="nav-logo">
-      <img src="../favicon.svg" width="22" height="22" style="display:block;flex-shrink:0" alt="">
-      LazySheepcapital
-    </a>
-    <a href="../" class="nav-back">← 返回首页</a>
-  </nav>
+  <nav class="site-nav"><a class="sn-logo" href="../"><img src="../favicon.svg" width="20" height="20" alt="">LazySheepcapital</a><div class="sn-links"><a href="../smart_money/" class="sn-link">聪明钱追踪</a><a href="../ai-capex-flow/" class="sn-link">AI 流向图</a><a href="../space-flow/" class="sn-link">太空板块</a><a href="../calendar/" class="sn-link">财报日历</a><a href="../cut-loss/" class="sn-link active">割肉自查</a><a href="../track-record/" class="sn-link">实盘记录</a></div></nav>
 
   <main class="main">
+    <a class="back-link" href="../">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      返回首页
+    </a>
     <div class="page-eyebrow">Cut-Loss Checklist</div>
     <h1 class="page-title">割肉<span class="grad-text">自查</span></h1>
     <p class="page-sub">想割肉之前，先依次回答下面的问题。<br>只要有任何一题的答案是「否」，就不应该轻易割肉。</p>
