@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>割肉自查 — LazySheepcapital</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <style>
+    :root {
+      --bg:           #07070f;
+      --bg2:          #0e0e1a;
+      --panel:        rgba(255,255,255,0.04);
+      --panel-h:      rgba(255,255,255,0.07);
+      --border:       rgba(255,255,255,0.08);
+      --border-h:     rgba(255,255,255,0.16);
+      --text:         #e8e8f0;
+      --muted:        rgba(200,200,230,0.5);
+      --dim:          rgba(200,200,230,0.28);
+      --green:        #22c55e;
+      --red:          #f43f5e;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 36px; height: 56px;
+      background: rgba(7,7,15,0.88);
+      backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 1rem; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-back {
+      font-size: 0.83rem; color: var(--muted); text-decoration: none;
+      padding: 6px 13px; border-radius: 8px;
+      border: 1px solid transparent; transition: all .15s;
+    }
+    .nav-back:hover { color: var(--text); background: var(--panel); border-color: var(--border); }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 48px 20px 72px;
+      max-width: 640px; margin: 0 auto; width: 100%;
+    }
+    .page-eyebrow {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--dim);
+      margin-bottom: 14px;
+    }
+    .page-title {
+      font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+      font-weight: 800; letter-spacing: -0.04em;
+      margin-bottom: 10px; text-align: center;
+    }
+    .page-title .grad-text {
+      background: linear-gradient(135deg, #fda4af 0%, #f43f5e 60%, #c084fc 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .page-sub {
+      font-size: 0.92rem; color: var(--muted);
+      text-align: center; max-width: 42ch;
+      margin-bottom: 40px; line-height: 1.7;
+    }
+
+    /* ── PROGRESS ── */
+    .progress { display: flex; gap: 8px; margin-bottom: 26px; }
+    .dot {
+      width: 32px; height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.1);
+      transition: background .25s;
+    }
+    .dot.done    { background: var(--green); }
+    .dot.current { background: rgba(255,255,255,0.45); }
+
+    /* ── CARD ── */
+    .card {
+      width: 100%;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 38px 34px 34px;
+      text-align: center;
+      animation: cardIn .3s ease;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .q-index {
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--dim);
+      margin-bottom: 16px;
+    }
+    .q-text {
+      font-size: 1.35rem; font-weight: 700;
+      letter-spacing: -0.02em; line-height: 1.45;
+      margin-bottom: 12px;
+    }
+    .q-hint {
+      font-size: 0.86rem; color: var(--muted);
+      line-height: 1.7; margin-bottom: 30px;
+    }
+    .btn-row { display: flex; gap: 12px; justify-content: center; }
+    .btn {
+      flex: 1; max-width: 200px;
+      padding: 15px 0; border-radius: 13px;
+      font-size: 1.05rem; font-weight: 700;
+      font-family: inherit; cursor: pointer;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      transition: all .15s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-yes:hover { border-color: rgba(244,63,94,.5); background: rgba(244,63,94,.12); color: #fda4af; }
+    .btn-no:hover  { border-color: rgba(34,197,94,.5);  background: rgba(34,197,94,.12);  color: #86efac; }
+
+    /* ── RESULT ── */
+    .result-emoji { font-size: 3.2rem; margin-bottom: 18px; line-height: 1; }
+    .result-title {
+      font-size: 1.7rem; font-weight: 800;
+      letter-spacing: -0.03em; margin-bottom: 14px;
+    }
+    .result-title.hold { color: var(--green); }
+    .result-title.cut  { color: var(--red); }
+    .result-reason {
+      font-size: 0.95rem; color: var(--text);
+      line-height: 1.8; margin-bottom: 10px;
+    }
+    .result-note {
+      font-size: 0.84rem; color: var(--muted);
+      line-height: 1.75; margin-bottom: 30px;
+    }
+    .result-note a { color: #60a5fa; text-decoration: none; }
+    .result-note a:hover { text-decoration: underline; }
+    .btn-restart {
+      padding: 12px 32px; border-radius: 999px;
+      font-size: 0.9rem; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent; color: var(--muted);
+      transition: all .15s;
+    }
+    .btn-restart:hover { color: var(--text); border-color: var(--border-h); }
+
+    @media (max-width: 480px) {
+      .nav { padding: 0 18px; }
+      .card { padding: 30px 22px 26px; }
+      .q-text { font-size: 1.18rem; }
+      .dot { width: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="../" class="nav-logo">
+      <img src="../favicon.svg" width="22" height="22" style="display:block;flex-shrink:0" alt="">
+      LazySheepcapital
+    </a>
+    <a href="../" class="nav-back">← 返回首页</a>
+  </nav>
+
+  <main class="main">
+    <div class="page-eyebrow">Cut-Loss Checklist</div>
+    <h1 class="page-title">割肉<span class="grad-text">自查</span></h1>
+    <p class="page-sub">想割肉之前，先依次回答下面的问题。<br>只要有任何一题的答案是「否」，就不应该轻易割肉。</p>
+
+    <div class="progress" id="progress"></div>
+
+    <div class="card" id="card"></div>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        text: "标普和纳斯达克是否都下跌超过 15%？",
+        hint: "只有指数级别的系统性崩盘才值得重新评估。单纯的回调和震荡，不算。",
+        noVerdict: "大盘连 15% 都没跌，这只是市场的正常波动。你慌什么？"
+      },
+      {
+        text: "当前公司基本面是否存在问题？",
+        hint: "营收、利润、护城河是真的恶化了？还是只有股价在跌？",
+        noVerdict: "基本面没问题，价值终将回归。基本面好的公司，股价跌了，终究会涨回去。"
+      },
+      {
+        text: "你当初买入的逻辑是否已经被证伪？",
+        hint: "回忆一下当初为什么买。那个理由，现在还成立吗？",
+        noVerdict: "买入逻辑还在，变的只是价格。逻辑没破，凭什么割？"
+      },
+      {
+        text: "你是否在用杠杆，且马上要被强制平仓？",
+        hint: "被强平不叫割肉，叫认命。没上杠杆的话，没有人能逼你卖。",
+        noVerdict: "没有杠杆，就没有人能逼你交出筹码。时间站在你这边。"
+      },
+      {
+        text: "你是 sb 吗？",
+        hint: "诚实一点。",
+        noVerdict: "你不是 sb，那就别做只有 sb 才会做的事——在底部把筹码交出去。"
+      }
+    ];
+
+    const progressEl = document.getElementById("progress");
+    const cardEl = document.getElementById("card");
+    let current = 0;
+
+    function textToHtmlSafe(v) {
+      return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
+
+    function renderProgress(state) {
+      progressEl.innerHTML = questions.map((_, i) => {
+        let cls = "dot";
+        if (state === "quiz") {
+          if (i < current) cls += " done";
+          else if (i === current) cls += " current";
+        } else {
+          cls += " done";
+        }
+        return `<span class="${cls}"></span>`;
+      }).join("");
+    }
+
+    function renderQuestion() {
+      const q = questions[current];
+      renderProgress("quiz");
+      cardEl.innerHTML = `
+        <div class="q-index">问题 ${current + 1} / ${questions.length}</div>
+        <div class="q-text">${textToHtmlSafe(q.text)}</div>
+        <div class="q-hint">${textToHtmlSafe(q.hint)}</div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-yes" id="btnYes">是</button>
+          <button type="button" class="btn btn-no"  id="btnNo">否</button>
+        </div>`;
+      document.getElementById("btnYes").addEventListener("click", () => {
+        if (current === questions.length - 1) renderCut();
+        else { current++; renderQuestion(); }
+      });
+      document.getElementById("btnNo").addEventListener("click", () => renderHold(q));
+    }
+
+    function renderHold(q) {
+      renderProgress("done");
+      cardEl.innerHTML = `
+        <div class="result-emoji">🐑</div>
+        <div class="result-title hold">不应该轻易割肉！</div>
+        <p class="result-reason">${textToHtmlSafe(q.noVerdict)}</p>
+        <p class="result-note">投资的关键是不要被情绪吓跑。回去看看你自己写下的<a href="../#principle-06">投资原则</a>，然后关掉行情软件。</p>
+        <button type="button" class="btn-restart" id="btnRestart">重新自查</button>`;
+      bindRestart();
+    }
+
+    function renderCut() {
+      renderProgress("done");
+      cardEl.innerHTML = `
+        <div class="result-emoji">🔪</div>
+        <div class="result-title cut">行吧……割吧。</div>
+        <p class="result-reason">大盘崩了，基本面崩了，买入逻辑证伪了，杠杆要爆了，你还亲口承认自己是 sb。</p>
+        <p class="result-note">这种情况下，割肉是你仅剩的尊严。留得青山在，不怕没柴烧。割完记得复盘，下次别再让自己走到第五题。</p>
+        <button type="button" class="btn-restart" id="btnRestart">重新自查</button>`;
+      bindRestart();
+    }
+
+    function bindRestart() {
+      document.getElementById("btnRestart").addEventListener("click", () => {
+        current = 0;
+        renderQuestion();
+      });
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
