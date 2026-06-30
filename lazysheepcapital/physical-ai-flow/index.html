@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>物理 AI / 机器人流向图 — LazySheepcapital</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06090c;
+  --glass:rgba(255,255,255,0.035);
+  --glass2:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --text:#dde6ea;
+  --muted:#46525a;
+  --muted2:#76828c;
+  --brain:#b794f6;   --brain-rgb:183,148,246;
+  --compute:#22d3ee; --compute-rgb:34,211,238;
+  --act:#ff9f43;     --act-rgb:255,159,67;
+  --mag:#ff5da2;     --mag-rgb:255,93,162;
+  --sense:#4cff8f;   --sense-rgb:76,255,143;
+  --oem:#60a5fa;     --oem-rgb:96,165,250;
+  --bot:#5ef38c;     --bot-rgb:94,243,140;
+  --red:#ff4d6d;
+  --amber:#ffa030;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'Inter',sans-serif;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+.bg-canvas{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 900px 700px at -5% -5%,  rgba(94,243,140,.06)  0%, transparent 60%),
+    radial-gradient(ellipse 700px 500px at 105% 12%, rgba(34,211,238,.05)  0%, transparent 55%),
+    radial-gradient(ellipse 500px 700px at 100% 95%, rgba(183,148,246,.05) 0%, transparent 55%),
+    radial-gradient(ellipse 600px 400px at 5%  92%,  rgba(255,159,67,.04)  0%, transparent 55%);
+}
+.bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(94,243,140,.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(94,243,140,.015) 1px, transparent 1px);
+  background-size:46px 46px;
+}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.star{position:absolute;border-radius:50%;background:#bfe;animation:twinkle var(--d,3s) ease-in-out infinite var(--delay,0s)}
+@keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.55}}
+
+.wrap{max-width:1360px;margin:0 auto;position:relative;z-index:1;padding:28px 22px 60px}
+
+/* ── BACK ── */
+.back{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:11px;color:rgba(94,243,140,.7);
+  text-decoration:none;margin-bottom:24px;
+  padding:7px 14px;border:1px solid rgba(94,243,140,.22);border-radius:999px;
+  background:rgba(94,243,140,.05);
+  transition:color .2s,background .2s,border-color .2s;
+}
+.back:hover{color:rgba(94,243,140,.98);background:rgba(94,243,140,.12);border-color:rgba(94,243,140,.45)}
+
+/* ── HERO ── */
+.hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(94,243,140,.07) 0%,rgba(34,211,238,.04) 50%,rgba(183,148,246,.04) 100%);
+  border:1px solid var(--border2);border-radius:20px;padding:36px 40px 32px;margin-bottom:20px;
+}
+.hero::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(94,243,140,.05),transparent 60%);pointer-events:none}
+.hero-kicker{font-family:var(--mono);font-size:10px;letter-spacing:3px;color:rgba(94,243,140,.78);text-transform:uppercase;margin-bottom:10px}
+.hero-title{
+  font-size:clamp(26px,3vw,40px);font-weight:700;letter-spacing:-.04em;line-height:1.15;
+  background:linear-gradient(135deg,#e8f0ea 25%,rgba(94,243,140,.92) 75%,rgba(34,211,238,.9) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;
+}
+.hero-sub{font-size:13px;color:var(--muted2);font-family:var(--mono);margin-bottom:24px}
+.hero-stats{display:flex;flex-wrap:wrap;gap:10px}
+.hstat{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px 18px}
+.hstat-val{font-family:var(--mono);font-size:19px;font-weight:600}
+.hstat-lbl{font-size:10px;color:var(--muted2);margin-top:2px}
+
+/* ── BANNER ── */
+.spcx-banner{
+  background:linear-gradient(135deg,rgba(94,243,140,.1),rgba(183,148,246,.07));
+  border:1px solid rgba(94,243,140,.28);border-radius:14px;padding:16px 22px;margin-bottom:20px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.spcx-badge{font-family:var(--mono);font-size:11px;font-weight:700;background:rgba(94,243,140,.16);border:1px solid rgba(94,243,140,.4);color:var(--bot);border-radius:6px;padding:4px 10px;white-space:nowrap}
+.spcx-text{font-size:12px;color:rgba(205,225,212,.85);line-height:1.6;flex:1}
+.spcx-text strong{color:var(--text)}
+
+/* ── CAPEX CHART ── */
+.capex-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:20px}
+.section-eyebrow{font-family:var(--mono);font-size:9.5px;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;margin-bottom:14px}
+.capex-rows{display:flex;flex-direction:column;gap:9px}
+.capex-row{display:grid;grid-template-columns:190px 1fr 130px 96px;align-items:center;gap:12px}
+.capex-ticker{font-family:var(--mono);font-size:11px;font-weight:600}
+.capex-track{height:8px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden}
+.capex-bar{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+.capex-val{font-family:var(--mono);font-size:11px;text-align:right}
+.capex-yoy{font-size:10px;color:rgba(76,255,143,.8);text-align:right}
+
+/* ── STRIP ── */
+.strip{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:20px}
+.strip-card{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden}
+.strip-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--c,var(--bot));border-radius:2px 2px 0 0}
+.strip-val{font-family:var(--mono);font-size:20px;font-weight:600}
+.strip-lbl{font-size:10px;color:var(--muted2);margin-top:3px;line-height:1.5}
+
+/* ── MAIN FLOW ── */
+.flow-wrap{display:grid;grid-template-columns:210px 50px 1fr 50px 200px;gap:0;align-items:start;margin-bottom:24px}
+.col-buyers{grid-column:1}
+.col-arr-l{grid-column:2;display:flex;align-items:center;justify-content:center;padding-top:120px}
+.col-layers{grid-column:3;display:flex;flex-direction:column;gap:12px}
+.col-arr-r{grid-column:4;display:flex;align-items:center;justify-content:center;padding-top:120px}
+.col-down{grid-column:5;display:flex;flex-direction:column;gap:8px;padding-top:48px}
+
+.col-label{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:2px;margin-bottom:8px}
+.buyer{
+  background:linear-gradient(145deg,rgba(94,243,140,.07),rgba(94,243,140,.02));
+  border:1px solid rgba(94,243,140,.16);border-radius:10px;padding:11px 14px;position:relative;
+  margin-bottom:7px;transition:border-color .2s,transform .2s;cursor:default;
+}
+.buyer:hover{border-color:rgba(94,243,140,.4);transform:translateX(2px)}
+.buyer-pulse{position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:7px;height:7px;border-radius:50%;background:var(--bot);box-shadow:0 0 10px var(--bot);animation:pulse 2s ease-in-out infinite}
+.buyer-ticker{font-family:var(--mono);font-size:9px;color:rgba(94,243,140,.85);letter-spacing:1px;margin-bottom:2px}
+.buyer-name{font-size:12px;font-weight:600;margin-bottom:2px}
+.buyer-cap{font-family:var(--mono);font-size:9.5px;color:var(--muted2)}
+.buyer-yoy{font-family:var(--mono);font-size:9px;color:rgba(76,255,143,.75);margin-top:1px}
+
+/* ── LAYERS ── */
+.layer{border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.07);transition:border-color .2s}
+.layer:hover{border-color:rgba(255,255,255,.14)}
+.layer-hd{display:flex;align-items:center;gap:10px;padding:13px 16px 11px;position:relative;overflow:hidden}
+.layer-hd::before{content:'';position:absolute;inset:0;background:var(--hd-grad,linear-gradient(135deg,rgba(94,243,140,.15),transparent 70%));pointer-events:none}
+.layer-icon{font-size:17px;position:relative;z-index:1}
+.layer-name{font-size:13px;font-weight:700;flex:1;position:relative;z-index:1}
+.layer-amt{font-family:var(--mono);font-size:11px;font-weight:600;position:relative;z-index:1}
+.layer-pct{font-family:var(--mono);font-size:13px;font-weight:700;position:relative;z-index:1}
+.layer-bar-track{height:2px;background:rgba(255,255,255,.05)}
+.layer-bar-fill{height:100%;transition:width 1.4s cubic-bezier(.16,1,.3,1)}
+.layer-body{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:10px 12px 14px}
+
+/* ── CHIPS ── */
+.chip{background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.065);border-radius:10px;padding:9px 11px;position:relative;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;cursor:default}
+.chip::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--stripe,rgba(255,255,255,.15));border-radius:3px 0 0 3px}
+.chip:hover{transform:translateY(-2px);border-color:rgba(var(--chip-rgb,255,255,255),.28);box-shadow:0 6px 22px rgba(0,0,0,.4),0 0 18px rgba(var(--chip-rgb,255,255,255),.08)}
+.chip-ticker{font-family:var(--mono);font-size:10px;font-weight:700;margin-bottom:2px}
+.chip-name{font-size:10px;color:rgba(205,222,228,.8);line-height:1.35;margin-bottom:3px}
+.chip-role{font-size:9.5px;color:var(--muted);line-height:1.45}
+.chip-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.tag{font-family:var(--mono);font-size:8px;padding:1px 6px;border-radius:3px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(165,180,190,.8)}
+.chip-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.badge{font-family:var(--mono);font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;letter-spacing:.3px}
+.b-sm-strong{color:#4cff8f;background:rgba(76,255,143,.1);border:1px solid rgba(76,255,143,.25)}
+.b-sm-buy{color:#22d3ee;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.22)}
+.b-warn{color:#ff4d6d;background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.22)}
+.b-amber{color:#ffa030;background:rgba(255,160,0,.08);border:1px solid rgba(255,160,0,.22)}
+.b-new{color:#b794f6;background:rgba(183,148,246,.1);border:1px solid rgba(183,148,246,.25)}
+.b-private{color:#94a3b8;background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.22)}
+.b-china{color:#ff5da2;background:rgba(255,93,162,.08);border:1px solid rgba(255,93,162,.22)}
+
+.sublabel{display:flex;align-items:center;gap:8px;padding:5px 14px;font-family:var(--mono);font-size:9.5px;color:var(--muted2);background:rgba(255,255,255,.025)}
+.sl-badge{font-size:8px;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:.8px}
+.arr-svg{width:44px}
+
+/* ── DOWNSTREAM ── */
+.down-card{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:10px;padding:10px 13px;border-left:3px solid rgba(255,255,255,.12);transition:border-color .2s,border-left-color .2s}
+.down-card:hover{border-color:var(--border2);border-left-color:rgba(94,243,140,.35)}
+.down-lbl{font-family:var(--mono);font-size:8.5px;color:var(--muted);letter-spacing:1px;margin-bottom:3px}
+.down-name{font-size:11px;font-weight:600;margin-bottom:3px;line-height:1.4}
+.down-detail{font-size:9.5px;color:var(--muted2);line-height:1.4}
+
+/* ── LAYER THEMES ── */
+.ly-brain .layer-hd{--hd-grad:linear-gradient(135deg,rgba(183,148,246,.22) 0%,rgba(183,148,246,.06) 60%,transparent 100%)}
+.ly-brain .layer-amt,.ly-brain .layer-pct{color:var(--brain)}
+.ly-brain .layer-bar-fill{background:linear-gradient(90deg,rgba(183,148,246,.7),rgba(183,148,246,.4))}
+.ly-brain .chip{--stripe:var(--brain);--chip-rgb:var(--brain-rgb)}
+.ly-brain .chip-ticker{color:var(--brain)}
+
+.ly-compute .layer-hd{--hd-grad:linear-gradient(135deg,rgba(34,211,238,.2) 0%,rgba(34,211,238,.05) 60%,transparent 100%)}
+.ly-compute .layer-amt,.ly-compute .layer-pct{color:var(--compute)}
+.ly-compute .layer-bar-fill{background:linear-gradient(90deg,rgba(34,211,238,.7),rgba(34,211,238,.4))}
+.ly-compute .chip{--stripe:var(--compute);--chip-rgb:var(--compute-rgb)}
+.ly-compute .chip-ticker{color:var(--compute)}
+
+.ly-act .layer-hd{--hd-grad:linear-gradient(135deg,rgba(255,159,67,.22) 0%,rgba(255,159,67,.06) 60%,transparent 100%)}
+.ly-act .layer-amt,.ly-act .layer-pct{color:var(--act)}
+.ly-act .layer-bar-fill{background:linear-gradient(90deg,rgba(255,159,67,.7),rgba(255,159,67,.4))}
+.ly-act .chip{--stripe:var(--act);--chip-rgb:var(--act-rgb)}
+.ly-act .chip-ticker{color:var(--act)}
+
+.ly-mag .layer-hd{--hd-grad:linear-gradient(135deg,rgba(255,93,162,.2) 0%,rgba(255,93,162,.05) 60%,transparent 100%)}
+.ly-mag .layer-amt,.ly-mag .layer-pct{color:var(--mag)}
+.ly-mag .layer-bar-fill{background:linear-gradient(90deg,rgba(255,93,162,.7),rgba(255,93,162,.4))}
+.ly-mag .chip{--stripe:var(--mag);--chip-rgb:var(--mag-rgb)}
+.ly-mag .chip-ticker{color:var(--mag)}
+
+.ly-sense .layer-hd{--hd-grad:linear-gradient(135deg,rgba(76,255,143,.18) 0%,rgba(76,255,143,.05) 60%,transparent 100%)}
+.ly-sense .layer-amt,.ly-sense .layer-pct{color:var(--sense)}
+.ly-sense .layer-bar-fill{background:linear-gradient(90deg,rgba(76,255,143,.7),rgba(76,255,143,.4))}
+.ly-sense .chip{--stripe:var(--sense);--chip-rgb:var(--sense-rgb)}
+.ly-sense .chip-ticker{color:var(--sense)}
+
+.ly-oem .layer-hd{--hd-grad:linear-gradient(135deg,rgba(96,165,250,.2) 0%,rgba(96,165,250,.05) 60%,transparent 100%)}
+.ly-oem .layer-amt,.ly-oem .layer-pct{color:var(--oem)}
+.ly-oem .layer-bar-fill{background:linear-gradient(90deg,rgba(96,165,250,.7),rgba(96,165,250,.4))}
+.ly-oem .chip{--stripe:var(--oem);--chip-rgb:var(--oem-rgb)}
+.ly-oem .chip-ticker{color:var(--oem)}
+
+/* ── BOTTLENECK ── */
+.section-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px}
+.section-hd{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border)}
+.section-hd-title{font-size:13px;font-weight:700}
+.bottle-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+.b-item{padding:16px 18px;border-right:1px solid var(--border)}
+.b-item:last-child{border-right:0}
+.b-name{font-size:12px;font-weight:700;margin-bottom:6px}
+.b-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+.b-desc{font-size:10.5px;color:var(--muted2);line-height:1.55}
+.b-who{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px}
+
+/* ── ETF ── */
+.etf-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.etf-col{padding:18px 22px}
+.etf-col:first-child{border-right:1px solid var(--border)}
+.etf-col:nth-child(2){border-right:1px solid var(--border)}
+.etf-sub{font-family:var(--mono);font-size:11px;font-weight:700;margin-bottom:12px;color:var(--text)}
+.etf-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px}
+.etf-row:last-child{border-bottom:0}
+.etf-tkr{font-family:var(--mono);font-weight:700;font-size:11px}
+.etf-name{color:var(--muted2);font-size:10px}
+.etf-wt{font-family:var(--mono);font-size:10px;color:rgba(76,255,143,.8)}
+
+/* ── SCENARIO ── */
+.tvi-grid{display:grid;grid-template-columns:1fr 1fr}
+.tvi-col{padding:18px 22px}
+.tvi-col:first-child{border-right:1px solid var(--border)}
+.tvi-label{font-family:var(--mono);font-size:11px;font-weight:700;margin-bottom:12px}
+.tvi-row{display:flex;gap:10px;margin-bottom:9px;font-size:11px}
+.tvi-icon{font-size:14px;flex-shrink:0}
+.tvi-text{color:rgba(185,200,205,.85);line-height:1.55}
+.tvi-text strong{color:var(--text)}
+
+/* ── SMART MONEY ── */
+.sm-table{width:100%;border-collapse:collapse;font-size:11px}
+.sm-table th{text-align:left;padding:8px 16px;font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.8px;border-bottom:1px solid var(--border)}
+.sm-table td{padding:9px 16px;border-bottom:1px solid rgba(255,255,255,.035);vertical-align:middle}
+.sm-table tr:last-child td{border-bottom:0}
+.sm-table tr:hover td{background:rgba(255,255,255,.025)}
+.sm-tkr{font-family:var(--mono);font-weight:700;font-size:11px}
+.buyer-pill{display:inline-block;margin:2px 2px 2px 0;font-family:var(--mono);font-size:8.5px;padding:2px 6px;border-radius:3px;background:rgba(94,243,140,.07);border:1px solid rgba(94,243,140,.18);color:rgba(150,230,180,.9)}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;color:var(--muted)}
+footer a{color:rgba(94,243,140,.6);text-decoration:none}
+footer a:hover{color:rgba(94,243,140,.9)}
+
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 10px var(--bot)}50%{opacity:.45;box-shadow:0 0 4px var(--bot)}}
+@keyframes flow{0%{stroke-dashoffset:200}100%{stroke-dashoffset:0}}
+.flow-anim{animation:flow 2.2s linear infinite}
+
+@media(max-width:960px){
+  .flow-wrap{grid-template-columns:1fr}
+  .col-arr-l,.col-arr-r{display:none}
+  .col-down{padding-top:0}
+  .strip{grid-template-columns:repeat(3,1fr)}
+  .bottle-grid{grid-template-columns:1fr 1fr}
+  .tvi-grid{grid-template-columns:1fr}
+  .tvi-col:first-child{border-right:none;border-bottom:1px solid var(--border)}
+  .etf-grid{grid-template-columns:1fr}
+  .etf-col{border-right:none!important;border-bottom:1px solid var(--border)}
+  .capex-row{grid-template-columns:140px 1fr 100px 0}
+}
+@media(max-width:600px){
+  .strip{grid-template-columns:1fr 1fr}
+  .bottle-grid{grid-template-columns:1fr}
+  .hero{padding:22px 20px}
+  .layer-body{grid-template-columns:1fr}
+}
+</style>
+<style>
+/* ── 全站统一顶栏 ── */
+.site-nav{position:sticky;top:0;z-index:300;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 24px;height:52px;background:rgba(7,7,15,.88);backdrop-filter:blur(20px) saturate(160%);border-bottom:1px solid rgba(255,255,255,.08);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif}
+.site-nav .sn-logo{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;letter-spacing:-.02em;color:#e8e8f0;text-decoration:none;white-space:nowrap}
+.site-nav .sn-links{display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end}
+.site-nav .sn-link{padding:5px 11px;border-radius:8px;font-size:.78rem;color:rgba(200,200,230,.5);text-decoration:none;border:1px solid transparent;transition:all .15s;white-space:nowrap}
+.site-nav .sn-link:hover{color:#e8e8f0;background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
+.site-nav .sn-link.active{color:#e8e8f0;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)}
+@media(max-width:680px){.site-nav{height:auto;padding:8px 14px;flex-wrap:wrap}.site-nav .sn-links{justify-content:flex-start}}
+</style>
+</head>
+<body>
+<nav class="site-nav"><a class="sn-logo" href="../"><img src="../favicon.svg" width="20" height="20" alt="">LazySheepcapital</a><div class="sn-links"><a href="../smart_money/" class="sn-link">聪明钱追踪</a><a href="../ai-capex-flow/" class="sn-link">AI 流向图</a><a href="../space-flow/" class="sn-link">太空板块</a><a href="../physical-ai-flow/" class="sn-link active">物理AI</a><a href="../calendar/" class="sn-link">财报日历</a><a href="../cut-loss/" class="sn-link">割肉自查</a><a href="../track-record/" class="sn-link">实盘记录</a></div></nav>
+<div class="bg-canvas"></div>
+<div class="bg-grid"></div>
+<div class="stars" id="starsContainer"></div>
+
+<div class="wrap">
+
+<a class="back" href="../">
+  <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  返回首页
+</a>
+
+<!-- TAB BAR -->
+<div style="display:flex;gap:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:4px;margin-bottom:20px;flex-wrap:wrap">
+  <a href="../ai-capex-flow/" style="flex:1;min-width:120px;text-align:center;padding:8px 16px;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:rgba(34,211,238,.6);text-decoration:none;transition:all .2s" onmouseover="this.style.background='rgba(34,211,238,.08)';this.style.color='rgba(34,211,238,.95)'" onmouseout="this.style.background='transparent';this.style.color='rgba(34,211,238,.6)'">⚡ AI Capex Flow</a>
+  <a href="../space-flow/" style="flex:1;min-width:120px;text-align:center;padding:8px 16px;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:rgba(199,125,255,.6);text-decoration:none;transition:all .2s" onmouseover="this.style.background='rgba(199,125,255,.08)';this.style.color='rgba(199,125,255,.95)'" onmouseout="this.style.background='transparent';this.style.color='rgba(199,125,255,.6)'">🚀 太空板块</a>
+  <span style="flex:1;min-width:120px;text-align:center;padding:8px 16px;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;background:rgba(94,243,140,.1);border:1px solid rgba(94,243,140,.25);color:#5ef38c;cursor:default">🤖 物理 AI</span>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">// Physical AI · 物理 AI / 具身智能 / 人形机器人产业链 · 2026E</div>
+  <h1 class="hero-title">物理 AI / 机器人全产业链图谱</h1>
+  <p class="hero-sub">"AI 的下一站走进物理世界" · 机器人大脑(VLA) → 算力 → 执行器 → 磁材 → 感知 → 整机 · 私募狂飙 + 公开市场代理 · 估算数据，仅供参考</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-val" style="color:var(--bot)">~$6.2B</div><div class="hstat-lbl">人形机器人市场（2026E）</div></div>
+    <div class="hstat"><div class="hstat-val" style="color:var(--brain)">~$165B</div><div class="hstat-lbl">2034E 市场（CAGR ~50%）</div></div>
+    <div class="hstat"><div class="hstat-val" style="color:var(--compute)">$40.7B</div><div class="hstat-lbl">机器人投资（2025 全年）</div></div>
+    <div class="hstat"><div class="hstat-val" style="color:var(--sense)">$18.8B</div><div class="hstat-lbl">机器人 VC（2026 YTD）</div></div>
+    <div class="hstat"><div class="hstat-val" style="color:var(--mag)">63–70%</div><div class="hstat-lbl">中国供应链份额</div></div>
+  </div>
+</div>
+
+<!-- PRIVATE BANNER -->
+<div class="spcx-banner">
+  <span class="spcx-badge">🤖 私募"机器人大脑"四巨头</span>
+  <div class="spcx-text">
+    资金最密集处是"机器人大脑"（VLA / 世界模型）：<strong>Figure AI</strong>（累计 ~$1.9B · 估值 $39B）、<strong>Skild AI</strong>（$1.4B · 估值 $14B · SoftBank/英伟达领投）、<strong>Physical Intelligence</strong>（~$1.4B · 估值 $11B+ · 贝索斯系）、<strong>1X / Agility / Apptronik</strong> 紧随。这些龙头均未上市 —— 散户只能借公开代理布局：
+    <strong>NVDA</strong>（大脑+算力平台）、<strong>TSLA</strong>（Optimus）、<strong>MP</strong>（稀土磁材）、<strong>TER</strong>（协作机器人）、<strong>6324.T 谐波减速机</strong>等。
+  </div>
+</div>
+
+<!-- FUNDING ROUNDS -->
+<div class="capex-card">
+  <div class="section-eyebrow">// 2025–2026 代表性私募融资 — 资本流向（估算）</div>
+  <div class="capex-rows">
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--brain)">Figure AI（私）</div>
+      <div class="capex-track"><div class="capex-bar" style="width:100%;background:linear-gradient(90deg,rgba(183,148,246,.8),rgba(183,148,246,.45))"></div></div>
+      <div class="capex-val" style="color:var(--brain)">~$1.9B 累计</div>
+      <div class="capex-yoy">估值 $39B</div>
+    </div>
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--brain)">Skild AI（私）</div>
+      <div class="capex-track"><div class="capex-bar" style="width:74%;background:linear-gradient(90deg,rgba(183,148,246,.8),rgba(183,148,246,.45))"></div></div>
+      <div class="capex-val" style="color:var(--brain)">$1.4B（26/01）</div>
+      <div class="capex-yoy">估值 $14B</div>
+    </div>
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--brain)">Physical Intelligence（私）</div>
+      <div class="capex-track"><div class="capex-bar" style="width:72%;background:linear-gradient(90deg,rgba(183,148,246,.8),rgba(183,148,246,.45))"></div></div>
+      <div class="capex-val" style="color:var(--brain)">~$1.4B</div>
+      <div class="capex-yoy">估值 $11B+</div>
+    </div>
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--oem)">Tesla Optimus</div>
+      <div class="capex-track"><div class="capex-bar" style="width:60%;background:linear-gradient(90deg,rgba(96,165,250,.8),rgba(96,165,250,.45))"></div></div>
+      <div class="capex-val" style="color:var(--oem)">自筹 capex</div>
+      <div class="capex-yoy">目标 &lt;$20k/台</div>
+    </div>
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--sense)">1X / Agility / Apptronik</div>
+      <div class="capex-track"><div class="capex-bar" style="width:45%;background:linear-gradient(90deg,rgba(76,255,143,.8),rgba(76,255,143,.45))"></div></div>
+      <div class="capex-val" style="color:var(--sense)">合计 ~$1B+</div>
+      <div class="capex-yoy">整机第二梯队</div>
+    </div>
+    <div class="capex-row">
+      <div class="capex-ticker" style="color:var(--mag)">中国队（Unitree/Agibot/BYD）</div>
+      <div class="capex-track"><div class="capex-bar" style="width:55%;background:linear-gradient(90deg,rgba(255,93,162,.8),rgba(255,93,162,.45))"></div></div>
+      <div class="capex-val" style="color:var(--mag)">610+ 笔交易</div>
+      <div class="capex-yoy" style="color:var(--mag)">9个月/2025</div>
+    </div>
+  </div>
+</div>
+
+<!-- STRIP -->
+<div class="strip">
+  <div class="strip-card" style="--c:var(--brain)"><div class="strip-val" style="color:var(--brain)">~25%</div><div class="strip-lbl">机器人大脑 / VLA<br><span style="color:var(--brain);opacity:.75">NVDA · GOOGL · 私募</span></div></div>
+  <div class="strip-card" style="--c:var(--compute)"><div class="strip-val" style="color:var(--compute)">~15%</div><div class="strip-lbl">算力 / 边缘推理<br><span style="color:var(--compute);opacity:.75">NVDA · QCOM · AMBA</span></div></div>
+  <div class="strip-card" style="--c:var(--act)"><div class="strip-val" style="color:var(--act)">~20%</div><div class="strip-lbl">执行器 / 电机减速机<br><span style="color:var(--act);opacity:.75">6324.T · 6594.T · ALNT</span></div></div>
+  <div class="strip-card" style="--c:var(--mag)"><div class="strip-val" style="color:var(--mag)">~8%</div><div class="strip-lbl">磁材 / 稀土 / 电池<br><span style="color:var(--mag);opacity:.75">MP · LYC · 电池</span></div></div>
+  <div class="strip-card" style="--c:var(--sense)"><div class="strip-val" style="color:var(--sense)">~12%</div><div class="strip-lbl">传感 / 视觉 / 触觉<br><span style="color:var(--sense);opacity:.75">AMBA · CGNX · 6861.T</span></div></div>
+  <div class="strip-card" style="--c:var(--oem)"><div class="strip-val" style="color:var(--oem)">~20%</div><div class="strip-lbl">整机 / 集成商<br><span style="color:var(--oem);opacity:.75">TSLA · TER · ABB · Figure(私)</span></div></div>
+</div>
+
+<!-- ═════════ MAIN FLOW ═════════ -->
+<div class="flow-wrap">
+
+  <!-- BUYERS -->
+  <div class="col-buyers">
+    <div class="col-label">CAPITAL / BUYERS</div>
+    <div class="buyer"><div class="buyer-pulse"></div><div class="buyer-ticker">NVDA</div><div class="buyer-name">NVIDIA（平台 + NVentures）</div><div class="buyer-cap">Isaac GR00T · Jetson Thor</div><div class="buyer-yoy">↑ 几乎所有人形厂商的底座</div></div>
+    <div class="buyer" style="background:rgba(96,165,250,.05);border-color:rgba(96,165,250,.18)"><div class="buyer-pulse" style="background:var(--oem);box-shadow:0 0 10px var(--oem)"></div><div class="buyer-ticker" style="color:rgba(96,165,250,.85)">TSLA</div><div class="buyer-name">Tesla — Optimus</div><div class="buyer-cap">2026 目标量产数千台</div><div class="buyer-yoy" style="color:rgba(96,165,250,.7)">↑ 2027 对外销售</div></div>
+    <div class="buyer"><div class="buyer-pulse"></div><div class="buyer-ticker">SoftBank</div><div class="buyer-name">软银集团</div><div class="buyer-cap">Skild 领投 · 收购 ABB 机器人</div><div class="buyer-yoy">↑ All-in 物理 AI</div></div>
+    <div class="buyer"><div class="buyer-pulse"></div><div class="buyer-ticker">AMZN</div><div class="buyer-name">Amazon</div><div class="buyer-cap">仓储机器人 · Agility 投资方</div><div class="buyer-yoy">↑ 最大落地场景</div></div>
+    <div class="buyer" style="background:rgba(183,148,246,.05);border-color:rgba(183,148,246,.16)"><div class="buyer-pulse" style="background:var(--brain);box-shadow:0 0 10px var(--brain)"></div><div class="buyer-ticker" style="color:rgba(183,148,246,.85)">Bezos / 主权</div><div class="buyer-name">贝索斯 · 中东主权基金</div><div class="buyer-cap">PI · Skild · Figure</div><div class="buyer-yoy" style="color:rgba(183,148,246,.7)">↑ 押注"大脑"层</div></div>
+    <div class="buyer" style="background:rgba(255,93,162,.04);border-color:rgba(255,93,162,.14)"><div class="buyer-pulse" style="background:var(--mag);box-shadow:0 0 10px var(--mag)"></div><div class="buyer-ticker" style="color:rgba(255,93,162,.85)">中国国家队</div><div class="buyer-name">BYD · 地方政府引导基金</div><div class="buyer-cap">610+ 笔投资 / 9个月</div><div class="buyer-yoy" style="color:rgba(255,93,162,.7)">↑ 成本优势 30–40%</div></div>
+  </div>
+
+  <!-- ARROW LEFT -->
+  <div class="col-arr-l">
+    <svg class="arr-svg" viewBox="0 0 50 80" fill="none">
+      <defs><filter id="glow2"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <path d="M8 40 H38" stroke="rgba(94,243,140,.45)" stroke-width="1.5" stroke-dasharray="7 4" class="flow-anim"/>
+      <path d="M30 33 L42 40 L30 47" stroke="rgba(94,243,140,.45)" stroke-width="1.5" fill="none"/>
+    </svg>
+  </div>
+
+  <!-- LAYERS -->
+  <div class="col-layers">
+    <div class="col-label">VALUE CHAIN LAYERS</div>
+
+    <!-- ① Robot Brain / VLA -->
+    <div class="layer ly-brain">
+      <div class="layer-hd">
+        <span class="layer-icon">🧠</span>
+        <span class="layer-name">机器人大脑 / VLA / 世界模型</span>
+        <span class="layer-amt">价值池最高</span>&nbsp;
+        <span class="layer-pct">25%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:25%"></div></div>
+      <div class="sublabel" style="border-top:1px solid rgba(183,148,246,.12);border-bottom:1px solid rgba(183,148,246,.1)">
+        <span class="sl-badge" style="background:rgba(183,148,246,.14);color:var(--brain);border:1px solid rgba(183,148,246,.3)">资金最密集</span>
+        视觉-语言-动作模型 (VLA) 是物理 AI 的"ChatGPT 时刻"争夺战
+      </div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">NVDA</div>
+          <div class="chip-name">NVIDIA — Isaac GR00T</div>
+          <div class="chip-role">人形通用基础模型 GR00T · Isaac Sim 仿真训练场 · Omniverse 数字孪生 · 行业事实标准</div>
+          <div class="chip-tags"><span class="tag">GR00T N1</span><span class="tag">Isaac Sim</span><span class="tag">Cosmos</span></div>
+          <div class="chip-badges"><span class="badge b-sm-strong">卖铲人 · 全栈</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">GOOGL</div>
+          <div class="chip-name">Google DeepMind</div>
+          <div class="chip-role">Gemini Robotics VLA · RT-2 / ALOHA 数据 · 把多模态大模型迁移到具身</div>
+          <div class="chip-tags"><span class="tag">Gemini Robotics</span><span class="tag">VLA</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">大厂入场</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">Figure（私）</div>
+          <div class="chip-name">Figure AI — Helix</div>
+          <div class="chip-role">自研 Helix VLA + 自造整机 · 估值 $39B · 纯人形最大融资</div>
+          <div class="chip-tags"><span class="tag">Helix</span><span class="tag">Figure 03</span></div>
+          <div class="chip-badges"><span class="badge b-private">私有 · IPO 候选</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">PI（私）</div>
+          <div class="chip-name">Physical Intelligence</div>
+          <div class="chip-role">π0 通用机器人策略 · 前 DeepMind 团队 · 只做"大脑"不造身体</div>
+          <div class="chip-tags"><span class="tag">π0 / π0.5</span><span class="tag">跨本体</span></div>
+          <div class="chip-badges"><span class="badge b-new">贝索斯系</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">Skild（私）</div>
+          <div class="chip-name">Skild AI</div>
+          <div class="chip-role">"omni-bodied" 全本体大脑 · SoftBank/NVIDIA 领投 · 估值 $14B</div>
+          <div class="chip-tags"><span class="tag">Skild Brain</span><span class="tag">$1.4B</span></div>
+          <div class="chip-badges"><span class="badge b-private">私有</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">1X（私）</div>
+          <div class="chip-name">1X Technologies — NEO</div>
+          <div class="chip-role">家用人形 NEO · 端到端神经网络 · OpenAI 早期投资</div>
+          <div class="chip-tags"><span class="tag">NEO</span><span class="tag">家用</span></div>
+          <div class="chip-badges"><span class="badge b-private">私有</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② Compute / Edge -->
+    <div class="layer ly-compute">
+      <div class="layer-hd">
+        <span class="layer-icon">💻</span>
+        <span class="layer-name">算力 / 边缘推理 / 训练芯片</span>
+        <span class="layer-amt">~15%</span>&nbsp;
+        <span class="layer-pct">15%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:15%"></div></div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">NVDA</div>
+          <div class="chip-name">NVIDIA — Jetson Thor</div>
+          <div class="chip-role">机器人"车规级"边缘大脑 · Blackwell GPU 上身 · 训练(GB200)+推理(Thor)双吃</div>
+          <div class="chip-tags"><span class="tag">Jetson Thor</span><span class="tag">Blackwell</span></div>
+          <div class="chip-badges"><span class="badge b-sm-strong">算力垄断</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">QCOM</div>
+          <div class="chip-name">Qualcomm</div>
+          <div class="chip-role">低功耗边缘 AI SoC · 机器人/无人机推理 · 与 NVDA 错位竞争</div>
+          <div class="chip-tags"><span class="tag">边缘 AI</span><span class="tag">低功耗</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">AMBA</div>
+          <div class="chip-name">Ambarella</div>
+          <div class="chip-role">视觉处理 SoC · CV 边缘推理 · 机器人/汽车感知大脑被点名瓶颈</div>
+          <div class="chip-tags"><span class="tag">CVflow</span><span class="tag">视觉 SoC</span></div>
+          <div class="chip-badges"><span class="badge b-new">小盘弹性</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">AMD</div>
+          <div class="chip-name">AMD</div>
+          <div class="chip-role">MI 系列训练 · 嵌入式/FPGA(Xilinx) 机器人控制 · 算力第二供应</div>
+          <div class="chip-tags"><span class="tag">MI300</span><span class="tag">Versal</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ Actuators / Motors -->
+    <div class="layer ly-act">
+      <div class="layer-hd">
+        <span class="layer-icon">⚙️</span>
+        <span class="layer-name">执行器 / 电机 / 减速机（硬瓶颈）</span>
+        <span class="layer-amt">~20%</span>&nbsp;
+        <span class="layer-pct">20%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:20%"></div></div>
+      <div class="sublabel" style="border-top:1px solid rgba(255,159,67,.12);border-bottom:1px solid rgba(255,159,67,.1)">
+        <span class="sl-badge" style="background:rgba(255,159,67,.14);color:var(--act);border:1px solid rgba(255,159,67,.3)">瓶颈</span>
+        高扭矩精密执行器全球供应商不足 10 家 · 千→百万台扩产是最大卡点
+      </div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">6324.T</div>
+          <div class="chip-name">Harmonic Drive（谐波减速机）</div>
+          <div class="chip-role">谐波减速器全球龙头 · 工业机器人 60%+ 使用其齿轮 · 人形关节核心</div>
+          <div class="chip-tags"><span class="tag">谐波齿轮</span><span class="tag">日本</span></div>
+          <div class="chip-badges"><span class="badge b-sm-strong">不可替代</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">6594.T</div>
+          <div class="chip-name">Nidec 尼得科</div>
+          <div class="chip-role">精密电机全球龙头 · 无框力矩电机 · 关节模组一体化方案</div>
+          <div class="chip-tags"><span class="tag">无框电机</span><span class="tag">关节模组</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">电机龙头</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">ALNT</div>
+          <div class="chip-name">Allient Inc</div>
+          <div class="chip-role">运动控制 / 无框电机 / 精密机电组件 · 美股小盘执行器弹性标的</div>
+          <div class="chip-tags"><span class="tag">无框电机</span><span class="tag">运动控制</span></div>
+          <div class="chip-badges"><span class="badge b-new">小盘代理</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">RRX</div>
+          <div class="chip-name">Regal Rexnord</div>
+          <div class="chip-role">电机 / 齿轮传动 / 轴承 · 自动化运动部件 · 美股传统代理</div>
+          <div class="chip-tags"><span class="tag">电机</span><span class="tag">传动</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">MOG.A</div>
+          <div class="chip-name">Moog Inc</div>
+          <div class="chip-role">高精度伺服执行器 · 航空/国防级运动控制 · 高端力控方案</div>
+          <div class="chip-tags"><span class="tag">伺服执行器</span><span class="tag">力控</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">688017 / 002747</div>
+          <div class="chip-name">绿的谐波 / 埃斯顿（中）</div>
+          <div class="chip-role">中国谐波减速器(绿的)与机器人本体/伺服(埃斯顿) · 国产替代主线</div>
+          <div class="chip-tags"><span class="tag">国产谐波</span><span class="tag">伺服</span></div>
+          <div class="chip-badges"><span class="badge b-china">中国供应链</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ④ Magnets / Materials -->
+    <div class="layer ly-mag">
+      <div class="layer-hd">
+        <span class="layer-icon">🧲</span>
+        <span class="layer-name">稀土磁材 / 关键材料 / 电池</span>
+        <span class="layer-amt">~8%</span>&nbsp;
+        <span class="layer-pct">8%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:8%"></div></div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">MP</div>
+          <div class="chip-name">MP Materials</div>
+          <div class="chip-role">美国唯一稀土+钕铁硼磁体一体化 · 人形磁材需求是 EV 的 2–3 倍 · 国防部入股</div>
+          <div class="chip-tags"><span class="tag">NdFeB 磁体</span><span class="tag">Mountain Pass</span></div>
+          <div class="chip-badges"><span class="badge b-sm-strong">稀土去中国化</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">LYC.AX</div>
+          <div class="chip-name">Lynas Rare Earths</div>
+          <div class="chip-role">中国以外最大稀土分离商 · 西方磁材供应链备选</div>
+          <div class="chip-tags"><span class="tag">稀土分离</span><span class="tag">澳洲</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">601689（中）</div>
+          <div class="chip-name">拓普集团 Tuopu</div>
+          <div class="chip-role">特斯拉供应链 · 直线执行器/丝杠 · 人形机器人执行器总成布局</div>
+          <div class="chip-tags"><span class="tag">直线执行器</span><span class="tag">丝杠</span></div>
+          <div class="chip-badges"><span class="badge b-china">中国供应链</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">电池</div>
+          <div class="chip-name">CATL / Panasonic / 三星SDI</div>
+          <div class="chip-role">人形机器人高倍率电池组 · 续航/功率密度是落地约束 · 复用 EV 电池</div>
+          <div class="chip-tags"><span class="tag">高倍率</span><span class="tag">能量密度</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑤ Sensors / Perception -->
+    <div class="layer ly-sense">
+      <div class="layer-hd">
+        <span class="layer-icon">👁️</span>
+        <span class="layer-name">传感 / 视觉 / 触觉 / 力控</span>
+        <span class="layer-amt">~12%</span>&nbsp;
+        <span class="layer-pct">12%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:12%"></div></div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">AMBA</div>
+          <div class="chip-name">Ambarella</div>
+          <div class="chip-role">机器视觉 SoC · 边缘 CV 感知 · 多摄像头融合 · 被列为机器人瓶颈环节</div>
+          <div class="chip-tags"><span class="tag">视觉 SoC</span><span class="tag">CV</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">感知弹性</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">CGNX</div>
+          <div class="chip-name">Cognex</div>
+          <div class="chip-role">机器视觉龙头 · 工业检测/引导 · 机器人"眼睛"软硬一体</div>
+          <div class="chip-tags"><span class="tag">机器视觉</span><span class="tag">引导定位</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">6861.T</div>
+          <div class="chip-name">Keyence 基恩士</div>
+          <div class="chip-role">传感器/视觉系统全球龙头 · 超高毛利 · 自动化感知核心供应</div>
+          <div class="chip-tags"><span class="tag">传感器</span><span class="tag">视觉系统</span></div>
+          <div class="chip-badges"><span class="badge b-sm-strong">高毛利护城河</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">TEL</div>
+          <div class="chip-name">TE Connectivity</div>
+          <div class="chip-role">连接器 / 力矩与位置传感器 · 机器人关节布线 · 受益单台用量提升</div>
+          <div class="chip-tags"><span class="tag">连接器</span><span class="tag">传感</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">OUST / AEVA</div>
+          <div class="chip-name">Ouster / Aeva（激光雷达）</div>
+          <div class="chip-role">3D / 4D 激光雷达 · 机器人空间感知 · 小盘高弹性高风险</div>
+          <div class="chip-tags"><span class="tag">LiDAR</span><span class="tag">4D 感知</span></div>
+          <div class="chip-badges"><span class="badge b-new">高波动</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">SONY</div>
+          <div class="chip-name">Sony 索尼</div>
+          <div class="chip-role">CMOS 图像传感器全球第一 · 机器人/汽车"视网膜" · 触觉传感布局</div>
+          <div class="chip-tags"><span class="tag">CMOS</span><span class="tag">IMX</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑥ OEM / Integrators -->
+    <div class="layer ly-oem">
+      <div class="layer-hd">
+        <span class="layer-icon">🤖</span>
+        <span class="layer-name">整机 OEM / 系统集成商</span>
+        <span class="layer-amt">~20%</span>&nbsp;
+        <span class="layer-pct">20%</span>
+      </div>
+      <div class="layer-bar-track"><div class="layer-bar-fill" style="width:20%"></div></div>
+      <div class="layer-body">
+        <div class="chip">
+          <div class="chip-ticker">TSLA</div>
+          <div class="chip-name">Tesla — Optimus</div>
+          <div class="chip-role">最大规模制造能力 · 自有工厂场景 · 目标单台 &lt;$20k · 2027 对外售</div>
+          <div class="chip-tags"><span class="tag">Optimus V3</span><span class="tag">自产自用</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">唯一上市纯整机</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">TER</div>
+          <div class="chip-name">Teradyne</div>
+          <div class="chip-role">旗下 Universal Robots(协作臂)+MiR(移动机器人) · 半导体测试现金牛输血</div>
+          <div class="chip-tags"><span class="tag">UR 协作臂</span><span class="tag">MiR</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">协作机器人龙头</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">ABB</div>
+          <div class="chip-name">ABB（机器人部门）</div>
+          <div class="chip-role">工业机器人全球前二 · 机器人业务拟由软银收购 · BOTZ 第一重仓</div>
+          <div class="chip-tags"><span class="tag">工业机器人</span><span class="tag">软银收购</span></div>
+          <div class="chip-badges"><span class="badge b-amber">分拆中</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">ROK</div>
+          <div class="chip-name">Rockwell Automation</div>
+          <div class="chip-role">美国工厂自动化龙头 · PLC/运动控制 · 产线"机器人化"系统集成</div>
+          <div class="chip-tags"><span class="tag">工厂自动化</span><span class="tag">PLC</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">6954.T</div>
+          <div class="chip-name">Fanuc 发那科</div>
+          <div class="chip-role">工业机器人+CNC 全球龙头 · 黄色机械臂之王 · 量产规模标杆</div>
+          <div class="chip-tags"><span class="tag">工业机器人</span><span class="tag">CNC</span></div>
+          <div class="chip-badges"><span class="badge b-sm-buy">规模标杆</span></div>
+        </div>
+        <div class="chip">
+          <div class="chip-ticker">9880.HK / 私</div>
+          <div class="chip-name">UBTech / Unitree / 波士顿动力</div>
+          <div class="chip-role">优必选(港股)·宇树(私,低价四足/人形)·波士顿动力(现代旗下) — 整机多极</div>
+          <div class="chip-tags"><span class="tag">人形整机</span><span class="tag">中国/韩</span></div>
+          <div class="chip-badges"><span class="badge b-china">亚洲整机</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end col-layers -->
+
+  <!-- ARROW RIGHT -->
+  <div class="col-arr-r">
+    <svg class="arr-svg" viewBox="0 0 50 80" fill="none">
+      <path d="M8 40 H38" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-dasharray="7 4" class="flow-anim" style="animation-delay:.5s"/>
+      <path d="M30 33 L42 40 L30 47" stroke="rgba(255,255,255,.2)" stroke-width="1.5" fill="none"/>
+    </svg>
+  </div>
+
+  <!-- DOWNSTREAM -->
+  <div class="col-down">
+    <div class="col-label">DOWNSTREAM / 落地</div>
+    <div class="down-card" style="border-left-color:rgba(96,165,250,.45)"><div class="down-lbl">MANUFACTURING</div><div class="down-name">制造业 / 汽车工厂</div><div class="down-detail">Tesla · BYD · Foxconn 产线，最先落地</div></div>
+    <div class="down-card" style="border-left-color:rgba(76,255,143,.45)"><div class="down-lbl">LOGISTICS / 仓储</div><div class="down-name">仓储分拣 · 搬运</div><div class="down-detail">Amazon · Symbotic(SYM) · Zebra(ZBRA)</div></div>
+    <div class="down-card" style="border-left-color:rgba(34,211,238,.45)"><div class="down-lbl">DELIVERY / 配送</div><div class="down-name">最后一公里 · 服务</div><div class="down-detail">Serve Robotics(SERV) · 自主配送</div></div>
+    <div class="down-card" style="border-left-color:rgba(183,148,246,.45)"><div class="down-lbl">HEALTHCARE</div><div class="down-name">医疗 / 手术机器人</div><div class="down-detail">Intuitive Surgical(ISRG) · 护理/康复</div></div>
+    <div class="down-card" style="border-left-color:rgba(255,159,67,.45)"><div class="down-lbl">CONSUMER / 家庭</div><div class="down-name">家用人形 · 陪护</div><div class="down-detail">1X NEO · 消费级 2026 起出货</div></div>
+    <div class="down-card"><div class="down-lbl">DEFENSE / 安防</div><div class="down-name">国防 · 巡检 · 危险作业</div><div class="down-detail">四足/人形巡检，政府订单</div></div>
+    <div class="down-card"><div class="down-lbl">AGRI / 户外</div><div class="down-name">农业 · 建筑</div><div class="down-detail">非结构化环境，长尾大市场</div></div>
+  </div>
+
+</div><!-- end flow-wrap -->
+
+<!-- ═══ BOTTLENECKS ═══ -->
+<div class="section-card">
+  <div class="section-hd" style="background:rgba(255,77,109,.04)">
+    <span style="font-size:16px">⚠</span>
+    <span class="section-hd-title" style="color:var(--red)">物理 AI 核心风险 / 瓶颈</span>
+    <span style="margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--muted)">红色 = 最关键</span>
+  </div>
+  <div class="bottle-grid">
+    <div class="b-item" style="background:rgba(255,77,109,.03)">
+      <div class="b-name" style="color:var(--red)">① 执行器扩产 — 不足10家供应商</div>
+      <div class="b-badges"><span class="badge b-warn">硬瓶颈</span><span class="badge b-amber">精密制造</span></div>
+      <div class="b-desc">高扭矩、高精度执行器全球能稳定量产的不足 10 家。从每年数千台到百万台，需要全新的产能投资。谐波减速器、无框电机、丝杠是最卡脖子环节。</div>
+      <div class="b-who">受益：6324.T · 6594.T · ALNT · 绿的谐波</div>
+    </div>
+    <div class="b-item" style="background:rgba(255,77,109,.03)">
+      <div class="b-name" style="color:var(--red)">② 稀土磁材 — 中国主导</div>
+      <div class="b-badges"><span class="badge b-warn">地缘风险</span><span class="badge b-china">出口管制</span></div>
+      <div class="b-desc">钕铁硼磁体被中国主导，单台人形磁材用量是 EV 的 2–3 倍。出口管制收紧将直接卡住西方整机量产。MP Materials 是少数去中国化标的，但产能爬坡需时间。</div>
+      <div class="b-who">受益：MP · LYC.AX；风险：所有西方整机</div>
+    </div>
+    <div class="b-item" style="background:rgba(255,209,102,.03)">
+      <div class="b-name" style="color:var(--amber)">③ "大脑"未到 ChatGPT 时刻</div>
+      <div class="b-badges"><span class="badge b-amber">数据稀缺</span><span class="badge b-amber">sim2real</span></div>
+      <div class="b-desc">VLA 模型仍缺真实世界交互数据，仿真到现实(sim-to-real)鸿沟未解。泛化能力尚未跨过"可商用"门槛，私募高估值隐含巨大兑现风险。</div>
+      <div class="b-who">押注：Figure · PI · Skild · NVDA 平台</div>
+    </div>
+    <div class="b-item" style="background:rgba(255,77,109,.03)">
+      <div class="b-name" style="color:var(--red)">④ 中国成本优势 — 63–70% 供应链</div>
+      <div class="b-badges"><span class="badge b-china">成本 -30~40%</span><span class="badge b-warn">地缘</span></div>
+      <div class="b-desc">中国已掌握 63–70% 人形供应链且成本低 30–40%，并在快速整合。西方厂商面临"造得起但拼不过价格"的结构压力，关税与补贴将主导竞争格局。</div>
+      <div class="b-who">中国：UBTech · Unitree · 拓普 · 绿的</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PRIVATE → PUBLIC PROXY ═══ -->
+<div class="section-card">
+  <div class="section-hd" style="background:rgba(94,243,140,.04)">
+    <span style="font-size:16px">🎯</span>
+    <span class="section-hd-title" style="color:var(--bot)">龙头都在私募 — 散户如何用公开市场布局</span>
+  </div>
+  <div class="tvi-grid">
+    <div class="tvi-col">
+      <div class="tvi-label" style="color:var(--brain)">📋 私募龙头 → 公开代理</div>
+      <div class="tvi-row"><span class="tvi-icon">🧠</span><span class="tvi-text"><strong>大脑层</strong>：Figure/PI/Skild 均未上市 → 用 <span style="color:var(--brain)">NVDA</span>（卖铲）+ <span style="color:var(--brain)">GOOGL</span>（Gemini Robotics）间接暴露</span></div>
+      <div class="tvi-row"><span class="tvi-icon">⚙️</span><span class="tvi-text"><strong>执行器瓶颈</strong>：无论谁造整机都要买 <span style="color:var(--act)">6324.T · 6594.T · ALNT</span> 的关节</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🧲</span><span class="tvi-text"><strong>磁材卡脖子</strong>：<span style="color:var(--mag)">MP</span> — 去中国化稀土磁体唯一规模标的</span></div>
+      <div class="tvi-row"><span class="tvi-icon">👁️</span><span class="tvi-text"><strong>感知层</strong>：<span style="color:var(--sense)">AMBA · CGNX · 6861.T</span> — 单台传感器用量随放量线性增长</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🤖</span><span class="tvi-text"><strong>整机代理</strong>：<span style="color:var(--oem)">TSLA</span>（唯一上市纯整机）+ <span style="color:var(--oem)">TER · ABB · 6954.T</span></span></div>
+    </div>
+    <div class="tvi-col">
+      <div class="tvi-label" style="color:var(--bot)">🚀 Figure / Tesla 里程碑 — 板块影响</div>
+      <div class="tvi-row"><span class="tvi-icon">📈</span><span class="tvi-text"><strong>整机放量</strong>：Tesla Optimus 量产或 Figure IPO 将带动全产业链估值重估，执行器/磁材率先反应</span></div>
+      <div class="tvi-row"><span class="tvi-icon">💰</span><span class="tvi-text"><strong>ETF 被动买盘</strong>：<span style="color:var(--sense)">BOTZ · BOTT · ROBO</span> 调仓将推动 NVDA · 6324.T · TER 被动流入</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🏭</span><span class="tvi-text"><strong>供应链公开</strong>：整机厂供应商披露或揭示 <span style="color:var(--act)">谐波/电机/丝杠</span> 真实订单规模</span></div>
+      <div class="tvi-row"><span class="tvi-icon">⚡</span><span class="tvi-text"><strong>卖铲人确定性最高</strong>：<span style="color:var(--brain)">NVDA</span> 无论谁赢都收"算力+大脑+仿真"三道租</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🌐</span><span class="tvi-text"><strong>中美两条供应链</strong>：关注关税/出口管制 → <span style="color:var(--mag)">MP</span> 与中国 <span style="color:var(--mag)">绿的/拓普</span> 此消彼长</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ETF HOLDINGS ═══ -->
+<div class="section-card">
+  <div class="section-hd" style="background:rgba(76,255,143,.04)">
+    <span style="font-size:16px">📊</span>
+    <span class="section-hd-title" style="color:var(--sense)">机器人 ETF / 板块代表性成分股</span>
+    <span style="margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--muted)">BOTZ / BOTT / ROBO 参考</span>
+  </div>
+  <div class="etf-grid">
+    <div class="etf-col">
+      <div class="etf-sub" style="color:var(--oem)">🤖 BOTZ 重仓（Global X）</div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--oem)">ABB</div><div class="etf-name">ABB Ltd</div></div><div class="etf-wt">~9.5%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--oem)">6861.T</div><div class="etf-name">Keyence</div></div><div class="etf-wt">~9.3%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--oem)">6954.T</div><div class="etf-name">Fanuc</div></div><div class="etf-wt">~8.9%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--brain)">NVDA</div><div class="etf-name">NVIDIA</div></div><div class="etf-wt">~8.6%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--brain)">ISRG</div><div class="etf-name">Intuitive Surgical</div></div><div class="etf-wt">~6.1%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--act)">TER</div><div class="etf-name">Teradyne</div></div><div class="etf-wt">~4%</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--oem)">ROK</div><div class="etf-name">Rockwell Automation</div></div><div class="etf-wt">~3%</div></div>
+    </div>
+    <div class="etf-col">
+      <div class="etf-sub" style="color:var(--brain)">🧠 大脑 / 算力</div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--brain)">NVDA</div><div class="etf-name">NVIDIA — GR00T/Thor</div></div><div class="etf-wt">核心</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--brain)">GOOGL</div><div class="etf-name">Google — Gemini Robotics</div></div><div class="etf-wt">大厂</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--compute)">QCOM</div><div class="etf-name">Qualcomm — 边缘</div></div><div class="etf-wt">边缘</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--compute)">AMBA</div><div class="etf-name">Ambarella — 视觉</div></div><div class="etf-wt">小盘</div></div>
+      <br>
+      <div class="etf-sub" style="color:var(--mag)">🧲 磁材 / 材料</div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--mag)">MP</div><div class="etf-name">MP Materials — 稀土磁体</div></div><div class="etf-wt">关键</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--mag)">LYC.AX</div><div class="etf-name">Lynas — 稀土</div></div><div class="etf-wt">备选</div></div>
+    </div>
+    <div class="etf-col" style="border-right:none">
+      <div class="etf-sub" style="color:var(--act)">⚙️ 执行器 / 感知</div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--act)">6324.T</div><div class="etf-name">Harmonic Drive — 减速机</div></div><div class="etf-wt">瓶颈</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--act)">6594.T</div><div class="etf-name">Nidec — 电机</div></div><div class="etf-wt">龙头</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--act)">ALNT</div><div class="etf-name">Allient — 无框电机</div></div><div class="etf-wt">小盘</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--sense)">CGNX</div><div class="etf-name">Cognex — 机器视觉</div></div><div class="etf-wt">视觉</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--sense)">TEL</div><div class="etf-name">TE Connectivity — 连接器</div></div><div class="etf-wt">连接</div></div>
+      <br>
+      <div class="etf-sub" style="color:var(--mag)">🇨🇳 中国队（A股/港股）</div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--mag)">9880.HK</div><div class="etf-name">UBTech 优必选</div></div><div class="etf-wt">整机</div></div>
+      <div class="etf-row"><div><div class="etf-tkr" style="color:var(--mag)">688017</div><div class="etf-name">绿的谐波</div></div><div class="etf-wt">减速机</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SMART MONEY ═══ -->
+<div class="section-card">
+  <div class="section-hd" style="background:rgba(94,243,140,.04)">
+    <span style="font-size:16px">💰</span>
+    <span class="section-hd-title" style="color:var(--bot)">机构资金信号 — 物理 AI 主要持仓（2025–2026 H1）</span>
+    <a href="../smart_money/" style="margin-left:auto;font-family:var(--mono);font-size:9.5px;color:rgba(94,243,140,.7);text-decoration:none">查看完整追踪器 →</a>
+  </div>
+  <table class="sm-table">
+    <thead>
+      <tr>
+        <th style="width:80px">TICKER</th>
+        <th style="width:150px">公司</th>
+        <th style="width:110px">信号</th>
+        <th style="width:160px">代表性逻辑</th>
+        <th>主要机构 / 推手</th>
+        <th style="width:120px">所在层级</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><div class="sm-tkr" style="color:var(--brain)">NVDA</div></td><td style="color:rgba(205,222,228,.9)">NVIDIA</td><td><span class="badge b-sm-strong" style="font-size:9.5px">强持有 ↑↑</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--sense)">物理 AI 卖铲人 · 全栈</td><td><span class="buyer-pill">几乎所有大基金</span><span class="buyer-pill">NVentures</span></td><td style="font-size:10px;color:var(--muted2)">大脑 + 算力</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--oem)">TSLA</div></td><td style="color:rgba(205,222,228,.9)">Tesla</td><td><span class="badge b-sm-buy" style="font-size:9.5px">主题催化 ↑</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--sense)">Optimus 量产叙事</td><td><span class="buyer-pill">ARK</span><span class="buyer-pill">散户+成长</span></td><td style="font-size:10px;color:var(--muted2)">整机 OEM</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--mag)">MP</div></td><td style="color:rgba(205,222,228,.9)">MP Materials</td><td><span class="badge b-new" style="font-size:9.5px">国家队 ★</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--sense)">国防部入股 · 去中国化</td><td><span class="buyer-pill">US DoD</span><span class="buyer-pill">主题基金</span></td><td style="font-size:10px;color:var(--muted2)">稀土磁材</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--act)">TER</div></td><td style="color:rgba(205,222,228,.9)">Teradyne</td><td><span class="badge b-sm-buy" style="font-size:9.5px">买入 ↑</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--sense)">UR/MiR + 半导体测试</td><td><span class="buyer-pill">BlackRock</span><span class="buyer-pill">Vanguard</span></td><td style="font-size:10px;color:var(--muted2)">协作机器人</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--act)">6324.T</div></td><td style="color:rgba(205,222,228,.9)">Harmonic Drive</td><td><span class="badge b-sm-strong" style="font-size:9.5px">瓶颈 ↑↑</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--sense)">谐波减速机不可替代</td><td><span class="buyer-pill">日股机构</span><span class="buyer-pill">主题基金</span></td><td style="font-size:10px;color:var(--muted2)">执行器</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--compute)">AMBA</div></td><td style="color:rgba(205,222,228,.9)">Ambarella</td><td><span class="badge b-new" style="font-size:9.5px">小盘弹性 ★</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--sense)">边缘视觉 SoC 受益</td><td><span class="buyer-pill">成长型</span><span class="buyer-pill">主题 ETF</span></td><td style="font-size:10px;color:var(--muted2)">算力 / 感知</td></tr>
+      <tr><td><div class="sm-tkr" style="color:var(--oem)">ABB</div></td><td style="color:rgba(205,222,228,.9)">ABB Ltd</td><td><span class="badge b-amber" style="font-size:9.5px">分拆催化 ⚡</span></td><td style="font-family:var(--mono);font-size:10px;color:var(--sense)">机器人部门拟售软银</td><td><span class="buyer-pill">SoftBank</span><span class="buyer-pill">BOTZ 第一重仓</span></td><td style="font-size:10px;color:var(--muted2)">整机集成</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>
+  <span>数据基于公开资料、行业估算及分析师报告，仅供参考，不构成投资建议 · 私募估值/融资为媒体披露估算 · 板块占比为编者估算</span>
+  <span>2026E · Jun 2026 · <a href="../ai-capex-flow/">AI Capex →</a> · <a href="../space-flow/">太空板块 →</a> · <a href="../smart_money/">Smart Money →</a></span>
+</footer>
+
+</div><!-- end wrap -->
+
+<script>
+/* ── STARS ── */
+(function(){
+  const c = document.getElementById('starsContainer');
+  for(let i=0;i<110;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const sz=Math.random()*1.7+0.4;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:-${Math.random()*4}s`;
+    c.appendChild(s);
+  }
+})();
+
+/* ── BAR ANIMATIONS ── */
+function animateBars() {
+  document.querySelectorAll('.capex-bar, .layer-bar-fill').forEach((el, i) => {
+    const w = el.style.width;
+    el.style.width = '0';
+    el.style.transition = 'none';
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        el.style.transition = 'width 1.3s cubic-bezier(.16,1,.3,1)';
+        el.style.width = w;
+      }, 120 + i * 55);
+    });
+  });
+}
+animateBars();
+</script>
+</body>
+</html>
