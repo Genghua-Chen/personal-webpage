@@ -5,8 +5,12 @@ AAPL,Apple,Q1 FY2026,2026-01-29,AMC,reported,Q1 FY2026 — 12月季度
 AAPL,Apple,Q2 FY2026,2026-04-30,AMC,reported,Q2 FY2026 — 3月季度
 AAPL,Apple,Q3 FY2026,2026-07-31,AMC,estimated,Q3 FY2026 — 6月季度
 AAPL,Apple,Q4 FY2026,2026-10-29,AMC,estimated,Q4 FY2026 — 9月季度
+ABB,ABB Ltd,Q2 2026,2026-07-16,BMO,estimated,Q2 2026 · 工业机器人(拟售软银) · 日期估算
+AEVA,Aeva Technologies,Q2 2026,2026-08-11,AMC,estimated,Q2 2026 · 4D激光雷达 · 日期估算
+ALNT,Allient Inc,Q2 2026,2026-08-05,AMC,estimated,Q2 2026 · 无框电机/运动控制 · 日期估算
 AMAT,Applied Materials,Q2 FY2026,2026-05-14,AMC,reported,Q2 FY2026 — 4月季度
 AMAT,Applied Materials,Q3 FY2026,2026-08-13,AMC,estimated,Q3 FY2026
+AMBA,Ambarella,Q2 FY2027,2026-08-27,AMC,estimated,FQ2 2027 · 视觉SoC · 日期估算
 AMD,Advanced Micro Devices,Q1 2026,2026-05-05,AMC,reported,Q1 2026 日历季度
 AMD,Advanced Micro Devices,Q2 2026,2026-08-04,AMC,estimated,Q2 2026 日历季度
 AMD,Advanced Micro Devices,Q3 2026,2026-10-27,AMC,estimated,Q3 2026 日历季度
@@ -37,6 +41,7 @@ BX,Blackstone,Q1 2026,2026-04-17,BMO,reported,Q1 2026 日历季度
 BX,Blackstone,Q2 2026,2026-07-16,AMC,estimated,Q2 2026 日历季度
 CEG,Constellation Energy,Q1 2026,2026-05-07,AMC,reported,Q1 2026 日历季度；核电PPA
 CEG,Constellation Energy,Q2 2026,2026-08-05,AMC,estimated,Q2 2026 日历季度
+CGNX,Cognex,Q2 2026,2026-07-30,BMO,estimated,Q2 2026 · 机器视觉 · 日期估算
 COHR,Coherent Corp,Q3 FY2026,2026-05-06,AMC,reported,Q3 FY2026 — 3月季度；800G受益
 COHR,Coherent Corp,Q4 FY2026,2026-08-05,AMC,estimated,Q4 FY2026
 CRM,Salesforce,Q1 FY2027,2026-05-27,AMC,reported,Q1 FY2027 — AI Agent收入加速
@@ -67,6 +72,7 @@ IBM,IBM,Q1 2026,2026-04-22,AMC,reported,Q1 2026 — 营收$15.9B 超预期；混
 IBM,IBM,Q2 2026,2026-07-22,AMC,confirmed,Q2 2026 — 日历季度
 INTC,Intel,Q1 2026,2026-04-24,AMC,reported,Q1 2026 日历季度
 INTC,Intel,Q2 2026,2026-07-23,AMC,estimated,Q2 2026 日历季度
+ISRG,Intuitive Surgical,Q2 2026,2026-07-21,AMC,estimated,Q2 2026 · 手术机器人 · 日期估算
 JPM,JPMorgan Chase,Q1 2026,2026-04-11,BMO,reported,Q1 2026 日历季度
 JPM,JPMorgan Chase,Q2 2026,2026-07-14,BMO,confirmed,Q2 2026 日历季度
 JPM,JPMorgan Chase,Q3 2026,2026-10-09,BMO,estimated,Q3 2026 日历季度
@@ -81,6 +87,8 @@ LRCX,Lam Research,Q4 FY2026,2026-07-22,AMC,estimated,Q4 FY2026
 META,Meta Platforms,Q1 2026,2026-04-23,AMC,reported,Q1 2026 日历季度
 META,Meta Platforms,Q2 2026,2026-07-29,AMC,estimated,Q2 2026 日历季度
 META,Meta Platforms,Q3 2026,2026-10-22,AMC,estimated,Q3 2026 日历季度
+MOG.A,Moog Inc,Q3 FY2026,2026-07-24,BMO,estimated,FQ3 2026 · 伺服执行器 · 日期估算
+MP,MP Materials,Q2 2026,2026-08-06,AMC,estimated,Q2 2026 · 稀土磁材 · 日期估算
 MRVL,Marvell Technology,Q1 FY2027,2026-05-27,AMC,reported,Q1 FY2027 — 营收 +27.6% YoY；数据中心占比76%
 MRVL,Marvell Technology,Q2 FY2027,2026-08-27,AMC,estimated,Q2 FY2027
 MS,Morgan Stanley,Q1 2026,2026-04-15,BMO,reported,Q1 2026 日历季度
@@ -100,17 +108,24 @@ NVDA,NVIDIA,Q3 FY2027,2026-11-19,AMC,estimated,Q3 FY2027 — 10月季度
 ORCL,Oracle,Q3 FY2026,2026-03-10,AMC,reported,Q3 FY2026 — 2月季度；云增长
 ORCL,Oracle,Q4 FY2026,2026-06-10,AMC,estimated,Q4 FY2026 — 5月季度
 ORCL,Oracle,Q1 FY2027,2026-09-09,AMC,estimated,Q1 FY2027
+OUST,Ouster,Q2 2026,2026-08-06,AMC,estimated,Q2 2026 · 激光雷达 · 日期估算
 PLTR,Palantir Technologies,Q1 2026,2026-05-05,AMC,reported,Q1 2026 日历季度
 PLTR,Palantir Technologies,Q2 2026,2026-08-04,AMC,estimated,Q2 2026 日历季度
 PWR,Quanta Services,Q1 2026,2026-05-01,AMC,reported,Q1 2026 日历季度
 PWR,Quanta Services,Q2 2026,2026-07-30,AMC,estimated,Q2 2026 日历季度
 QCOM,Qualcomm,Q2 FY2026,2026-04-23,AMC,reported,Q2 FY2026 — 3月季度
 QCOM,Qualcomm,Q3 FY2026,2026-07-22,AMC,estimated,Q3 FY2026
+ROK,Rockwell Automation,Q3 FY2026,2026-08-04,BMO,estimated,FQ3 2026 · 工厂自动化 · 日期估算
+RRX,Regal Rexnord,Q2 2026,2026-08-03,AMC,estimated,Q2 2026 · 电机/传动 · 日期估算
+SERV,Serve Robotics,Q2 2026,2026-08-06,AMC,estimated,Q2 2026 · 配送机器人 · 日期估算
 SMCI,Super Micro Computer,Q3 FY2026,2026-05-06,AMC,reported,Q3 FY2026 — 3月季度；AI服务器
 SMCI,Super Micro Computer,Q4 FY2026,2026-08-05,AMC,estimated,Q4 FY2026
 SNDK,SanDisk,Q2 FY2026,2026-01-29,AMC,reported,Q2 FY2026 — 营收$3.03B +31% QoQ；独立上市后首季强劲
 SNDK,SanDisk,Q3 FY2026,2026-04-30,AMC,reported,Q3 FY2026 — 营收$5.95B +97% QoQ；NAND需求超强
 SNDK,SanDisk,Q4 FY2026,2026-07-30,AMC,estimated,Q4 FY2026 — 6月季度；NAND周期峰值观察
+SYM,Symbotic,Q3 FY2026,2026-08-05,AMC,estimated,FQ3 2026 · 仓储自动化 · 日期估算
+TEL,TE Connectivity,Q3 FY2026,2026-07-22,BMO,estimated,FQ3 2026 · 连接器/传感器 · 日期估算
+TER,Teradyne,Q2 2026,2026-07-29,AMC,estimated,Q2 2026 · 协作机器人UR/MiR · 日期估算
 TSLA,Tesla,Q1 2026,2026-04-22,AMC,reported,Q1 2026 日历季度
 TSLA,Tesla,Q2 2026,2026-07-22,AMC,estimated,Q2 2026 日历季度
 TSLA,Tesla,Q3 2026,2026-10-20,AMC,estimated,Q3 2026 日历季度
@@ -122,3 +137,4 @@ VST,Vistra Corp,Q1 2026,2026-05-07,AMC,reported,Q1 2026 日历季度
 VST,Vistra Corp,Q2 2026,2026-08-05,AMC,estimated,Q2 2026 日历季度
 XOM,Exxon Mobil,Q1 2026,2026-04-25,BMO,reported,Q1 2026 日历季度
 XOM,Exxon Mobil,Q2 2026,2026-07-31,BMO,estimated,Q2 2026 日历季度
+ZBRA,Zebra Technologies,Q2 2026,2026-07-28,BMO,estimated,Q2 2026 · 仓储机器人 · 日期估算
