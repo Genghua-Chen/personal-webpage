@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monte Carlo Markets Lab — 10,000 Possible Futures</title>
+<meta name="description" content="An interactive Geometric Brownian Motion simulator: fan out thousands of possible price paths and read the quant stats — probability of profit, 95% Value-at-Risk, and percentile bands. Zero dependencies, pure canvas.">
+<meta property="og:title" content="Monte Carlo Markets Lab">
+<meta property="og:description" content="Simulate 10,000 possible market futures with Geometric Brownian Motion. Interactive, dependency-free.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%B2%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#07070f; --bg2:#0d0d18;
+    --panel:rgba(255,255,255,.035); --panel2:rgba(255,255,255,.06);
+    --border:rgba(255,255,255,.09); --border2:rgba(255,255,255,.16);
+    --text:#e9e9f2; --muted:rgba(200,205,235,.55); --dim:rgba(200,205,235,.32);
+    --up:#22e585; --up-rgb:34,229,133;
+    --down:#ff4d6d; --down-rgb:255,77,109;
+    --cyan:#31d9ff; --purple:#a684ff; --amber:#ffb84d;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:var(--sans);background:var(--bg);color:var(--text);
+    min-height:100vh;line-height:1.5;overflow-x:hidden;
+    background-image:
+      radial-gradient(ellipse 800px 600px at 12% -8%, rgba(166,132,255,.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(49,217,255,.08), transparent 55%),
+      radial-gradient(ellipse 700px 500px at 50% 108%, rgba(34,229,133,.06), transparent 55%);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:26px 20px 60px}
+
+  /* ── header ── */
+  header{margin-bottom:20px}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:5px 14px;margin-bottom:16px;
+  }
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--up);box-shadow:0 0 8px var(--up);animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+  h1{
+    font-size:clamp(1.9rem,4.6vw,3rem);font-weight:800;letter-spacing:-.035em;line-height:1.05;margin-bottom:12px;
+  }
+  h1 .grad{background:linear-gradient(115deg,#a684ff 0%,#31d9ff 55%,#22e585 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lede{font-size:1rem;color:var(--muted);max-width:66ch}
+  .lede b{color:var(--text);font-weight:600}
+
+  /* ── toolbar ── */
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:22px 0 14px}
+  .presets{display:flex;flex-wrap:wrap;gap:6px}
+  .preset{
+    font-family:var(--mono);font-size:12px;font-weight:600;cursor:pointer;
+    background:var(--panel);border:1px solid var(--border);border-radius:9px;
+    color:var(--muted);padding:7px 13px;transition:all .15s;
+  }
+  .preset:hover{color:var(--text);border-color:var(--border2);background:var(--panel2)}
+  .preset.active{color:#07070f;background:linear-gradient(120deg,#a684ff,#31d9ff);border-color:transparent}
+  .spacer{flex:1}
+  .run{
+    font-family:var(--sans);font-size:.92rem;font-weight:700;cursor:pointer;
+    color:#07070f;background:linear-gradient(120deg,#22e585,#31d9ff);
+    border:0;border-radius:10px;padding:9px 20px;transition:transform .12s,filter .15s;
+    display:inline-flex;align-items:center;gap:7px;
+  }
+  .run:hover{transform:translateY(-1px);filter:brightness(1.08)}
+  .run:active{transform:translateY(0)}
+
+  /* ── canvases ── */
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+  .card-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border)}
+  .card-title{font-size:.82rem;font-weight:700;letter-spacing:-.01em}
+  .card-note{font-family:var(--mono);font-size:10.5px;color:var(--dim)}
+  canvas{display:block;width:100%}
+  #paths{height:430px}
+  #hist{height:230px}
+
+  /* ── controls ── */
+  .controls{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:14px 0;
+  }
+  .ctrl{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:13px 15px}
+  .ctrl-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:9px}
+  .ctrl-lbl{font-size:.74rem;color:var(--muted);font-weight:600}
+  .ctrl-val{font-family:var(--mono);font-size:.92rem;font-weight:700;color:var(--cyan)}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;
+    background:rgba(255,255,255,.12);outline:none;cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:15px;height:15px;border-radius:50%;
+    background:#fff;border:2px solid var(--cyan);box-shadow:0 0 8px rgba(49,217,255,.5);cursor:pointer;
+  }
+  input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#fff;border:2px solid var(--cyan);cursor:pointer}
+
+  /* ── bottom grid ── */
+  .bottom{display:grid;grid-template-columns:1fr 340px;gap:14px;margin-top:14px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px}
+  .stat{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:11px;padding:12px 13px}
+  .stat.wide{grid-column:1 / -1}
+  .stat-lbl{font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+  .stat-val{font-family:var(--mono);font-size:1.35rem;font-weight:700;letter-spacing:-.02em}
+  .stat-sub{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-top:2px}
+  .prob-bar{height:7px;border-radius:4px;background:rgba(255,77,109,.25);overflow:hidden;margin-top:9px}
+  .prob-fill{height:100%;background:linear-gradient(90deg,#22e585,#31d9ff);transition:width .5s cubic-bezier(.16,1,.3,1)}
+
+  /* ── legend ── */
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .swatch{width:16px;height:3px;border-radius:2px}
+
+  footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--border);
+    display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:11px;color:var(--dim)}
+  footer a{color:var(--muted);text-decoration:none}
+  footer a:hover{color:var(--text)}
+  .formula{font-family:var(--mono);color:var(--muted)}
+  .formula b{color:var(--cyan);font-weight:400}
+
+  @media(max-width:900px){
+    .controls{grid-template-columns:repeat(2,1fr)}
+    .bottom{grid-template-columns:1fr}
+  }
+  @media(max-width:520px){
+    .controls{grid-template-columns:1fr 1fr}
+    .stats{grid-template-columns:1fr 1fr}
+    #paths{height:320px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow"><span class="live-dot"></span> Monte Carlo · Geometric Brownian Motion</div>
+    <h1>10,000 Possible <span class="grad">Futures</span></h1>
+    <p class="lede">The same math banks use to price options and size risk. Each faint line is one simulated future for a stock; together they map the <b>cone of uncertainty</b>. Drag the dials, then read the odds a quant actually cares about — <b>probability of profit</b>, <b>95% Value-at-Risk</b>, and the <b>percentile fan</b>.</p>
+  </header>
+
+  <div class="toolbar">
+    <div class="presets" id="presets">
+      <button class="preset active" data-mu="8"  data-sig="18">🏦 Blue Chip</button>
+      <button class="preset" data-mu="15" data-sig="90">🚀 Meme Stock</button>
+      <button class="preset" data-mu="25" data-sig="100">₿ Crypto</button>
+      <button class="preset" data-mu="-15" data-sig="45">🐻 Bear Market</button>
+    </div>
+    <div class="spacer"></div>
+    <button class="run" id="run">🎲 Roll new futures</button>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">
+      <span class="card-title">Simulated price paths</span>
+      <span class="card-note" id="pathNote">252 trading days · 1 year horizon</span>
+    </div>
+    <canvas id="paths"></canvas>
+  </div>
+
+  <div class="controls" id="controls">
+    <div class="ctrl">
+      <div class="ctrl-top"><span class="ctrl-lbl">Start price S₀</span><span class="ctrl-val" id="v_s0">$100</span></div>
+      <input type="range" id="s0" min="10" max="1000" step="10" value="100">
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-top"><span class="ctrl-lbl">Drift μ (annual)</span><span class="ctrl-val" id="v_mu">8%</span></div>
+      <input type="range" id="mu" min="-25" max="40" step="1" value="8">
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-top"><span class="ctrl-lbl">Volatility σ (annual)</span><span class="ctrl-val" id="v_sig">18%</span></div>
+      <input type="range" id="sig" min="5" max="120" step="1" value="18">
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-top"><span class="ctrl-lbl">Horizon</span><span class="ctrl-val" id="v_T">252d</span></div>
+      <input type="range" id="T" min="21" max="504" step="21" value="252">
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-top"><span class="ctrl-lbl">Paths</span><span class="ctrl-val" id="v_N">400</span></div>
+      <input type="range" id="N" min="50" max="2000" step="50" value="400">
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="card">
+      <div class="card-hd">
+        <span class="card-title">Distribution of outcomes at horizon</span>
+        <span class="card-note">terminal price Sₜ</span>
+      </div>
+      <canvas id="hist"></canvas>
+      <div style="padding:10px 18px 14px" class="legend">
+        <span><span class="swatch" style="background:#22e585"></span>profit vs S₀</span>
+        <span><span class="swatch" style="background:#ff4d6d"></span>loss vs S₀</span>
+        <span><span class="swatch" style="background:#ffb84d"></span>median (P50)</span>
+        <span><span class="swatch" style="background:rgba(255,255,255,.5)"></span>start S₀</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><span class="card-title">The odds</span><span class="card-note" id="statNote">n = 400</span></div>
+      <div class="stats" id="stats">
+        <div class="stat wide">
+          <div class="stat-lbl">Probability of profit</div>
+          <div class="stat-val" id="s_prob" style="color:var(--up)">—</div>
+          <div class="prob-bar"><div class="prob-fill" id="probFill" style="width:0%"></div></div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">Expected Sₜ</div>
+          <div class="stat-val" id="s_exp">—</div>
+          <div class="stat-sub" id="s_expret">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">Median (P50)</div>
+          <div class="stat-val" id="s_med">—</div>
+          <div class="stat-sub" id="s_medret">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">95% VaR (1y)</div>
+          <div class="stat-val" id="s_var" style="color:var(--down)">—</div>
+          <div class="stat-sub">5% chance of losing ≥ this</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">90% range (P5–P95)</div>
+          <div class="stat-val" id="s_range" style="font-size:1rem">—</div>
+          <div class="stat-sub">where 9 of 10 futures land</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="formula">model: &nbsp;S<sub>t+1</sub> = S<sub>t</sub> · exp[ (<b>μ</b> − ½<b>σ</b>²)Δt + <b>σ</b>√Δt · <b>Z</b> ]&nbsp;,&nbsp; Z ~ 𝒩(0,1)&nbsp;,&nbsp; Δt = 1/252</span>
+    <span>built by <a href="../lazysheepcapital/">LazySheepcapital</a> · no libraries, pure canvas</span>
+  </footer>
+
+</div>
+
+<script>
+"use strict";
+/* ─────────────────────────────────────────────────────────
+   Monte Carlo Markets Lab — Geometric Brownian Motion
+   Zero dependencies. Simulation + retina canvas + animation.
+   ───────────────────────────────────────────────────────── */
+
+const $ = id => document.getElementById(id);
+const fmt$ = v => "$" + (v >= 1000 ? v.toLocaleString(undefined,{maximumFractionDigits:0}) : v.toFixed(2));
+const pct = v => (v>=0?"+":"") + v.toFixed(1) + "%";
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+
+/* Standard normal via Box–Muller */
+function randn(){
+  let u=0,v=0;
+  while(u===0) u=Math.random();
+  while(v===0) v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+
+/* Percentile of a *sorted* array (linear interpolation) */
+function quantile(sorted,q){
+  const pos=(sorted.length-1)*q, base=Math.floor(pos), rest=pos-base;
+  return sorted[base+1]!==undefined ? sorted[base]+rest*(sorted[base+1]-sorted[base]) : sorted[base];
+}
+
+const params = { s0:100, mu:8, sig:18, T:252, N:400 };
+let sim = null;          // current simulation result
+let raf = null;          // animation frame handle
+
+/* ── run one full simulation ── */
+function simulate(){
+  const {s0,mu,sig,T,N} = params;
+  const dt = 1/252;
+  const drift = (mu/100 - 0.5*(sig/100)**2)*dt;
+  const vol   = (sig/100)*Math.sqrt(dt);
+
+  const paths = new Array(N);
+  const terminal = new Float64Array(N);
+  for(let i=0;i<N;i++){
+    const arr = new Float64Array(T+1);
+    let S = s0; arr[0]=S;
+    for(let t=1;t<=T;t++){ S *= Math.exp(drift+vol*randn()); arr[t]=S; }
+    paths[i]=arr; terminal[i]=S;
+  }
+
+  /* percentile bands at each time step */
+  const P05=new Float64Array(T+1),P25=new Float64Array(T+1),
+        P50=new Float64Array(T+1),P75=new Float64Array(T+1),P95=new Float64Array(T+1);
+  const col=new Float64Array(N);
+  for(let t=0;t<=T;t++){
+    for(let i=0;i<N;i++) col[i]=paths[i][t];
+    const s=Array.prototype.slice.call(col).sort((a,b)=>a-b);
+    P05[t]=quantile(s,.05);P25[t]=quantile(s,.25);P50[t]=quantile(s,.50);P75[t]=quantile(s,.75);P95[t]=quantile(s,.95);
+  }
+
+  /* y-range: use 1st–99th pct of terminal + band extents, so one wild path can't flatten everything */
+  const st=Array.prototype.slice.call(terminal).sort((a,b)=>a-b);
+  let yLo=Math.min(s0,P05[T],quantile(st,.005));
+  let yHi=Math.max(s0,P95[T],quantile(st,.995));
+  const pad=(yHi-yLo)*0.06; yLo-=pad; yHi+=pad; yLo=Math.max(0,yLo);
+
+  /* stats from terminal distribution */
+  const mean = terminal.reduce((a,b)=>a+b,0)/N;
+  const median = quantile(st,.5);
+  const p05t = quantile(st,.05), p95t = quantile(st,.95);
+  const probProfit = terminal.reduce((a,b)=>a+(b>s0?1:0),0)/N;
+  const var95 = Math.max(0, s0 - p05t);   // loss at 5th percentile
+
+  return {paths,terminal,P05,P25,P50,P75,P95,yLo,yHi,T,N,s0,
+          stats:{mean,median,p05t,p95t,probProfit,var95}};
+}
+
+/* ── retina canvas helper ── */
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  const r=cv.getBoundingClientRect();
+  cv.width=Math.round(r.width*dpr); cv.height=Math.round(r.height*dpr);
+  const ctx=cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w:r.width,h:r.height};
+}
+
+const PAD={l:52,r:14,t:14,b:24};
+const VISIBLE=160;   // how many spaghetti lines to actually render
+
+/* ── draw price paths up to reveal index `rev` (0..T) ── */
+function drawPaths(rev){
+  const cv=$("paths"); const {ctx,w,h}=fitCanvas(cv);
+  const {paths,P05,P25,P75,P50,yLo,yHi,T,N,s0}=sim;
+  const iw=w-PAD.l-PAD.r, ih=h-PAD.t-PAD.b;
+  const X=t=>PAD.l + (t/T)*iw;
+  const Y=v=>PAD.t + (1-(v-yLo)/(yHi-yLo))*ih;
+
+  ctx.clearRect(0,0,w,h);
+
+  /* gridlines + y labels */
+  ctx.font="10px "+getComputedStyle(document.body).getPropertyValue("--mono");
+  ctx.textBaseline="middle"; ctx.strokeStyle="rgba(255,255,255,.06)"; ctx.lineWidth=1;
+  const ticks=5;
+  for(let g=0;g<=ticks;g++){
+    const val=yLo+(yHi-yLo)*g/ticks, y=Y(val);
+    ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(w-PAD.r,y);ctx.stroke();
+    ctx.fillStyle="rgba(200,205,235,.4)";ctx.textAlign="right";
+    ctx.fillText(fmt$(val),PAD.l-8,y);
+  }
+
+  /* start-price reference line */
+  ctx.setLineDash([4,4]);ctx.strokeStyle="rgba(255,255,255,.35)";
+  ctx.beginPath();ctx.moveTo(PAD.l,Y(s0));ctx.lineTo(w-PAD.r,Y(s0));ctx.stroke();
+  ctx.setLineDash([]);
+
+  /* percentile fan (P05–P95 outer, P25–P75 inner) */
+  const band=(lo,hi,fill)=>{
+    ctx.beginPath();
+    for(let t=0;t<=rev;t++){ const x=X(t),y=Y(hi[t]); t===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+    for(let t=rev;t>=0;t--){ ctx.lineTo(X(t),Y(lo[t])); }
+    ctx.closePath();ctx.fillStyle=fill;ctx.fill();
+  };
+  band(P05,P95,"rgba(166,132,255,.10)");
+  band(P25,P75,"rgba(49,217,255,.12)");
+
+  /* spaghetti — a subset, coloured by terminal outcome */
+  const step=Math.max(1,Math.floor(N/VISIBLE));
+  ctx.lineWidth=1;
+  for(let i=0;i<N;i+=step){
+    const p=paths[i], up=p[T]>=s0;
+    ctx.strokeStyle=up?"rgba(34,229,133,.13)":"rgba(255,77,109,.13)";
+    ctx.beginPath();
+    for(let t=0;t<=rev;t++){ const x=X(t),y=Y(p[t]); t===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+    ctx.stroke();
+  }
+
+  /* median line, bright */
+  ctx.lineWidth=2;ctx.strokeStyle="#ffb84d";ctx.shadowColor="rgba(255,184,77,.6)";ctx.shadowBlur=6;
+  ctx.beginPath();
+  for(let t=0;t<=rev;t++){ const x=X(t),y=Y(P50[t]); t===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+  ctx.stroke();ctx.shadowBlur=0;
+
+  /* leading edge glow dot on median */
+  const ex=X(rev),ey=Y(P50[rev]);
+  ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(ex,ey,3,0,7);ctx.fill();
+
+  /* x labels */
+  ctx.fillStyle="rgba(200,205,235,.4)";ctx.textAlign="center";ctx.textBaseline="top";
+  for(let g=0;g<=4;g++){ const t=Math.round(T*g/4); ctx.fillText(t+"d",X(t),h-PAD.b+7); }
+}
+
+/* ── draw terminal histogram ── */
+function drawHist(){
+  const cv=$("hist"); const {ctx,w,h}=fitCanvas(cv);
+  const {terminal,yLo,yHi,s0,stats}=sim;
+  const iw=w-PAD.l-PAD.r, ih=h-PAD.t-PAD.b;
+  const bins=44, counts=new Array(bins).fill(0);
+  const lo=yLo,hi=yHi;
+  for(const v of terminal){ let b=Math.floor((v-lo)/(hi-lo)*bins); b=clamp(b,0,bins-1); counts[b]++; }
+  const maxC=Math.max(...counts);
+  ctx.clearRect(0,0,w,h);
+  const X=v=>PAD.l+(v-lo)/(hi-lo)*iw;
+  const bw=iw/bins;
+  for(let b=0;b<bins;b++){
+    const v=lo+(b+0.5)/bins*(hi-lo);
+    const bh=(counts[b]/maxC)*ih;
+    const x=PAD.l+b*bw, y=PAD.t+ih-bh;
+    ctx.fillStyle = v>=s0 ? "rgba(34,229,133,.55)" : "rgba(255,77,109,.55)";
+    ctx.fillRect(x+0.5,y,bw-1,bh);
+  }
+  /* start line */
+  ctx.setLineDash([4,4]);ctx.strokeStyle="rgba(255,255,255,.5)";ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(X(s0),PAD.t);ctx.lineTo(X(s0),PAD.t+ih);ctx.stroke();
+  /* median line */
+  ctx.strokeStyle="#ffb84d";ctx.beginPath();ctx.moveTo(X(stats.median),PAD.t);ctx.lineTo(X(stats.median),PAD.t+ih);ctx.stroke();
+  ctx.setLineDash([]);
+  /* x axis labels */
+  ctx.font="10px "+getComputedStyle(document.body).getPropertyValue("--mono");
+  ctx.fillStyle="rgba(200,205,235,.4)";ctx.textAlign="center";ctx.textBaseline="top";
+  for(let g=0;g<=4;g++){ const v=lo+(hi-lo)*g/4; ctx.fillText(fmt$(v),PAD.l+iw*g/4,h-PAD.b+7); }
+}
+
+/* ── push stats to the DOM ── */
+function renderStats(){
+  const {s0}=sim, s=sim.stats;
+  const ret=v=>((v/s0-1)*100);
+  $("s_prob").textContent = (s.probProfit*100).toFixed(1)+"%";
+  $("s_prob").style.color = s.probProfit>=0.5 ? "var(--up)":"var(--down)";
+  $("probFill").style.width = (s.probProfit*100).toFixed(1)+"%";
+  $("s_exp").textContent = fmt$(s.mean);
+  $("s_expret").textContent = pct(ret(s.mean))+" expected";
+  $("s_med").textContent = fmt$(s.median);
+  $("s_medret").textContent = pct(ret(s.median))+" typical";
+  $("s_var").textContent = "−"+fmt$(s.var95);
+  $("s_range").textContent = fmt$(s.p05t)+" – "+fmt$(s.p95t);
+  $("statNote").textContent = "n = "+params.N.toLocaleString();
+}
+
+/* ── run + animate the reveal ── */
+function run(){
+  if(raf) cancelAnimationFrame(raf);
+  sim = simulate();
+  renderStats();
+  drawHist();
+  const T=sim.T;
+  const FRAMES=64, stepSize=Math.max(1,Math.ceil(T/FRAMES));
+  let rev=0;
+  (function frame(){
+    rev=Math.min(T,rev+stepSize);
+    drawPaths(rev);
+    if(rev<T) raf=requestAnimationFrame(frame);
+    else raf=null;
+  })();
+}
+
+/* ── wiring ── */
+function syncLabels(){
+  $("v_s0").textContent="$"+params.s0;
+  $("v_mu").textContent=pct(params.mu);
+  $("v_sig").textContent=params.sig+"%";
+  $("v_T").textContent=params.T+"d";
+  $("v_N").textContent=params.N.toLocaleString();
+  const yrs=(params.T/252);
+  $("pathNote").textContent=`${params.T} trading days · ${yrs%1===0?yrs:yrs.toFixed(2)} year${yrs===1?"":"s"} horizon`;
+}
+function bindSlider(id,key,after){
+  $(id).addEventListener("input",e=>{ params[key]=+e.target.value; syncLabels();
+    if(id==="mu"||id==="sig") clearPreset(); });
+  $(id).addEventListener("change",()=>{ run(); });
+}
+function clearPreset(){ document.querySelectorAll(".preset").forEach(p=>p.classList.remove("active")); }
+
+bindSlider("s0","s0");bindSlider("mu","mu");bindSlider("sig","sig");bindSlider("T","T");bindSlider("N","N");
+
+$("presets").addEventListener("click",e=>{
+  const b=e.target.closest(".preset"); if(!b) return;
+  document.querySelectorAll(".preset").forEach(p=>p.classList.remove("active"));
+  b.classList.add("active");
+  params.mu=+b.dataset.mu; params.sig=+b.dataset.sig;
+  $("mu").value=params.mu; $("sig").value=params.sig;
+  syncLabels(); run();
+});
+$("run").addEventListener("click",run);
+document.addEventListener("keydown",e=>{ if(e.code==="Space"){e.preventDefault();run();} });
+
+let rz; window.addEventListener("resize",()=>{ clearTimeout(rz); rz=setTimeout(()=>{ if(sim){drawPaths(sim.T);drawHist();} },150); });
+
+/* boot */
+syncLabels(); run();
+</script>
+</body>
+</html>
