@@ -102,7 +102,6 @@
 
   /* ── list ── */
   .list{display:flex;flex-direction:column;gap:9px;max-height:none}
-  .count{font-family:var(--mono);font-size:.72rem;color:var(--dim);margin-bottom:2px}
   .card{
     background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:13px 15px;
     cursor:pointer;transition:border-color .15s,background .15s,transform .1s;position:relative;overflow:hidden;
@@ -217,7 +216,6 @@
       </div>
     </div>
     <div>
-      <div class="count" id="count"></div>
       <div class="list" id="list"></div>
     </div>
   </div>
@@ -296,7 +294,6 @@ function visible(){
 /* ── render list ── */
 function render(){
   const rows=visible(), list=$("#list");
-  $("#count").textContent = rows.length+" spot"+(rows.length===1?"":"s")+(userPos?" · nearest first":"");
   if(!rows.length){ list.innerHTML='<div class="empty">No restrooms match. Try clearing a filter. 🤷</div>'; syncMarkers(rows); return; }
   list.innerHTML = rows.map(x=>{
     const a=ACCESS[x.access]||ACCESS.free, cat=CATS[x.category]||{label:x.category,emoji:"📍"};
