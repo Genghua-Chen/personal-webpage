@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Gotta Go NYC 🚽 — Restroom Finder</title>
+<meta name="description" content="Find a clean restroom in New York City fast — with door codes, map, and one-tap directions. Works on phone, tablet and desktop.">
+<meta name="theme-color" content="#0b1020">
+<meta property="og:title" content="Gotta Go NYC 🚽 — Restroom Finder">
+<meta property="og:description" content="Find the nearest NYC restroom fast — door codes, map, one-tap directions.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%BD%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root{
+    --bg:#0b1020; --bg2:#111931;
+    --panel:rgba(255,255,255,.045); --panel2:rgba(255,255,255,.08);
+    --border:rgba(255,255,255,.10); --border2:rgba(255,255,255,.20);
+    --text:#eef1fb; --muted:rgba(203,211,240,.62); --dim:rgba(203,211,240,.4);
+    --free:#22c55e;   --code:#3b82f6;   --receipt:#f59e0b;
+    --ask:#a78bfa;    --seasonal:#ec4899;
+    --accent:#38e1c6;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--sans);color:var(--text);background:var(--bg);line-height:1.45;
+    background-image:
+      radial-gradient(ellipse 70% 50% at 15% -10%, rgba(56,225,198,.12), transparent 60%),
+      radial-gradient(ellipse 60% 45% at 100% 0%, rgba(59,130,246,.12), transparent 55%),
+      radial-gradient(ellipse 60% 50% at 50% 115%, rgba(236,72,153,.08), transparent 55%);
+    background-attachment:fixed;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:1280px;margin:0 auto;padding:20px 16px 40px;padding-bottom:max(40px,env(safe-area-inset-bottom))}
+
+  /* ── header ── */
+  header{margin-bottom:16px}
+  .brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .logo{font-size:2.4rem;line-height:1;filter:drop-shadow(0 2px 10px rgba(56,225,198,.4))}
+  h1{font-size:clamp(1.6rem,4.5vw,2.5rem);font-weight:800;letter-spacing:-.03em}
+  h1 .grad{background:linear-gradient(110deg,#38e1c6,#3b82f6 60%,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .tag{color:var(--muted);font-size:.95rem;margin-top:5px}
+  .tag b{color:var(--text);font-weight:600}
+  .stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .pill{font-family:var(--mono);font-size:.72rem;font-weight:600;background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:5px 12px;color:var(--muted)}
+  .pill b{color:var(--text)}
+
+  /* ── search + actions ── */
+  .bar{display:flex;gap:8px;margin:16px 0 10px;flex-wrap:wrap}
+  .search{flex:1;min-width:200px;position:relative;display:flex;align-items:center}
+  .search svg{position:absolute;left:14px;opacity:.5}
+  .search input{
+    width:100%;height:46px;border-radius:13px;border:1px solid var(--border);
+    background:var(--panel);color:var(--text);font-size:1rem;padding:0 14px 0 42px;outline:none;transition:border-color .15s;
+  }
+  .search input:focus{border-color:var(--accent)}
+  .search input::placeholder{color:var(--dim)}
+  .near{
+    height:46px;border:0;border-radius:13px;cursor:pointer;font-family:var(--sans);
+    font-size:.95rem;font-weight:700;color:#04121a;padding:0 18px;white-space:nowrap;
+    background:linear-gradient(120deg,#38e1c6,#3b82f6);transition:transform .12s,filter .15s;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .near:hover{transform:translateY(-1px);filter:brightness(1.07)}
+  .near:active{transform:translateY(0)}
+  .near.locating{opacity:.7;pointer-events:none}
+
+  /* ── filters ── */
+  .filters{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+  .frow{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .frow-lbl{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-right:2px}
+  .chip{
+    font-size:.8rem;font-weight:600;cursor:pointer;user-select:none;
+    background:var(--panel);border:1px solid var(--border);border-radius:9px;
+    padding:6px 11px;color:var(--muted);transition:all .13s;display:inline-flex;align-items:center;gap:5px;
+  }
+  .chip:hover{color:var(--text);border-color:var(--border2)}
+  .chip.on{color:var(--text);background:var(--panel2);border-color:var(--border2)}
+  .chip .sw{width:9px;height:9px;border-radius:50%}
+  .chip.on[data-access=free]{border-color:var(--free);background:rgba(34,197,94,.14)}
+  .chip.on[data-access=fixed_code]{border-color:var(--code);background:rgba(59,130,246,.14)}
+  .chip.on[data-access=receipt_code]{border-color:var(--receipt);background:rgba(245,158,11,.14)}
+  .chip.on[data-access=ask_staff]{border-color:var(--ask);background:rgba(167,139,250,.14)}
+  .chip.on[data-access=seasonal]{border-color:var(--seasonal);background:rgba(236,72,153,.14)}
+
+  /* ── view toggle (mobile) ── */
+  .vtoggle{display:none;gap:4px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:12px}
+  .vtoggle button{flex:1;border:0;background:transparent;color:var(--muted);font-family:var(--sans);font-weight:700;font-size:.9rem;padding:9px;border-radius:9px;cursor:pointer}
+  .vtoggle button.on{background:var(--panel2);color:var(--text)}
+
+  /* ── layout ── */
+  .layout{display:grid;grid-template-columns:1fr 420px;gap:14px;align-items:start}
+  .map-col{position:sticky;top:16px}
+  #map{height:min(72vh,680px);border-radius:16px;border:1px solid var(--border);background:#0e1530;z-index:1}
+  .leaflet-container{font-family:var(--sans)}
+  .map-note{font-family:var(--mono);font-size:.68rem;color:var(--dim);margin-top:7px;display:flex;gap:12px;flex-wrap:wrap}
+  .map-note span{display:inline-flex;align-items:center;gap:5px}
+  .map-note .sw{width:10px;height:10px;border-radius:50%}
+  .map-fail{padding:30px;text-align:center;color:var(--muted);font-size:.9rem}
+
+  /* ── list ── */
+  .list{display:flex;flex-direction:column;gap:9px;max-height:none}
+  .count{font-family:var(--mono);font-size:.72rem;color:var(--dim);margin-bottom:2px}
+  .card{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:13px 15px;
+    cursor:pointer;transition:border-color .15s,background .15s,transform .1s;position:relative;overflow:hidden;
+  }
+  .card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--stripe,var(--free))}
+  .card:hover{border-color:var(--border2);background:var(--panel2)}
+  .card:active{transform:scale(.995)}
+  .card.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .c-top{display:flex;align-items:flex-start;gap:9px}
+  .c-emoji{font-size:1.35rem;line-height:1.2;flex-shrink:0}
+  .c-main{flex:1;min-width:0}
+  .c-name{font-weight:700;font-size:1.02rem;letter-spacing:-.01em}
+  .c-addr{color:var(--muted);font-size:.82rem;margin-top:2px}
+  .c-dist{flex-shrink:0;text-align:right;font-family:var(--mono)}
+  .c-dist .d{font-weight:700;font-size:.95rem;color:var(--accent)}
+  .c-dist .w{font-size:.68rem;color:var(--dim)}
+  .c-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+  .badge{font-family:var(--mono);font-size:.66rem;font-weight:700;padding:2px 8px;border-radius:5px;letter-spacing:.02em;display:inline-flex;align-items:center;gap:4px}
+  .b-access[data-a=free]{color:var(--free);background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3)}
+  .b-access[data-a=fixed_code]{color:var(--code);background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3)}
+  .b-access[data-a=receipt_code]{color:var(--receipt);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3)}
+  .b-access[data-a=ask_staff]{color:var(--ask);background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3)}
+  .b-access[data-a=seasonal]{color:var(--seasonal);background:rgba(236,72,153,.12);border:1px solid rgba(236,72,153,.3)}
+  .b-cost{color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--border)}
+  .b-cat{color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--border)}
+  .c-note{font-size:.8rem;color:var(--muted);margin-top:8px;line-height:1.5}
+  .c-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+  .code-box{
+    display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:800;
+    background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.55);color:#bfdbfe;
+    border-radius:10px;padding:8px 14px;font-size:1.12rem;letter-spacing:.04em;cursor:pointer;
+    box-shadow:0 0 16px rgba(59,130,246,.28);transition:background .15s,box-shadow .15s;
+  }
+  .code-box:hover{background:rgba(59,130,246,.3);box-shadow:0 0 22px rgba(59,130,246,.45)}
+  /* prominent 🔑 map marker for fixed-code spots */
+  .key-marker{display:flex;align-items:center;justify-content:center;font-size:14px;
+    background:#3b82f6;border:2px solid #0b1020;border-radius:50%;
+    box-shadow:0 0 0 2px rgba(59,130,246,.55),0 2px 6px rgba(0,0,0,.5)}
+  .code-box .k{font-size:.62rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+  .dir{
+    display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;
+    background:var(--panel2);border:1px solid var(--border2);color:var(--text);border-radius:9px;
+    padding:6px 12px;text-decoration:none;transition:background .15s;
+  }
+  .dir:hover{background:rgba(56,225,198,.16);border-color:var(--accent)}
+  .empty{padding:40px 20px;text-align:center;color:var(--muted)}
+
+  footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--border);font-family:var(--mono);font-size:.72rem;color:var(--dim);line-height:1.7}
+  footer a{color:var(--muted);text-decoration:none}
+  footer a:hover{color:var(--text)}
+
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .map-col{position:static}
+    .vtoggle{display:flex}
+    .layout.show-list .map-col{display:none}
+    .layout.show-map .list{display:none}
+    #map{height:66vh}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <span class="logo">🚽</span>
+      <div>
+        <h1>Gotta Go <span class="grad">NYC</span></h1>
+        <div class="tag">When you gotta go, <b>go smart.</b> Door codes, clean picks & one-tap directions.</div>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <div class="bar">
+    <label class="search">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor"><circle cx="6.5" cy="6.5" r="4.5" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input id="q" type="search" autocomplete="off" placeholder="Search name, neighborhood, address…">
+    </label>
+    <button class="near" id="near">📍 Find nearest</button>
+  </div>
+
+  <div class="filters">
+    <div class="frow" id="accessRow">
+      <span class="frow-lbl">Access</span>
+      <span class="chip on" data-access="all">All</span>
+      <span class="chip" data-access="free"><span class="sw" style="background:var(--free)"></span>🆓 Free</span>
+      <span class="chip" data-access="fixed_code"><span class="sw" style="background:var(--code)"></span>🔑 Door code</span>
+      <span class="chip" data-access="receipt_code"><span class="sw" style="background:var(--receipt)"></span>🧾 On receipt</span>
+      <span class="chip" data-access="ask_staff"><span class="sw" style="background:var(--ask)"></span>👤 Ask staff</span>
+      <span class="chip" data-access="seasonal"><span class="sw" style="background:var(--seasonal)"></span>🎪 Seasonal</span>
+    </div>
+    <div class="frow" id="catRow"><span class="frow-lbl">Type</span></div>
+    <div class="frow" id="boroRow"><span class="frow-lbl">Borough</span></div>
+  </div>
+
+  <div class="vtoggle" id="vtoggle">
+    <button data-view="list" class="on">📋 List</button>
+    <button data-view="map">🗺️ Map</button>
+  </div>
+
+  <div class="layout show-list" id="layout">
+    <div class="map-col">
+      <div id="map"></div>
+      <div class="map-note">
+        <span><span class="sw" style="background:var(--free)"></span>Free</span>
+        <span><span class="sw" style="background:var(--code)"></span>Door code</span>
+        <span><span class="sw" style="background:var(--receipt)"></span>On receipt</span>
+        <span><span class="sw" style="background:var(--ask)"></span>Ask staff</span>
+        <span><span class="sw" style="background:var(--seasonal)"></span>Seasonal</span>
+      </div>
+    </div>
+    <div>
+      <div class="count" id="count"></div>
+      <div class="list" id="list"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div>🚽 <b style="color:var(--muted)">Gotta Go NYC</b> · <span id="total2"></span> restrooms · data in <a href="restrooms.csv">restrooms.csv</a> — edit that file to add or remove spots.</div>
+    <div>Codes & tips are crowd-sourced and may change. Coordinates are approximate. Built for humans in a hurry.</div>
+  </footer>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+
+const ACCESS={
+  free:        {label:"Free",       emoji:"🆓", color:"#22c55e"},
+  fixed_code:  {label:"Door code",  emoji:"🔑", color:"#3b82f6"},
+  receipt_code:{label:"On receipt", emoji:"🧾", color:"#f59e0b"},
+  ask_staff:   {label:"Ask staff",  emoji:"👤", color:"#a78bfa"},
+  seasonal:    {label:"Seasonal",   emoji:"🎪", color:"#ec4899"},
+};
+const CATS={
+  fast_food:{label:"Fast food",emoji:"🍔"}, coffee:{label:"Coffee",emoji:"☕"},
+  dept_store:{label:"Store",emoji:"🛍️"}, mall:{label:"Mall",emoji:"🏬"},
+  grocery:{label:"Grocery",emoji:"🛒"}, food_court:{label:"Food court",emoji:"🍜"},
+  park:{label:"Park",emoji:"🌳"}, library:{label:"Library",emoji:"📚"},
+  transit:{label:"Transit",emoji:"🚉"}, museum:{label:"Museum",emoji:"🖼️"},
+  business_center:{label:"Business ctr",emoji:"🏢"}, market:{label:"Market",emoji:"🎪"},
+};
+const COST={purchase:"💵 Purchase",free:"✅ No purchase"};
+
+let DATA=[], userPos=null, map=null, markers={}, tileOK=false;
+const state={q:"",access:"all",cat:"all",boro:"all"};
+
+/* ── CSV parse (handles quoted fields) ── */
+function parseCSV(text){
+  const rows=[]; let row=[], cur="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else if(c==='"') q=true;
+    else if(c===','){ row.push(cur);cur=""; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n')i++; if(cur!==""||row.length){row.push(cur);rows.push(row);row=[];cur="";} }
+    else cur+=c;
+  }
+  if(cur!==""||row.length){row.push(cur);rows.push(row);}
+  const head=rows.shift();
+  return rows.filter(r=>r.length>1).map(r=>{const o={};head.forEach((h,i)=>o[h.trim()]=(r[i]||"").trim());return o;});
+}
+
+/* ── Haversine (meters) ── */
+function dist(a,b,c,d){
+  const R=6371000,t=x=>x*Math.PI/180;
+  const dLa=t(c-a),dLo=t(d-b);
+  const x=Math.sin(dLa/2)**2+Math.cos(t(a))*Math.cos(t(c))*Math.sin(dLo/2)**2;
+  return 2*R*Math.asin(Math.sqrt(x));
+}
+const miles=m=>(m/1609.34), walkMin=m=>Math.max(1,Math.round(m/80));
+function fmtDist(m){ const mi=miles(m); return (mi<0.1?Math.round(m)+" m":mi.toFixed(1)+" mi"); }
+
+/* ── filtering ── */
+function visible(){
+  const q=state.q.toLowerCase();
+  let r=DATA.filter(x=>{
+    if(state.access!=="all" && x.access!==state.access) return false;
+    if(state.cat!=="all" && x.category!==state.cat) return false;
+    if(state.boro!=="all" && x.borough!==state.boro) return false;
+    if(q){ const hay=(x.name+" "+x.neighborhood+" "+x.address+" "+(CATS[x.category]?.label||"")).toLowerCase(); if(!hay.includes(q)) return false; }
+    return true;
+  });
+  if(userPos) r.sort((a,b)=>a._d-b._d);
+  return r;
+}
+
+/* ── render list ── */
+function render(){
+  const rows=visible(), list=$("#list");
+  $("#count").textContent = rows.length+" spot"+(rows.length===1?"":"s")+(userPos?" · nearest first":"");
+  if(!rows.length){ list.innerHTML='<div class="empty">No restrooms match. Try clearing a filter. 🤷</div>'; syncMarkers(rows); return; }
+  list.innerHTML = rows.map(x=>{
+    const a=ACCESS[x.access]||ACCESS.free, cat=CATS[x.category]||{label:x.category,emoji:"📍"};
+    const distHtml = (userPos&&isFinite(x._d)) ? `<div class="c-dist"><div class="d">${fmtDist(x._d)}</div><div class="w">~${walkMin(x._d)} min walk</div></div>` : "";
+    const codeHtml = x.password ? `<button class="code-box" data-copy="${x.password}" title="Tap to copy">🔑 <span class="k">code</span> ${x.password} ⧉</button>` : "";
+    const costHtml = x.cost&&COST[x.cost] ? `<span class="badge b-cost">${COST[x.cost]}</span>` : "";
+    return `<div class="card" data-id="${x.id}" style="--stripe:${a.color}">
+      <div class="c-top">
+        <span class="c-emoji">${cat.emoji}</span>
+        <div class="c-main">
+          <div class="c-name">${esc(x.name)}</div>
+          <div class="c-addr">${esc(x.address)}</div>
+        </div>
+        ${distHtml}
+      </div>
+      <div class="c-badges">
+        <span class="badge b-access" data-a="${x.access}">${a.emoji} ${a.label}</span>
+        ${costHtml}
+        <span class="badge b-cat">${cat.emoji} ${cat.label}</span>
+        <span class="badge b-cat">📍 ${esc(x.neighborhood)}</span>
+      </div>
+      ${x.notes?`<div class="c-note">${esc(x.notes)}</div>`:""}
+      <div class="c-actions">
+        ${codeHtml}
+        <a class="dir" href="https://www.google.com/maps/dir/?api=1&destination=${x.lat},${x.lng}" target="_blank" rel="noopener">🧭 Directions</a>
+      </div>
+    </div>`;
+  }).join("");
+  syncMarkers(rows);
+}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+/* ── map ── */
+function initMap(){
+  if(typeof L==="undefined"){ $("#map").innerHTML='<div class="map-fail">🗺️ Map couldn\'t load (offline?). The list below still works.</div>'; return; }
+  map=L.map("map",{zoomControl:true,attributionControl:true}).setView([40.75,-73.98],12);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:19, attribution:'&copy; OpenStreetMap'
+  }).addTo(map);
+  tileOK=true;
+  DATA.forEach(x=>{
+    const a=ACCESS[x.access]||ACCESS.free;
+    const m = x.access==="fixed_code"
+      ? L.marker([+x.lat,+x.lng],{icon:L.divIcon({className:"key-marker",html:"🔑",iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-12]})})
+      : L.circleMarker([+x.lat,+x.lng],{radius:7,weight:2,color:"#0b1020",fillColor:a.color,fillOpacity:.95});
+    m.addTo(map)
+     .bindPopup(`<b>${esc(x.name)}</b><br>${a.emoji} ${a.label}${x.password?" · code <b>"+esc(x.password)+"</b>":""}<br>${esc(x.address)}<br><a href="https://www.google.com/maps/dir/?api=1&destination=${x.lat},${x.lng}" target="_blank" rel="noopener">Directions →</a>`);
+    m.on("click",()=>selectCard(x.id,false));
+    markers[x.id]=m;
+  });
+}
+function syncMarkers(rows){
+  if(!tileOK) return;
+  const vis=new Set(rows.map(r=>r.id));
+  DATA.forEach(x=>{ const m=markers[x.id]; if(!m)return; if(vis.has(x.id)){ if(!map.hasLayer(m))m.addTo(map);} else if(map.hasLayer(m))map.removeLayer(m); });
+}
+function selectCard(id,pan){
+  $$(".card").forEach(c=>c.classList.toggle("sel",c.dataset.id===id));
+  const card=$(`.card[data-id="${id}"]`);
+  if(card) card.scrollIntoView({behavior:"smooth",block:"nearest"});
+  const x=DATA.find(d=>d.id===id);
+  if(tileOK&&x){ if(pan)map.setView([+x.lat,+x.lng],15); markers[id]&&markers[id].openPopup(); }
+}
+
+/* ── geolocation ── */
+function findNearest(){
+  if(!navigator.geolocation){ alert("Geolocation isn't available on this device."); return; }
+  const btn=$("#near"); btn.classList.add("locating"); btn.textContent="📡 Locating…";
+  navigator.geolocation.getCurrentPosition(pos=>{
+    userPos=[pos.coords.latitude,pos.coords.longitude];
+    DATA.forEach(x=>x._d=dist(userPos[0],userPos[1],+x.lat,+x.lng));
+    btn.classList.remove("locating"); btn.textContent="📍 Nearest first";
+    if(tileOK){
+      if(markers.__me) map.removeLayer(markers.__me);
+      markers.__me=L.circleMarker(userPos,{radius:8,weight:3,color:"#fff",fillColor:"#38e1c6",fillOpacity:1}).addTo(map).bindPopup("You are here");
+      const r=visible(); if(r.length) map.fitBounds([userPos,[+r[0].lat,+r[0].lng]],{padding:[60,60],maxZoom:15});
+    }
+    render();
+  },err=>{
+    btn.classList.remove("locating"); btn.textContent="📍 Find nearest";
+    alert("Couldn't get your location: "+err.message);
+  },{enableHighAccuracy:true,timeout:8000,maximumAge:60000});
+}
+
+/* ── build dynamic filter chips ── */
+function buildChips(){
+  const cats=[...new Set(DATA.map(x=>x.category))];
+  $("#catRow").insertAdjacentHTML("beforeend",
+    `<span class="chip on" data-cat="all">All</span>`+
+    cats.map(c=>`<span class="chip" data-cat="${c}">${(CATS[c]||{emoji:"📍"}).emoji} ${(CATS[c]||{label:c}).label}</span>`).join(""));
+  const boros=[...new Set(DATA.map(x=>x.borough))];
+  $("#boroRow").insertAdjacentHTML("beforeend",
+    `<span class="chip on" data-boro="all">All</span>`+
+    boros.map(b=>`<span class="chip" data-boro="${b}">${b}</span>`).join(""));
+}
+
+/* ── events ── */
+function wire(){
+  $("#q").addEventListener("input",e=>{state.q=e.target.value;render();});
+  $("#near").addEventListener("click",findNearest);
+  document.addEventListener("click",e=>{
+    const copy=e.target.closest("[data-copy]");
+    if(copy){ e.stopPropagation(); navigator.clipboard&&navigator.clipboard.writeText(copy.dataset.copy);
+      const t=copy.innerHTML; copy.innerHTML='<span class="k">copied!</span> ✓'; setTimeout(()=>copy.innerHTML=t,1100); return; }
+    const card=e.target.closest(".card"); if(card&&!e.target.closest("a")) selectCard(card.dataset.id,true);
+  });
+  const chipHandler=(row,key)=>$(row).addEventListener("click",e=>{
+    const c=e.target.closest(".chip"); if(!c)return;
+    const attr=key==="access"?"access":key==="cat"?"cat":"boro";
+    state[key]=c.dataset[attr];
+    $$(row+" .chip").forEach(x=>x.classList.remove("on")); c.classList.add("on");
+    render();
+  });
+  chipHandler("#accessRow","access"); chipHandler("#catRow","cat"); chipHandler("#boroRow","boro");
+  $("#vtoggle").addEventListener("click",e=>{
+    const b=e.target.closest("button"); if(!b)return;
+    $$("#vtoggle button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
+    const v=b.dataset.view, lay=$("#layout");
+    lay.classList.toggle("show-map",v==="map"); lay.classList.toggle("show-list",v==="list");
+    if(v==="map"&&tileOK) setTimeout(()=>map.invalidateSize(),60);
+  });
+}
+
+/* ── boot ── */
+function renderStats(){
+  const n=DATA.length, free=DATA.filter(x=>x.access==="free").length, coded=DATA.filter(x=>x.password).length;
+  $("#stats").innerHTML=
+    `<span class="pill"><b>${n}</b> restrooms</span>`+
+    `<span class="pill">🆓 <b>${free}</b> free & open</span>`+
+    `<span class="pill">🔑 <b>${coded}</b> with door codes</span>`+
+    `<span class="pill">🗽 Manhattan · Brooklyn · Queens</span>`;
+  $("#total2").textContent=n;
+}
+fetch("restrooms.csv").then(r=>{ if(!r.ok)throw 0; return r.text(); }).then(txt=>{
+  DATA=parseCSV(txt).map(x=>{x._d=Infinity;return x;});
+  renderStats(); buildChips(); initMap(); wire(); render();
+}).catch(()=>{
+  $("#list").innerHTML='<div class="empty">Couldn\'t load <b>restrooms.csv</b>. If you opened this file directly, run a local server (e.g. <code>python3 -m http.server</code>) — browsers block file reads otherwise.</div>';
+});
+</script>
+</body>
+</html>
