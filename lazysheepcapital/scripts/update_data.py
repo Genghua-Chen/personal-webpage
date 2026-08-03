@@ -31,7 +31,9 @@ UA = {"User-Agent": "LazySheepcapital genghua321@gmail.com"}
 # EDGAR 注册名以便核对；标 None 的需要自行到 efts.sec.gov 查 CIK 后补上。
 INSTITUTIONS = {
     "Berkshire Hathaway":       (1067983, "Core Smart Money"),
-    "BlackRock":                (1364742, "Core Smart Money"),
+    # 旧 CIK 1364742（BlackRock Finance, Inc.）2024 Q2 后不再报 13F，
+    # 2024 年重组后由新控股公司 BlackRock, Inc. (CIK 2012383) 申报。
+    "BlackRock":                (2012383, "Core Smart Money"),
     "Goldman Sachs":            (886982,  "Core Smart Money"),
     "JPMorgan Chase":           (19617,   "Core Smart Money"),
     "Morgan Stanley":           (895421,  "Core Smart Money"),
@@ -47,8 +49,13 @@ INSTITUTIONS = {
     "Pershing Square":          (1336528, "13F Hedge Funds"),
     "Third Point":              (1040273, "13F Hedge Funds"),
     "Blackstone":               (1393818, "Alternative Assets"),
-    "KKR":                      (1404912, "Alternative Assets"),
-    "Apollo Global Management": (None,    "Alternative Assets"),
+    # KKR 上市主体 (1404912) 不报 13F；旗下 KKR Credit Advisors (1520692)、
+    # KKR Investment Management (1463931) 长期只报 13F-NT（无需申报的持仓），
+    # 因此 KKR 拿不到自动持仓表，相关行需人工维护。
+    "KKR":                      (None,    "Alternative Assets"),
+    # 上市主体 Apollo Global Management, Inc. (1858681) 不报 13F，
+    # 实际申报人是 Apollo Management Holdings, L.P.。
+    "Apollo Global Management": (1449434, "Alternative Assets"),
     "Alphabet":                 (1652044, "AI Core Holdings"),
     "NVIDIA":                   (1045810, "AI Core Holdings"),
 }
@@ -92,23 +99,98 @@ def quarter_label(date_str):
     return f"Q{(m - 1) // 3 + 1} {y}"
 
 
+def amendment_type(cik, accession):
+    """读 primary_doc 判断 13F-HR/A 的类型：RESTATEMENT（整表重报）/ NEW HOLDINGS（增量补报）"""
+    acc = accession.replace("-", "")
+    raw = get(f"https://www.sec.gov/Archives/edgar/data/{cik}/{acc}/primary_doc.xml")
+    t = ET.fromstring(strip_namespaces(raw)).findtext(".//amendmentType") or ""
+    return t.strip().upper()
+
+
 def recent_13f_filings(cik, n=2):
-    """返回最近 n 期 13F-HR: [(accession, report_date, filing_date), ...] 新→旧"""
+    """返回最近 n 期持仓: (注册名, [(报告期, 披露日, [accession,...]), ...] 新→旧, 更新的 NT 期)
+
+    两个坑：
+    1. 13F-NT 是「本期无需申报持仓」的通知，不含持仓表。若某机构最近一期报的是 NT
+       （例如 Vanguard 2026 Q1），直接拿最近两期 HR 会静默对比出一个已经过期的季度，
+       所以额外返回这个 NT 的报告期用于提示。
+    2. 13F-HR/A 修正件必须算进来。JPMorgan 2026 Q1 的原始 13F-HR 只有 378 条，
+       同日的 RESTATEMENT 修正件才是完整的 33063 条——只看 13F-HR 会拿到残缺数据。
+       RESTATEMENT 整表覆盖原件；NEW HOLDINGS 是增量，要和原件合并。
+    """
     data = json.loads(get(f"https://data.sec.gov/submissions/CIK{cik:010d}.json"))
     name = data.get("name", "?")
     rec = data["filings"]["recent"]
-    out = []
+
+    periods, newest_nt = {}, None
     for form, acc, rdate, fdate in zip(rec["form"], rec["accessionNumber"],
                                        rec["reportDate"], rec["filingDate"]):
-        if form == "13F-HR":
-            out.append((acc, rdate, fdate))
-        if len(out) >= n:
-            break
-    return name, out
+        if form in ("13F-HR", "13F-HR/A"):
+            p = periods.setdefault(rdate, {"filed": fdate, "orig": [], "amend": []})
+            p["orig" if form == "13F-HR" else "amend"].append((acc, fdate))
+        elif form == "13F-NT" and newest_nt is None:
+            newest_nt = (rdate, fdate)
+
+    # 按报告期（不是申报日）排序：补报旧季度的修正件申报日更新，会把顺序带偏
+    out = []
+    for rdate in sorted(periods, reverse=True)[:n]:
+        p = periods[rdate]
+        # 披露日取原件里最早那份；没有原件（只有修正件）时退回该期任一申报日
+        filed = p["orig"][-1][1] if p["orig"] else p["filed"]
+        accs, note = [a for a, _ in p["orig"]], ""
+        for acc, fdate in p["amend"]:                  # 申报顺序是新→旧
+            kind = amendment_type(cik, acc)
+            time.sleep(0.15)
+            if kind == "RESTATEMENT":
+                accs, filed, note = [acc], fdate, "整表重报"   # 只用最新那份
+                break
+            accs.append(acc)                           # NEW HOLDINGS，追加合并
+            note = "含增量补报"
+        if accs:
+            out.append((rdate, filed, accs, note))
+
+    # 只有当 NT 期比最新持仓期还新时才算「本期没有持仓表」
+    if newest_nt and out and newest_nt[0] <= out[0][0]:
+        newest_nt = None
+    return name, out, newest_nt
 
 
-def fetch_holdings(cik, accession):
-    """下载并解析 information table，返回 {cusip: {issuer, value_usd, shares}}"""
+def existing_quarters(path):
+    """主 CSV 里已有的 (机构, 季度)，用于避免重复生成已合并过的季度"""
+    if not path.exists():
+        return set()
+    with open(path, newline="") as f:
+        return {(r["institution"], r["quarter"]) for r in csv.DictReader(f)}
+
+
+def strip_namespaces(raw):
+    """去掉 XML 里的命名空间，让 ElementTree 用裸标签名查找。
+
+    只在标签内部替换：先删 xmlns 声明，再删 xsi:schemaLocation 这类带前缀的属性
+    （否则声明没了、属性还在，ElementTree 会报 unbound prefix），最后删元素名前缀。
+    """
+    def fix_tag(m):
+        tag = m.group(0)
+        tag = re.sub(rb'\s+xmlns(:\w+)?="[^"]*"', b"", tag)
+        tag = re.sub(rb'\s+\w+:\w+="[^"]*"', b"", tag)
+        return re.sub(rb"<(/?)\w+:", rb"<\1", tag)
+    return re.sub(rb"<[^>]+>", fix_tag, raw)
+
+
+def fetch_holdings(cik, accessions):
+    """下载并解析 information table，返回 {cusip: {issuer, value_usd, shares}}
+
+    accessions 可能有多份（原件 + NEW HOLDINGS 增量补报），按 CUSIP 累加。
+    """
+    holdings = {}
+    for i, acc in enumerate(accessions):
+        if i:
+            time.sleep(0.2)
+        _accumulate_holdings(cik, acc, holdings)
+    return holdings
+
+
+def _accumulate_holdings(cik, accession, holdings):
     acc = accession.replace("-", "")
     idx = json.loads(get(f"https://www.sec.gov/Archives/edgar/data/{cik}/{acc}/index.json"))
     xml_name = None
@@ -120,11 +202,7 @@ def fetch_holdings(cik, accession):
     if not xml_name:
         raise RuntimeError(f"no infotable xml in {accession}")
     raw = get(f"https://www.sec.gov/Archives/edgar/data/{cik}/{acc}/{xml_name}")
-    # 去掉 namespace 前缀，简化查找
-    raw = re.sub(rb'xmlns(:\w+)?="[^"]+"', b"", raw)
-    raw = re.sub(rb"<(/?)\w+:", rb"<\1", raw)
-    root = ET.fromstring(raw)
-    holdings = {}
+    root = ET.fromstring(strip_namespaces(raw))
     for it in root.iter("infoTable"):
         cusip = (it.findtext("cusip") or "").strip().upper()
         if not cusip:
@@ -135,7 +213,6 @@ def fetch_holdings(cik, accession):
         amt = it.find("shrsOrPrnAmt")
         if amt is not None:
             h["shares"] += int(float(amt.findtext("sshPrnamt") or 0))
-    return holdings
 
 
 def diff_rows(inst, cat, cur, prev, rdate, fdate, cusip_map, top):
@@ -182,6 +259,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--inst", help="只跑指定机构（名称需与 INSTITUTIONS 一致）")
     ap.add_argument("--top", type=int, default=30, help="每家机构最多输出的变化条数")
+    ap.add_argument("--force", action="store_true",
+                    help="即使该季度已在主 CSV 里也重新生成（用于核对已有数据）")
     args = ap.parse_args()
 
     map_path = DATA / "cusip_tickers.json"
@@ -191,18 +270,26 @@ def main():
 
     targets = {args.inst: INSTITUTIONS[args.inst]} if args.inst else INSTITUTIONS
     all_rows, all_unknown = [], set()
+    have = existing_quarters(DATA / "smart_money_positions.csv")
 
     for inst, (cik, cat) in targets.items():
         if cik is None:
             print(f"⚠️  {inst}: 未配置 CIK，跳过（到 https://efts.sec.gov/LATEST/search-index?q= 查询后填入脚本）")
             continue
         try:
-            name, filings = recent_13f_filings(cik)
+            name, filings, nt = recent_13f_filings(cik)
             if len(filings) < 2:
                 print(f"⚠️  {inst} ({name}): 13F-HR 不足两期，跳过")
                 continue
-            (acc_new, rd_new, fd_new), (acc_old, rd_old, _) = filings[0], filings[1]
-            print(f"▶ {inst}  [EDGAR: {name}]  {rd_old} → {rd_new}")
+            (rd_new, fd_new, acc_new, note), (rd_old, _, acc_old, _) = filings[0], filings[1]
+            if nt:
+                print(f"⚠️  {inst} ({name}): 最近一期 {nt[0]} 报的是 13F-NT（无持仓表），"
+                      f"下面对比的是更早的 {rd_new}")
+            if not args.force and (inst, quarter_label(rd_new)) in have:
+                print(f"⏭  {inst}: {quarter_label(rd_new)} 已在主 CSV，跳过（--force 可重新生成核对）")
+                continue
+            print(f"▶ {inst}  [EDGAR: {name}]  {rd_old} → {rd_new}"
+                  + (f"  [13F-HR/A {note}]" if note else ""))
             cur = fetch_holdings(cik, acc_new)
             time.sleep(0.2)
             prev = fetch_holdings(cik, acc_old)

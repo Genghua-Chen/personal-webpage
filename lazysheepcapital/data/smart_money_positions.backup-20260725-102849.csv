@@ -203,7 +203,7 @@ Core Smart Money,BlackRock,Q1 2026,2026-03-31,XOM,Exxon Mobil,Added,,,能源板�
 Core Smart Money,BlackRock,Q1 2026,2026-03-31,CVX,Chevron,Added,,,能源板块双龙头加仓,披露日: 2026-05-15
 Core Smart Money,BlackRock,Q1 2026,2026-03-31,AMAT,Applied Materials,Added,,,半导体设备加仓,披露日: 2026-05-15
 Core Smart Money,BlackRock,Q1 2026,2026-03-31,MU,Micron Technology,Added,,,内存芯片加仓,披露日: 2026-05-15
-Core Smart Money,BlackRock,Q1 2026,2026-03-31,JPM,JPMorgan Chase,Reduced,-7031.8,-1.7,进入前十大持仓，替换LLY；已按 EDGAR 校正,披露日: 2026-05-15
+Core Smart Money,BlackRock,Q1 2026,2026-03-31,JPM,JPMorgan Chase,Added,,,进入前十大持仓，替换LLY,披露日: 2026-05-15
 Core Smart Money,BlackRock,Q1 2026,2026-03-31,NVDA,NVIDIA,Reduced,,-4,从6.13%微降至5.87%,披露日: 2026-05-15
 Core Smart Money,BlackRock,Q1 2026,2026-03-31,MSFT,Microsoft,Reduced,,,Mag7减仓之一,披露日: 2026-05-15
 Core Smart Money,BlackRock,Q1 2026,2026-03-31,TSLA,Tesla,Reduced,,,Mag7减仓之一,披露日: 2026-05-15
@@ -215,8 +215,8 @@ Core Smart Money,Goldman Sachs,Q4 2025,2025-12-31,ETHE,Ethereum ETF,New Position
 Core Smart Money,Goldman Sachs,Q4 2025,2025-12-31,NVDA,NVIDIA,Held,,0,股票组合前五大持仓,披露日: 2026-02-10
 Core Smart Money,Goldman Sachs,Q4 2025,2025-12-31,SPY,SPDR S&P 500 ETF,Held,,0,前五大持仓之一,披露日: 2026-02-10
 Core Smart Money,Goldman Sachs,Q4 2025,2025-12-31,MSFT,Microsoft,Held,,0,前五大持仓之一,披露日: 2026-02-10
-Core Smart Money,Goldman Sachs,Q1 2026,2026-03-31,NVDA,NVIDIA,Reduced,-3360.9,-1.7,Q1最大加仓金额；已按 EDGAR 校正,披露日: 2026-05-15
-Core Smart Money,Goldman Sachs,Q1 2026,2026-03-31,TSLA,Tesla,Reduced,-5584.4,-16.0,第二大加仓；已按 EDGAR 校正,披露日: 2026-05-15
+Core Smart Money,Goldman Sachs,Q1 2026,2026-03-31,NVDA,NVIDIA,Added,7700,,Q1最大加仓金额,披露日: 2026-05-15
+Core Smart Money,Goldman Sachs,Q1 2026,2026-03-31,TSLA,Tesla,Added,6600,,第二大加仓,披露日: 2026-05-15
 Core Smart Money,Goldman Sachs,Q1 2026,2026-03-31,MSFT,Microsoft,Added,6100,,云AI平台布局,披露日: 2026-05-15
 Core Smart Money,Goldman Sachs,Q1 2026,2026-03-31,QQQ,Invesco QQQ ETF,Added,4200,,科技宽指增仓,披露日: 2026-05-15
 Core Smart Money,Goldman Sachs,Q1 2026,2026-03-31,AMZN,Amazon.com,Added,3500,,云计算加仓,披露日: 2026-05-15
@@ -234,21 +234,21 @@ Core Smart Money,JPMorgan Chase,Q4 2025,2025-12-31,AMZN,Amazon.com,Reduced,,,云
 Core Smart Money,JPMorgan Chase,Q4 2025,2025-12-31,META,Meta Platforms,Reduced,,,小幅减仓,披露日: 2026-02-11
 Core Smart Money,JPMorgan Chase,Q4 2025,2025-12-31,SPY,SPDR S&P 500 ETF,Reduced,,,指数化敞口削减,披露日: 2026-02-11
 Core Smart Money,JPMorgan Chase,Q4 2025,2025-12-31,NFLX,Netflix,Reduced,,,获利了结,披露日: 2026-02-11
-Core Smart Money,JPMorgan Chase,Q1 2026,2026-03-31,NVDA,NVIDIA,Reduced,-11107.4,-1.8,Q1最大加仓130亿美元；已按 EDGAR 校正,披露日: 2026-05-13
+Core Smart Money,JPMorgan Chase,Q1 2026,2026-03-31,NVDA,NVIDIA,Added,13000,,Q1最大加仓130亿美元,披露日: 2026-05-13
 Core Smart Money,JPMorgan Chase,Q1 2026,2026-03-31,AAPL,Apple,Added,9700,,第二大加仓97亿美元,披露日: 2026-05-13
-Core Smart Money,JPMorgan Chase,Q1 2026,2026-03-31,MSFT,Microsoft,Reduced,-25825.4,-14.0,第三大加仓87亿美元；已按 EDGAR 校正,披露日: 2026-05-13
+Core Smart Money,JPMorgan Chase,Q1 2026,2026-03-31,MSFT,Microsoft,Added,8700,,第三大加仓87亿美元,披露日: 2026-05-13
 Core Smart Money,Morgan Stanley,Q4 2025,2025-12-31,AAPL,Apple,Held,,0,最大持仓，组合总额1.67万亿,披露日: 2026-02-13
 Core Smart Money,Morgan Stanley,Q4 2025,2025-12-31,NVDA,NVIDIA,Held,,0,第二大持仓,披露日: 2026-02-13
 Core Smart Money,Morgan Stanley,Q4 2025,2025-12-31,MSFT,Microsoft,Held,,0,第三大持仓,披露日: 2026-02-13
 Core Smart Money,Morgan Stanley,Q4 2025,2025-12-31,GOOGL,Alphabet,Held,,0,第四大持仓,披露日: 2026-02-13
 Core Smart Money,Morgan Stanley,Q4 2025,2025-12-31,AMZN,Amazon.com,Held,,0,第五大持仓,披露日: 2026-02-13
 Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,NVDA,NVIDIA,Reduced,-3800,,Q1最大减仓,披露日: 2026-05-15
-Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,MSFT,Microsoft,Added,-12397.4,3.0,第二大减仓；已按 EDGAR 校正,披露日: 2026-05-15
+Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,MSFT,Microsoft,Reduced,-3200,,第二大减仓,披露日: 2026-05-15
 Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,UNH,UnitedHealth Group,Reduced,-2000,,医疗减仓,披露日: 2026-05-15
-Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,AMZN,Amazon.com,Added,-1072.4,7.6,云计算小幅减仓；已按 EDGAR 校正,披露日: 2026-05-15
+Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,AMZN,Amazon.com,Reduced,-1500,,云计算小幅减仓,披露日: 2026-05-15
 Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,SPY,SPDR S&P 500 ETF,Added,2200,,宽指加仓,披露日: 2026-05-15
 Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,ORCL,Oracle,Added,1800,,云基础设施加仓,披露日: 2026-05-15
-Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,GOOGL,Alphabet,Reduced,-3339.6,-0.7,AI搜索加仓；已按 EDGAR 校正,披露日: 2026-05-15
+Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,GOOGL,Alphabet,Added,1700,,AI搜索加仓,披露日: 2026-05-15
 Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,MSTR,MicroStrategy,Added,1600,,比特币代理仓位,披露日: 2026-05-15
 13F Hedge Funds,Citadel Advisors,Q4 2025,2025-12-31,NFLX,Netflix,Added,8400,,Q4最大单笔加仓,披露日: 2026-02-17
 13F Hedge Funds,Citadel Advisors,Q4 2025,2025-12-31,AMZN,Amazon.com,Added,2600,,云计算大仓,披露日: 2026-02-17
@@ -262,7 +262,7 @@ Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,MSTR,MicroStrategy,Added,1600
 13F Hedge Funds,Citadel Advisors,Q4 2025,2025-12-31,QQQ,Invesco QQQ ETF,Reduced,-8000,,配对缩减科技宽指,披露日: 2026-02-17
 13F Hedge Funds,Citadel Advisors,Q4 2025,2025-12-31,MSFT,Microsoft,Reduced,-909,,大市值小幅减仓,披露日: 2026-02-17
 13F Hedge Funds,Citadel Advisors,Q4 2025,2025-12-31,BABA,Alibaba Group,Reduced,-778,,中概ADR减仓,披露日: 2026-02-17
-13F Hedge Funds,Citadel Advisors,Q1 2026,2026-03-31,AMZN,Amazon.com,Reduced,-2459.8,-9.8,成为第二大个股仓位（约2.3%）；已按 EDGAR 校正,披露日: 2026-05-15
+13F Hedge Funds,Citadel Advisors,Q1 2026,2026-03-31,AMZN,Amazon.com,Added,,+336,成为第二大个股仓位（约2.3%）,披露日: 2026-05-15
 13F Hedge Funds,Citadel Advisors,Q1 2026,2026-03-31,MSFT,Microsoft,Reduced,,-18,大市值科技小幅减仓（约1.1%）,披露日: 2026-05-15
 13F Hedge Funds,Two Sigma Investments,Q4 2025,2025-12-31,XLF,Financial Select Sector SPDR,Added,482,,板块ETF轮换至金融,披露日: 2026-02-14
 13F Hedge Funds,Two Sigma Investments,Q4 2025,2025-12-31,XLP,Consumer Staples Select SPDR,Added,347,,防御性轮换,披露日: 2026-02-14
@@ -307,11 +307,11 @@ Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,MSTR,MicroStrategy,Added,1600
 13F Hedge Funds,Point72 Asset Management,Q4 2025,2025-12-31,PEP,PepsiCo,Added,,+1500,防御性消费大幅加仓,披露日: 2026-02-14
 13F Hedge Funds,Point72 Asset Management,Q4 2025,2025-12-31,CHD,Church & Dwight,Exited,,-100,消费必需品清仓,披露日: 2026-02-14
 13F Hedge Funds,Point72 Asset Management,Q4 2025,2025-12-31,MAS,Masco Corp,Exited,,-100,家居改善清仓,披露日: 2026-02-14
-13F Hedge Funds,Point72 Asset Management,Q1 2026,2026-03-31,TSM,Taiwan Semiconductor,Reduced,-881.0,-61.3,继续增持AI供应链；已按 EDGAR 校正,披露日: 2026-05-15
-13F Hedge Funds,Point72 Asset Management,Q1 2026,2026-03-31,AVGO,Broadcom,Reduced,-400.2,-26.7,AI芯片继续加仓；已按 EDGAR 校正,披露日: 2026-05-15
+13F Hedge Funds,Point72 Asset Management,Q1 2026,2026-03-31,TSM,Taiwan Semiconductor,Added,992,,继续增持AI供应链,披露日: 2026-05-15
+13F Hedge Funds,Point72 Asset Management,Q1 2026,2026-03-31,AVGO,Broadcom,Added,612,,AI芯片继续加仓,披露日: 2026-05-15
 13F Hedge Funds,Point72 Asset Management,Q1 2026,2026-03-31,AMZN,Amazon.com,Added,592,,云仓位扩大,披露日: 2026-05-15
 13F Hedge Funds,Point72 Asset Management,Q1 2026,2026-03-31,EQIX,Equinix,Added,511,,数据中心再加仓,披露日: 2026-05-15
-13F Hedge Funds,Point72 Asset Management,Q1 2026,2026-03-31,NVDA,NVIDIA,Reduced,-455.1,-17.9,AI芯片继续累积；已按 EDGAR 校正,披露日: 2026-05-15
+13F Hedge Funds,Point72 Asset Management,Q1 2026,2026-03-31,NVDA,NVIDIA,Added,473,,AI芯片继续累积,披露日: 2026-05-15
 13F Hedge Funds,Point72 Asset Management,Q1 2026,2026-03-31,SPOT,Spotify,Added,456,,流媒体加仓,披露日: 2026-05-15
 13F Hedge Funds,Point72 Asset Management,Q1 2026,2026-03-31,XBI,iShares Biotech ETF,Added,459,,生物科技ETF新仓,披露日: 2026-05-15
 13F Hedge Funds,Point72 Asset Management,Q1 2026,2026-03-31,SPY,SPDR S&P 500 ETF,Reduced,-2300,,宽指减仓轮换个股,披露日: 2026-05-15
@@ -357,10 +357,10 @@ Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,MSTR,MicroStrategy,Added,1600
 13F Hedge Funds,Appaloosa Management,Q4 2025,2025-12-31,BABA,Alibaba Group,Reduced,,-17,从15.61%降至10.99%，减持130万股,披露日: 2026-02-14
 13F Hedge Funds,Appaloosa Management,Q4 2025,2025-12-31,AMZN,Amazon.com,Reduced,,-12.8,小幅减仓，仍为第三大持仓,披露日: 2026-02-14
 13F Hedge Funds,Appaloosa Management,Q4 2025,2025-12-31,NVDA,NVIDIA,Reduced,,,NVDA获利了结,披露日: 2026-02-14
-13F Hedge Funds,Appaloosa Management,Q1 2026,2026-03-31,QCOM,Qualcomm,Reduced,-131.6,-56.5,半导体周期反弹押注；已按 EDGAR 校正,披露日: 2026-05-15
-13F Hedge Funds,Appaloosa Management,Q1 2026,2026-03-31,MU,Micron Technology,Reduced,63.0,-4.9,内存周期持续加仓；已按 EDGAR 校正,披露日: 2026-05-15
-13F Hedge Funds,Appaloosa Management,Q1 2026,2026-03-31,MHK,Mohawk Industries,Exited,-73.8,-100,住宅复苏押注；已按 EDGAR 校正,披露日: 2026-05-15
-13F Hedge Funds,Appaloosa Management,Q1 2026,2026-03-31,OC,Owens Corning,Exited,-106.3,-100,建材加仓；已按 EDGAR 校正,披露日: 2026-05-15
+13F Hedge Funds,Appaloosa Management,Q1 2026,2026-03-31,QCOM,Qualcomm,Added,,+250,半导体周期反弹押注,披露日: 2026-05-15
+13F Hedge Funds,Appaloosa Management,Q1 2026,2026-03-31,MU,Micron Technology,Added,,,内存周期持续加仓,披露日: 2026-05-15
+13F Hedge Funds,Appaloosa Management,Q1 2026,2026-03-31,MHK,Mohawk Industries,Added,,,住宅复苏押注,披露日: 2026-05-15
+13F Hedge Funds,Appaloosa Management,Q1 2026,2026-03-31,OC,Owens Corning,Added,,,建材加仓,披露日: 2026-05-15
 13F Hedge Funds,Appaloosa Management,Q1 2026,2026-03-31,BABA,Alibaba Group,Reduced,,,小幅再减，仍为最大持仓,披露日: 2026-05-15
 13F Hedge Funds,Appaloosa Management,Q1 2026,2026-03-31,FI,Fiserv,Exited,,-100,金融科技清仓,披露日: 2026-05-15
 13F Hedge Funds,Appaloosa Management,Q1 2026,2026-03-31,TFC,Truist Financial,Exited,,-100,区域银行清仓,披露日: 2026-05-15
@@ -377,12 +377,12 @@ Core Smart Money,Morgan Stanley,Q1 2026,2026-03-31,MSTR,MicroStrategy,Added,1600
 13F Hedge Funds,Third Point,Q4 2025,2025-12-31,META,Meta Platforms,Exited,,-100,2季度买入后完全清仓,披露日: 2026-02-17
 13F Hedge Funds,Third Point,Q4 2025,2025-12-31,FLUT,Flutter Entertainment,Exited,,-100,游戏清仓,披露日: 2026-02-17
 13F Hedge Funds,Third Point,Q4 2025,2025-12-31,APO,Apollo Global,Exited,,-100,另类资产管理清仓,披露日: 2026-02-17
-13F Hedge Funds,Third Point,Q1 2026,2026-03-31,MSFT,Microsoft,Exited,-447.3,-100,最大加仓，Azure AI平台；已按 EDGAR 校正,披露日: 2026-05-15
-13F Hedge Funds,Third Point,Q1 2026,2026-03-31,NSC,Norfolk Southern,Reduced,-252.8,-89.7,铁路价值标的：运营扰动后入场；已按 EDGAR 校正,披露日: 2026-05-15
-13F Hedge Funds,Third Point,Q1 2026,2026-03-31,AMZN,Amazon.com,Reduced,-95.7,-10.4,小幅加仓，6.9%仓位；已按 EDGAR 校正,披露日: 2026-05-15
+13F Hedge Funds,Third Point,Q1 2026,2026-03-31,MSFT,Microsoft,Added,,+175,最大加仓，Azure AI平台,披露日: 2026-05-15
+13F Hedge Funds,Third Point,Q1 2026,2026-03-31,NSC,Norfolk Southern,New Position,,,铁路价值标的：运营扰动后入场,披露日: 2026-05-15
+13F Hedge Funds,Third Point,Q1 2026,2026-03-31,AMZN,Amazon.com,Added,,+3.7,小幅加仓，6.9%仓位,披露日: 2026-05-15
 13F Hedge Funds,Third Point,Q1 2026,2026-03-31,PCG,PG&E Corporation,Reduced,,,小幅减仓，仍为最大持仓8.4%,披露日: 2026-05-15
-13F Hedge Funds,Third Point,Q1 2026,2026-03-31,CEG,Constellation Energy,Exited,-167.8,-100,核电/AI电力需求持续看好；已按 EDGAR 校正,披露日: 2026-05-15
-13F Hedge Funds,Third Point,Q1 2026,2026-03-31,SPOT,Spotify,Exited,-58.1,-100,流媒体持仓维持；已按 EDGAR 校正,披露日: 2026-05-15
+13F Hedge Funds,Third Point,Q1 2026,2026-03-31,CEG,Constellation Energy,Held,,0,核电/AI电力需求持续看好,披露日: 2026-05-15
+13F Hedge Funds,Third Point,Q1 2026,2026-03-31,SPOT,Spotify,Held,,0,流媒体持仓维持,披露日: 2026-05-15
 Alternative Assets,Blackstone,Q4 2025,2025-12-31,DATA CENTER,AI/数据中心基础设施,New Position,,,私募市场：数据中心收购加速,披露日: 2026-02-17
 Alternative Assets,Blackstone,Q1 2026,2026-03-31,DATA CENTER,AI/数据中心基础设施,Added,,,持续部署，管理资产规模$1.3万亿,披露日: 2026-05-15
 Alternative Assets,Blackstone,Q1 2026,2026-03-31,HEALTHCARE,医疗教育PE,Added,,,医疗教育私募投资,披露日: 2026-05-15
