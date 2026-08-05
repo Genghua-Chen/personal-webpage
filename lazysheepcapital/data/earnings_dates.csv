@@ -12,15 +12,15 @@ AMAT,Applied Materials,Q2 FY2026,2026-05-14,AMC,reported,Q2 FY2026 — 4月季�
 AMAT,Applied Materials,Q3 FY2026,2026-08-13,AMC,confirmed,Q3 FY2026
 AMBA,Ambarella,Q2 FY2027,2026-08-27,AMC,estimated,FQ2 2027 · 视觉SoC · 日期估算
 AMD,Advanced Micro Devices,Q1 2026,2026-05-05,AMC,reported,Q1 2026 日历季度
-AMD,Advanced Micro Devices,Q2 2026,2026-08-04,AMC,confirmed,Q2 2026 日历季度
+AMD,Advanced Micro Devices,Q2 2026,2026-08-04,AMC,reported,Q2 2026 日历季度
 AMD,Advanced Micro Devices,Q3 2026,2026-10-27,AMC,estimated,Q3 2026 日历季度
 AMZN,Amazon,Q1 2026,2026-04-29,AMC,reported,Q1 2026 日历季度
 AMZN,Amazon,Q2 2026,2026-07-30,AMC,reported,Q2 2026 日历季度
 AMZN,Amazon,Q3 2026,2026-10-29,AMC,estimated,Q3 2026 日历季度
 ANET,Arista Networks,Q1 2026,2026-05-05,AMC,reported,Q1 2026 日历季度
-ANET,Arista Networks,Q2 2026,2026-08-04,AMC,confirmed,Q2 2026 日历季度
+ANET,Arista Networks,Q2 2026,2026-08-04,AMC,reported,Q2 2026 日历季度
 APO,Apollo Global Management,Q1 2026,2026-05-06,BMO,reported,Q1 2026 日历季度
-APO,Apollo Global Management,Q2 2026,2026-08-04,BMO,confirmed,Q2 2026 日历季度
+APO,Apollo Global Management,Q2 2026,2026-08-04,BMO,reported,Q2 2026 日历季度
 APP,AppLovin,Q1 2026,2026-05-06,AMC,reported,Q1 2026 日历季度
 APP,AppLovin,Q2 2026,2026-08-05,AMC,confirmed,Q2 2026 日历季度
 ARM,ARM Holdings,Q4 FY2026,2026-05-06,AMC,reported,Q4 FY2026 — 3月季度；授权费+版税创纪录
@@ -115,8 +115,8 @@ PWR,Quanta Services,Q1 2026,2026-04-30,BMO,reported,Q1 2026 日历季度
 PWR,Quanta Services,Q2 2026,2026-07-30,BMO,reported,Q2 2026 日历季度
 QCOM,Qualcomm,Q2 FY2026,2026-04-29,AMC,reported,Q2 FY2026 — 3月季度
 QCOM,Qualcomm,Q3 FY2026,2026-07-29,AMC,reported,Q3 FY2026
-ROK,Rockwell Automation,Q3 FY2026,2026-08-04,BMO,confirmed,FQ3 2026 · 工厂自动化
-RRX,Regal Rexnord,Q2 2026,2026-08-05,BMO,confirmed,Q2 2026 · 电机/传动
+ROK,Rockwell Automation,Q3 FY2026,2026-08-04,BMO,reported,FQ3 2026 · 工厂自动化
+RRX,Regal Rexnord,Q2 2026,2026-08-05,BMO,reported,Q2 2026 · 电机/传动
 SERV,Serve Robotics,Q2 2026,2026-08-06,AMC,confirmed,Q2 2026 · 配送机器人
 SMCI,Super Micro Computer,Q3 FY2026,2026-05-05,AMC,reported,Q3 FY2026 — 3月季度；AI服务器
 SMCI,Super Micro Computer,Q4 FY2026,2026-08-11,AMC,confirmed,Q4 FY2026
@@ -137,4 +137,4 @@ VST,Vistra Corp,Q1 2026,2026-05-07,BMO,reported,Q1 2026 日历季度
 VST,Vistra Corp,Q2 2026,2026-08-07,BMO,confirmed,Q2 2026 日历季度
 XOM,Exxon Mobil,Q1 2026,2026-05-01,BMO,reported,Q1 2026 日历季度
 XOM,Exxon Mobil,Q2 2026,2026-07-31,BMO,reported,Q2 2026 日历季度
-ZBRA,Zebra Technologies,Q2 2026,2026-08-04,BMO,confirmed,Q2 2026 · 仓储机器人
+ZBRA,Zebra Technologies,Q2 2026,2026-08-04,BMO,reported,Q2 2026 · 仓储机器人
