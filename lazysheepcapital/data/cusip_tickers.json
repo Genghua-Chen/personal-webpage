@@ -126,5 +126,249 @@
  "92537N108": [
   "VRT",
   "Vertiv"
+ ],
+ "00724F101": [
+  "ADBE",
+  "Adobe"
+ ],
+ "038222105": [
+  "AMAT",
+  "Applied Materials"
+ ],
+ "03831W108": [
+  "APP",
+  "AppLovin"
+ ],
+ "04010E109": [
+  "AGX",
+  "Argan"
+ ],
+ "04626A103": [
+  "ALAB",
+  "Astera Labs"
+ ],
+ "12572Q105": [
+  "CME",
+  "CME Group"
+ ],
+ "149123101": [
+  "CAT",
+  "Caterpillar"
+ ],
+ "17275R102": [
+  "CSCO",
+  "Cisco Systems"
+ ],
+ "20825C104": [
+  "COP",
+  "ConocoPhillips"
+ ],
+ "218352102": [
+  "CORT",
+  "Corcept Therapeutics"
+ ],
+ "219350105": [
+  "GLW",
+  "Corning"
+ ],
+ "22788C105": [
+  "CRWD",
+  "CrowdStrike"
+ ],
+ "24703L202": [
+  "DELL",
+  "Dell Technologies"
+ ],
+ "29765A101": [
+  "LIFE",
+  "Ethos Technologies"
+ ],
+ "31556C106": [
+  "FRVO",
+  "Fervo Energy"
+ ],
+ "36828A101": [
+  "GEV",
+  "GE Vernova"
+ ],
+ "369604301": [
+  "GE",
+  "GE Aerospace"
+ ],
+ "38141G104": [
+  "GS",
+  "Goldman Sachs"
+ ],
+ "43849R105": [
+  "HONA",
+  "Honeywell Aerospace"
+ ],
+ "438516106": [
+  "HON",
+  "Honeywell International"
+ ],
+ "438516205": [
+  "HON",
+  "Honeywell International"
+ ],
+ "457669307": [
+  "INSM",
+  "Insmed"
+ ],
+ "45866F104": [
+  "ICE",
+  "Intercontinental Exchange"
+ ],
+ "46090E103": [
+  "QQQ",
+  "Invesco QQQ Trust"
+ ],
+ "46090E953": [
+  "QQQ",
+  "Invesco QQQ Trust"
+ ],
+ "461202103": [
+  "INTU",
+  "Intuit"
+ ],
+ "464287200": [
+  "IVV",
+  "iShares Core S&P 500 ETF"
+ ],
+ "464287614": [
+  "ETHA",
+  "iShares Ethereum Trust"
+ ],
+ "46434G103": [
+  "IEMG",
+  "iShares Core MSCI EM ETF"
+ ],
+ "482480100": [
+  "KLAC",
+  "KLA Corporation"
+ ],
+ "496902404": [
+  "KGC",
+  "Kinross Gold"
+ ],
+ "512807306": [
+  "LRCX",
+  "Lam Research"
+ ],
+ "573874104": [
+  "MRVL",
+  "Marvell Technology"
+ ],
+ "580135101": [
+  "MCD",
+  "McDonald's"
+ ],
+ "58155Q103": [
+  "MCK",
+  "McKesson"
+ ],
+ "61225M102": [
+  "GLUE",
+  "Monte Rosa Therapeutics"
+ ],
+ "617446448": [
+  "MS",
+  "Morgan Stanley"
+ ],
+ "697435105": [
+  "PANW",
+  "Palo Alto Networks"
+ ],
+ "698955101": [
+  "PBLS",
+  "Parabilis Medicines"
+ ],
+ "75943R102": [
+  "RLAY",
+  "Relay Therapeutics"
+ ],
+ "76155X100": [
+  "RVMD",
+  "Revolution Medicines"
+ ],
+ "780259305": [
+  "SHEL",
+  "Shell"
+ ],
+ "78462F103": [
+  "SPY",
+  "SPDR S&P 500 ETF Trust"
+ ],
+ "78462F953": [
+  "SPY",
+  "SPDR S&P 500 ETF Trust"
+ ],
+ "79466L302": [
+  "CRM",
+  "Salesforce"
+ ],
+ "80004C200": [
+  "SNDK",
+  "SanDisk"
+ ],
+ "808513105": [
+  "SCHW",
+  "Charles Schwab"
+ ],
+ "84615Q103": [
+  "SPCX",
+  "SpaceX"
+ ],
+ "859241101": [
+  "STRL",
+  "Sterling Infrastructure"
+ ],
+ "86800U302": [
+  "SMCI",
+  "Super Micro Computer"
+ ],
+ "872540109": [
+  "TJX",
+  "TJX Companies"
+ ],
+ "87990A106": [
+  "TNYA",
+  "Tenaya Therapeutics"
+ ],
+ "882508104": [
+  "TXN",
+  "Texas Instruments"
+ ],
+ "91912E105": [
+  "VALE",
+  "Vale"
+ ],
+ "922908363": [
+  "VOO",
+  "Vanguard S&P 500 ETF"
+ ],
+ "958102105": [
+  "WDC",
+  "Western Digital"
+ ],
+ "G25457105": [
+  "CRDO",
+  "Credo Technology"
+ ],
+ "G54950103": [
+  "LIN",
+  "Linde"
+ ],
+ "G5960L103": [
+  "MDT",
+  "Medtronic"
+ ],
+ "G6683N103": [
+  "NU",
+  "Nu Holdings"
+ ],
+ "G7997R103": [
+  "STX",
+  "Seagate Technology"
  ]
 }
