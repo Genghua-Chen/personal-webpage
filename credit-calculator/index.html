@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Points vs Cash Back — Amex Gold / Chase Sapphire Calculator</title>
+<meta name="description" content="Model what Amex Gold and Chase Sapphire actually return versus a 2% cash back card, then run any hotel night through Hyatt, Marriott, Hilton and IHG award math to see whether points or cash wins.">
+<meta name="theme-color" content="#07070f">
+<meta property="og:title" content="Points vs Cash Back Calculator">
+<meta property="og:description" content="Amex Gold and Chase Sapphire earning, hotel award redemption value, and the cash-back break-even — all in one page.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%B3%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#07070f; --bg2:#0d0d18;
+    --panel:rgba(255,255,255,.035); --panel2:rgba(255,255,255,.06);
+    --border:rgba(255,255,255,.09); --border2:rgba(255,255,255,.16);
+    --text:#e9e9f2; --muted:rgba(200,205,235,.55); --dim:rgba(200,205,235,.32);
+    --up:#22e585; --up-rgb:34,229,133;
+    --down:#ff4d6d; --down-rgb:255,77,109;
+    --warn:#ffb84d;
+    --cyan:#31d9ff; --purple:#a684ff; --gold:#e8bd5a; --blue:#5b8dff;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:var(--sans);background:var(--bg);color:var(--text);
+    min-height:100vh;line-height:1.5;overflow-x:hidden;-webkit-text-size-adjust:100%;
+    background-image:
+      radial-gradient(ellipse 800px 600px at 10% -8%, rgba(232,189,90,.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 2%, rgba(91,141,255,.10), transparent 55%),
+      radial-gradient(ellipse 700px 500px at 50% 108%, rgba(166,132,255,.07), transparent 55%);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:26px 18px 70px}
+  a{color:var(--cyan)}
+
+  /* ── header ── */
+  .back{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);text-decoration:none;margin-bottom:20px;transition:color .15s}
+  .back:hover{color:var(--text)}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:5px 14px;margin-bottom:16px;
+  }
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+  h1{font-size:clamp(1.85rem,4.6vw,2.9rem);font-weight:800;letter-spacing:-.035em;line-height:1.06;margin-bottom:12px}
+  h1 .grad{background:linear-gradient(115deg,#e8bd5a 0%,#5b8dff 55%,#a684ff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lede{font-size:1rem;color:var(--muted);max-width:70ch}
+  .lede b{color:var(--text);font-weight:600}
+
+  /* ── section shell ── */
+  section{margin-top:34px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .sec-num{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.12em}
+  h2{font-size:1.28rem;font-weight:700;letter-spacing:-.02em}
+  .sec-sub{color:var(--muted);font-size:.9rem;max-width:76ch;margin-bottom:16px}
+
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px}
+  .card + .card{margin-top:14px}
+
+  /* ── inputs ── */
+  label{display:block;font-size:.74rem;font-weight:600;color:var(--muted);letter-spacing:.02em;margin-bottom:5px}
+  label .h{display:block;font-weight:400;color:var(--dim);font-size:.68rem;letter-spacing:0;margin-top:2px}
+  input[type=number],select{
+    width:100%;font-family:var(--mono);font-size:.92rem;font-weight:600;color:var(--text);
+    background:rgba(0,0,0,.28);border:1px solid var(--border);border-radius:9px;padding:9px 11px;outline:none;
+    transition:border-color .15s,background .15s;appearance:none;
+  }
+  input[type=number]:focus,select:focus{border-color:var(--border2);background:rgba(0,0,0,.42)}
+  select{background-image:linear-gradient(45deg,transparent 50%,var(--dim) 50%),linear-gradient(135deg,var(--dim) 50%,transparent 50%);background-position:calc(100% - 16px) 52%,calc(100% - 11px) 52%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:32px}
+  option{background:#12121f;color:var(--text)}
+  .field{min-width:0}
+  .prefix{position:relative}
+  .prefix input{padding-left:24px}
+  .prefix::before{content:"$";position:absolute;left:11px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.85rem;color:var(--dim);pointer-events:none;z-index:1}
+  .suffix{position:relative}
+  .suffix input{padding-right:34px}
+  .suffix::after{content:attr(data-unit);position:absolute;right:11px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.75rem;color:var(--dim);pointer-events:none}
+
+  .grid{display:grid;gap:12px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+
+  /* ── chips / toggles ── */
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{
+    font-family:var(--mono);font-size:11.5px;font-weight:600;cursor:pointer;
+    background:var(--panel);border:1px solid var(--border);border-radius:8px;
+    color:var(--muted);padding:6px 12px;transition:all .15s;
+  }
+  .chip:hover{color:var(--text);border-color:var(--border2)}
+  .chip.on{color:#0a0a12;background:var(--gold);border-color:var(--gold)}
+  .chip.on.alt{background:var(--cyan);border-color:var(--cyan)}
+
+  /* ── tables ── */
+  .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -18px;padding:0 18px}
+  table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:560px}
+  th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left;white-space:normal;min-width:150px}
+  thead th{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);border-bottom-color:var(--border2)}
+  tbody tr:last-child td{border-bottom:none}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  tr.total td{font-weight:700;border-top:1px solid var(--border2);background:rgba(255,255,255,.02)}
+  .win{color:var(--up)}
+  .lose{color:var(--down)}
+  .mid{color:var(--warn)}
+
+  /* ── result cards ── */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px}
+  .stat{background:rgba(0,0,0,.24);border:1px solid var(--border);border-radius:11px;padding:12px 13px}
+  .stat .k{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+  .stat .v{font-family:var(--mono);font-size:1.32rem;font-weight:700;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+  .stat .s{font-size:.72rem;color:var(--muted);margin-top:4px;white-space:normal;line-height:1.35}
+
+  /* ── bars ── */
+  .bars{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+  .bar-row{display:grid;grid-template-columns:132px 1fr 96px;gap:10px;align-items:center}
+  .bar-name{font-size:.8rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar-track{height:12px;background:rgba(255,255,255,.05);border-radius:99px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:99px;transition:width .4s cubic-bezier(.2,.8,.3,1)}
+  .bar-val{font-family:var(--mono);font-size:.82rem;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+
+  /* ── verdict ── */
+  .verdict{border-radius:13px;padding:16px 18px;border:1px solid;margin-top:14px}
+  .verdict.go{background:rgba(var(--up-rgb),.09);border-color:rgba(var(--up-rgb),.42)}
+  .verdict.no{background:rgba(var(--down-rgb),.09);border-color:rgba(var(--down-rgb),.42)}
+  .verdict.eh{background:rgba(255,184,77,.09);border-color:rgba(255,184,77,.4)}
+  .verdict .vt{font-size:1.06rem;font-weight:800;letter-spacing:-.02em;margin-bottom:5px}
+  .verdict.go .vt{color:var(--up)} .verdict.no .vt{color:var(--down)} .verdict.eh .vt{color:var(--warn)}
+  .verdict .vb{font-size:.87rem;color:var(--muted);line-height:1.55}
+  .verdict .vb b{color:var(--text);font-weight:600}
+
+  .note{font-size:.78rem;color:var(--dim);line-height:1.55;margin-top:10px}
+  .note b{color:var(--muted);font-weight:600}
+  .kbd{font-family:var(--mono);font-size:.82em;background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:5px;padding:1px 5px;color:var(--text)}
+
+  /* ── prose ── */
+  .prose{font-size:.9rem;color:var(--muted);line-height:1.68}
+  .prose h3{font-size:.98rem;font-weight:700;color:var(--text);letter-spacing:-.01em;margin:18px 0 7px}
+  .prose h3:first-child{margin-top:0}
+  .prose p{margin-bottom:9px}
+  .prose b,.prose strong{color:var(--text);font-weight:600}
+  .prose ul{margin:0 0 10px 18px}
+  .prose li{margin-bottom:5px}
+  .prose code{font-family:var(--mono);font-size:.86em;background:rgba(255,255,255,.06);border-radius:5px;padding:1px 5px;color:var(--cyan)}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);font-size:.75rem;color:var(--dim);line-height:1.6}
+
+  @media (max-width:860px){
+    .g4{grid-template-columns:repeat(2,1fr)}
+    .cols{grid-template-columns:1fr}
+  }
+  @media (max-width:560px){
+    .wrap{padding:20px 14px 56px}
+    .g3,.g4,.g2{grid-template-columns:repeat(2,1fr)}
+    .bar-row{grid-template-columns:96px 1fr 76px;gap:8px}
+    .card{padding:14px}
+    .tw{margin:0 -14px;padding:0 14px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="../index.html">← genghua</a>
+
+  <header>
+    <div class="eyebrow"><span class="dot"></span>points · hotels · break-even</div>
+    <h1>Are your points actually beating<br><span class="grad">a boring 2% cash back card?</span></h1>
+    <p class="lede">
+      A points card only wins when <b>multiplier × cents-per-point &gt; your cash back rate</b>. Everything else — the
+      annual fee, the transfer partners, the hotel award chart — is just detail feeding those two numbers.
+      This page works out both: what <b>Amex Gold</b> and the <b>Chase Sapphire</b> cards earn on your real spending,
+      and what a point is actually worth once you redeem it at <b>Hyatt, Marriott, Hilton or IHG</b>.
+    </p>
+  </header>
+
+  <!-- ══════════ 1 · SPENDING ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>Your spending</h2></div>
+    <p class="sec-sub">Monthly, by category. The categories are split the way the cards actually split them — in-store
+      supermarkets and online groceries earn differently, and so do hotels booked direct versus through the issuer portal.</p>
+    <div class="card">
+      <div class="grid g3" id="spendGrid"></div>
+      <div class="note" id="spendTotal"></div>
+    </div>
+  </section>
+
+  <!-- ══════════ 2 · POINT VALUES ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>What a point is worth to you</h2></div>
+    <p class="sec-sub">In cents per point (cpp). This is the single most important assumption on the page, and it is
+      personal — a point is worth exactly what <em>you</em> can redeem it for, not what a blog says.</p>
+    <div class="card">
+      <div class="chips" style="margin-bottom:14px">
+        <button class="chip" data-preset="floor">Floor — cash out only</button>
+        <button class="chip on" data-preset="real">Realistic — transfer sometimes</button>
+        <button class="chip" data-preset="max">Aspirational — always transfer well</button>
+      </div>
+      <div class="grid g3" id="cppGrid"></div>
+
+      <div style="height:1px;background:var(--border);margin:18px 0"></div>
+      <div class="k" style="font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim);margin-bottom:10px">The guaranteed alternative — cashing out</div>
+      <div class="grid g3" id="cashoutGrid"></div>
+
+      <div class="note">
+        <b>These two numbers are not the same thing, and mixing them up breaks the whole calculation.</b>
+        The transfer valuations above are a <em>hope</em> — you only get 1.7¢ out of an MR point if you actually
+        transfer it to a partner and book something good. The cash-out rate is a <em>fact</em>: Amex will hand you
+        about <span class="kbd">$600</span> for 100,000 MR, Chase about <span class="kbd">$1,000</span> for 100,000 UR,
+        today, no effort. That asymmetry — Chase's floor being roughly 1.7× Amex's — is the most underrated
+        difference between the two currencies.
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 3 · CARD COMPARISON ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Card vs card vs cash back</h2></div>
+    <p class="sec-sub">Annual points earned on the spending above, valued at your cpp, minus the annual fee, plus the
+      credits you realistically use. Edit the fee and credit columns — they move the answer more than the multipliers do.</p>
+
+    <div class="card">
+      <div class="grid g3" id="feeGrid"></div>
+      <div class="note">Enter only the credits you would <b>actually use for things you would have bought anyway</b>.
+        A $10/month dining credit at a restaurant you never visit is worth $0, not $120.</div>
+    </div>
+
+    <div class="card">
+      <div class="tw"><table id="cardTable"></table></div>
+    </div>
+
+    <div class="card">
+      <div class="k" style="font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim);margin-bottom:12px">Effective return on total spend, net of fees</div>
+      <div class="bars" id="cardBars"></div>
+    </div>
+
+    <div class="card">
+      <div class="k" style="font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim);margin-bottom:12px">Break-even — the cpp each card needs to tie the cash back baseline</div>
+      <div class="stats" id="breakEven"></div>
+      <div class="note">Below its break-even number, the card loses to plain cash back <em>on your spending pattern</em>.
+        This is the honest test of whether a fee card is worth carrying.</div>
+    </div>
+  </section>
+
+  <!-- ══════════ 4 · HOTEL ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Hotel night — points or cash?</h2></div>
+    <p class="sec-sub">The four big programs price awards in completely different ways, so the same $300 room can be a
+      fantastic redemption at Hyatt and a terrible one at Hilton. Put in a real room you are looking at.</p>
+
+    <div class="card">
+      <div class="grid g4" id="hotelGrid"></div>
+      <div class="grid g4" id="hotelGrid2" style="margin-top:12px"></div>
+      <div class="grid g4" id="hotelGrid3" style="margin-top:12px"></div>
+      <div class="note" id="xferNote"></div>
+    </div>
+
+    <div class="card">
+      <div class="stats" id="hotelStats"></div>
+      <div id="hotelVerdict"></div>
+    </div>
+
+    <div class="card">
+      <div class="tw"><table id="hotelTable"></table></div>
+      <div class="note"><b>Read the middle column as a ceiling.</b> It is the most points of each currency this same
+        room is worth at your own cpp — quoted an award above that number and you are overpaying. The last two columns
+        convert it back into the transferable currency you would have to burn to get there, which is where Hilton's
+        generous-looking 1:2 ratio stops looking generous.
+        <br><br><b>And paying cash is not free of points either</b> — you earn hotel points and elite credit on the stay
+        plus card points on the charge. An award stay forfeits all of that, which is why the comparison above subtracts
+        it from the cash side before deciding.</div>
+    </div>
+  </section>
+
+  <!-- ══════════ 5 · REFERENCE ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>The programs, side by side</h2></div>
+    <p class="sec-sub">Why the same point is worth 2¢ in one program and 0.5¢ in another.</p>
+    <div class="card">
+      <div class="tw"><table id="progTable"></table></div>
+    </div>
+
+    <div class="cols" style="margin-top:14px">
+      <div class="card prose">
+        <h3>Transfer partners — the structural fact</h3>
+        <p><b>Only Chase reaches Hyatt.</b> World of Hyatt is the last major program still running a published award
+          chart, which is exactly why it holds ~2¢ of value while the dynamic programs drift toward the cash price.
+          Amex has no Hyatt partnership at any ratio, so Chase UR has a materially higher realistic ceiling for hotels.</p>
+        <p><b>Amex → Hilton is a trap ratio.</b> 1:2 looks generous until you price it: 2 Hilton points at ~0.5¢ is
+          1.0¢ of value for 1 MR you could have transferred to an airline at 1.8¢. Hilton points are best <em>earned</em>,
+          not bought with transferable currency.</p>
+        <p><b>Marriott takes both</b> at 1:1, and at ~0.7¢ that is a mediocre use of either. Marriott points are worth
+          transferring into mainly when there is a transfer bonus running and a specific expensive property in mind.</p>
+        <p>Net: <b>MR is an airline currency</b> that happens to have hotel partners. <b>UR is the one that does hotels
+          well</b>, entirely because of Hyatt.</p>
+      </div>
+
+      <div class="card prose">
+        <h3>Three rules that survive every program change</h3>
+        <p><b>1 — Price the points you spend at what you would otherwise get, not at what you hope to get.</b>
+          This is the mistake that makes every hotel award look terrible. If you charge a burned MR point at 1.7¢ —
+          the value of a great airline transfer you have not made and might never make — almost nothing clears the bar.
+          The real alternative is concrete: Amex hands you <code>$600</code> for 100,000 MR, Chase <code>$1,000</code>
+          for 100,000 UR. Subtract <em>that</em>.</p>
+        <p>The Hilton example makes it obvious. A night costing 95,000 Hilton points is only 0.41¢ per hotel point,
+          which looks awful. But it came from 47,500 MR, and cashing those out yields $285 against a room that truly
+          costs you $372 — so redeeming wins by <b>$87</b>, even though the headline cpp is bad. Judge the redemption
+          against the currency you actually gave up.</p>
+        <p>The same discipline cuts the other way on earning: if your honest answer is "I cash them out," MR is a 0.6¢
+          currency and Gold's 4x dining is a 2.4% dining card with a $325 fee attached. Chase's 1.0¢ floor is far more
+          forgiving of that.</p>
+        <p><b>2 — Compare against 2%, not against 1%.</b> The relevant alternative is a no-fee 2% cash back card, so a
+          3x category at 1.5¢ (4.5%) is a real edge but a 1x category at 1.5¢ (1.5%) is a loss. Non-bonus spend belongs
+          on the cash back card almost always.</p>
+        <p><b>3 — A cheap room is never a good award.</b> Award prices move with cash prices in the dynamic programs, so
+          redeeming on a $120 night locks in a bad cpp. Points are for the nights where cash pricing is absurd — peak
+          dates, resort towns, conference weeks — and Hyatt's fixed chart is the one place that is reliably true.</p>
+        <h3>What this page does not model</h3>
+        <p>Signup bonuses (which usually dominate year one), authorized-user and referral points, elite qualification
+          value, transfer bonuses beyond the field above, Amex Offers / Chase Offers, and the cash-flow reality that
+          points are an interest-free loan to the issuer until you burn them.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Earn rates, annual fees, credits and transfer ratios change often, and several were restructured recently — every
+    number on this page is an editable default, not a quote. Confirm current terms with the issuer or program before
+    you act on any of it. Educational math only; not financial advice.
+  </footer>
+</div>
+
+<script>
+"use strict";
+/* ══════════════════════════════════════════════════════════════
+   DATA
+   ══════════════════════════════════════════════════════════════ */
+
+const CATS = [
+  {k:'dining',   label:'Dining & restaurants', hint:'incl. takeout and delivery', def:600},
+  {k:'grocery',  label:'Groceries — in store', hint:'US supermarkets; not Walmart/Target/warehouse', def:500},
+  {k:'gonline',  label:'Groceries — online',   hint:'supermarket delivery, Instacart', def:120},
+  {k:'flights',  label:'Flights — direct',     hint:'booked on the airline site', def:150},
+  {k:'hotels',   label:'Hotels — direct',      hint:'booked with the hotel itself', def:150},
+  {k:'portal',   label:'Issuer travel portal', hint:'Amex Travel / Chase Travel', def:60},
+  {k:'transit',  label:'Transit & rideshare',  hint:'Uber, transit, tolls, parking', def:120},
+  {k:'gas',      label:'Gas',                  hint:'', def:110},
+  {k:'other',    label:'Everything else',      hint:'retail, bills, medical, insurance', def:900},
+];
+
+// Multipliers per category. Editable defaults — see footer.
+const CARDS = [
+  {
+    id:'gold', name:'Amex Gold', cur:'MR', accent:'#e8bd5a',
+    fee:325, credit:150,
+    r:{dining:4, grocery:4, gonline:4, flights:3, hotels:1, portal:2, transit:1, gas:1, other:1},
+    capGroups:[{cats:['dining'], cap:50000, label:'dining'},{cats:['grocery','gonline'], cap:25000, label:'US supermarkets'}],
+    note:'4x caps at $50k dining and $25k supermarkets per year, then 1x.'
+  },
+  {
+    id:'csp', name:'Chase Sapphire Preferred', cur:'UR', accent:'#5b8dff',
+    fee:95, credit:50, anniversary:0.10,
+    r:{dining:3, grocery:1, gonline:3, flights:2, hotels:2, portal:5, transit:2, gas:1, other:1},
+    note:'Adds a 10%-of-spend anniversary points bonus.'
+  },
+  {
+    id:'csr', name:'Chase Sapphire Reserve', cur:'UR', accent:'#a684ff',
+    fee:795, credit:500,
+    r:{dining:3, grocery:1, gonline:1, flights:4, hotels:4, portal:8, transit:1, gas:1, other:1},
+    note:'High fee offset by travel credits — only counts if you use them.'
+  },
+  {
+    id:'cash', name:'2% cash back (no fee)', cur:'CASH', accent:'#22e585',
+    fee:0, credit:0, baseline:true,
+    r:{dining:2, grocery:2, gonline:2, flights:2, hotels:2, portal:2, transit:2, gas:2, other:2},
+    note:'The thing every points card has to beat.'
+  },
+];
+
+const CPP = [
+  {k:'MR',       label:'Amex Membership Rewards', floor:0.6, real:1.7, max:2.0},
+  {k:'UR',       label:'Chase Ultimate Rewards',  floor:1.0, real:1.9, max:2.2},
+  {k:'hyatt',    label:'World of Hyatt',          floor:1.5, real:2.0, max:2.5},
+  {k:'marriott', label:'Marriott Bonvoy',         floor:0.55,real:0.70, max:0.90},
+  {k:'hilton',   label:'Hilton Honors',           floor:0.40,real:0.50, max:0.65},
+  {k:'ihg',      label:'IHG One Rewards',         floor:0.45,real:0.60, max:0.75},
+];
+
+const PROGS = {
+  hyatt:{
+    name:'World of Hyatt', base:5, chart:'Fixed chart (Cat 1–8, off-peak / standard / peak)',
+    elites:[['No status',0],['Discoverist',.10],['Explorist',.20],['Globalist',.30]],
+    xfer:{UR:1, MR:null}, fifth:'none',
+    pts:15000, rate:340,
+    why:'Smallest point balance needed, highest value per point. Awards cost the same whether the cash rate is $250 or $900, so the upside is uncapped on expensive dates.'
+  },
+  marriott:{
+    name:'Marriott Bonvoy', base:10, chart:'Dynamic, loosely anchored to old categories',
+    elites:[['No status',0],['Silver',.10],['Gold',.25],['Platinum',.50],['Titanium',.75],['Ambassador',.75]],
+    xfer:{UR:1, MR:1}, fifth:'always',
+    pts:50000, rate:340,
+    why:'5th night free on a 5+ night award is a flat 20% discount — it lifts a mediocre 0.7¢ redemption to a respectable 0.875¢.'
+  },
+  hilton:{
+    name:'Hilton Honors', base:10, chart:'Fully dynamic, tracks the cash rate',
+    elites:[['No status',0],['Silver',.20],['Gold',.80],['Diamond',1.00]],
+    xfer:{UR:null, MR:2}, fifth:'gold',
+    pts:80000, rate:340,
+    why:'Huge earn rate, tiny point value — the numbers are big but the cents are not. Best used on points earned from stays, not transferred in.'
+  },
+  ihg:{
+    name:'IHG One Rewards', base:10, chart:'Dynamic with a soft floor and cash+points',
+    elites:[['No status',0],['Silver',.20],['Gold',.40],['Platinum',.60],['Diamond',1.00]],
+    xfer:{UR:1, MR:null}, fifth:'none',
+    pts:45000, rate:250,
+    why:'4th night free on awards if you carry the IHG cobrand card, which is the main reason to hold IHG points at all.'
+  },
+};
+
+/* ══════════════════════════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════════════════════════ */
+
+// What the issuer will actually hand you to walk away. This is a guaranteed
+// number, unlike the transfer valuations above, which is why it is the default
+// basis for pricing points you spend.
+const CASHOUT = {MR:0.60, UR:1.00};
+
+const LS = 'credit-calc-v1';
+const S = {
+  spend:{}, cpp:{}, cashout:{...CASHOUT}, fee:{}, credit:{}, basis:'cashout',
+  hotel:{prog:'hyatt', nights:3, rate:340, tax:14, resort:0, pts:15000, elite:0, src:'UR', bonus:0, card:'csp'}
+};
+CATS.forEach(c=>S.spend[c.k]=c.def);
+CPP.forEach(c=>S.cpp[c.k]=c.real);
+CARDS.forEach(c=>{S.fee[c.id]=c.fee; S.credit[c.id]=c.credit;});
+
+try{
+  const saved = JSON.parse(localStorage.getItem(LS)||'null');
+  if(saved){
+    Object.assign(S.spend, saved.spend||{});
+    Object.assign(S.cpp, saved.cpp||{});
+    Object.assign(S.cashout, saved.cashout||{});
+    Object.assign(S.fee, saved.fee||{});
+    Object.assign(S.credit, saved.credit||{});
+    Object.assign(S.hotel, saved.hotel||{});
+    if(saved.basis) S.basis = saved.basis;
+  }
+}catch(e){/* ignore corrupt storage */}
+
+const save = ()=>{ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} };
+
+/* ══════════════════════════════════════════════════════════════
+   HELPERS
+   ══════════════════════════════════════════════════════════════ */
+
+const $ = s=>document.querySelector(s);
+const el = (t,c,h)=>{const n=document.createElement(t); if(c)n.className=c; if(h!=null)n.innerHTML=h; return n;};
+const money = n=>(n<0?'-':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
+const money2 = n=>(n<0?'-':'')+'$'+Math.abs(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const pts = n=>Math.round(n).toLocaleString();
+const pct = n=>n.toFixed(2)+'%';
+const cpp = n=>n.toFixed(2)+'¢';
+const num = v=>{const n=parseFloat(v); return isFinite(n)?n:0;};
+
+// Every control is built once and bound to a getter/setter, so recalculating
+// never rebuilds the DOM under the user's cursor.
+const BOUND = [];
+
+function field(label, hint, get, set, opts={}){
+  const wrap = el('div','field');
+  wrap.appendChild(el('label', null, label + (hint?`<span class="h">${hint}</span>`:'')));
+  const box = el('div', opts.unit ? 'suffix' : (opts.money!==false ? 'prefix' : ''));
+  if(opts.unit) box.dataset.unit = opts.unit;
+  const i = el('input');
+  i.type='number'; i.value=get(); i.step=opts.step||1;
+  if(opts.min!=null) i.min=opts.min; else i.min=0;
+  i.addEventListener('input', ()=>{ set(num(i.value)); save(); update(); });
+  box.appendChild(i); wrap.appendChild(box);
+  BOUND.push({node:i, get});
+  return wrap;
+}
+
+function selectField(label, hint, options, get, set){
+  const wrap = el('div','field');
+  wrap.appendChild(el('label', null, label + (hint?`<span class="h">${hint}</span>`:'')));
+  const s = el('select');
+  options.forEach(([v,t])=>{ const o=el('option',null,t); o.value=v; if(String(v)===String(get())) o.selected=true; s.appendChild(o); });
+  s.addEventListener('change', ()=>{ set(s.value); save(); update(); });
+  wrap.appendChild(s);
+  BOUND.push({node:s, get});
+  return wrap;
+}
+
+// Push state back into the controls without touching whatever is focused.
+function syncInputs(){
+  BOUND.forEach(b=>{
+    if(!b.node.isConnected || b.node===document.activeElement) return;
+    const v = String(b.get());
+    if(b.node.value !== v) b.node.value = v;
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EARNING MATH
+   ══════════════════════════════════════════════════════════════ */
+
+function annualSpend(){
+  const a = {}; let total = 0;
+  CATS.forEach(c=>{ a[c.k] = S.spend[c.k]*12; total += a[c.k]; });
+  return {byCat:a, total};
+}
+
+// Points earned in a year, with category caps applied by pro-rating the
+// overage back down to 1x across the categories sharing that cap.
+function earn(card, ann){
+  const byCat = {};
+  CATS.forEach(c=>{ byCat[c.k] = ann.byCat[c.k] * card.r[c.k]; });
+
+  let capped = null;
+  (card.capGroups||[]).forEach(g=>{
+    const grpSpend = g.cats.reduce((s,k)=>s+ann.byCat[k], 0);
+    if(grpSpend > g.cap){
+      const over = grpSpend - g.cap;
+      g.cats.forEach(k=>{
+        const share = grpSpend ? ann.byCat[k]/grpSpend : 0;
+        byCat[k] -= over*share*(card.r[k]-1);   // overage drops to 1x
+      });
+      capped = capped ? capped+', '+g.label : g.label;
+    }
+  });
+
+  let total = Object.values(byCat).reduce((a,b)=>a+b,0);
+  if(card.anniversary) total += ann.total * card.anniversary;
+  return {byCat, total, capped};
+}
+
+function cardResult(card, ann){
+  const e = earn(card, ann);
+  const rate = card.cur==='CASH' ? 1.0 : S.cpp[card.cur];
+  const gross = e.total * rate/100;
+  const net = gross + S.credit[card.id] - S.fee[card.id];
+  return {card, ...e, rate, gross, net, ret: ann.total ? net/ann.total*100 : 0};
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RENDER — 1 · SPENDING
+   ══════════════════════════════════════════════════════════════ */
+
+function buildSpend(){
+  const g = $('#spendGrid'); g.innerHTML='';
+  CATS.forEach(c=>{
+    g.appendChild(field(c.label, c.hint+(c.hint?' · ':'')+'per month',
+      ()=>S.spend[c.k], v=>S.spend[c.k]=v, {step:10}));
+  });
+}
+
+function renderSpendTotal(){
+  const ann = annualSpend();
+  $('#spendTotal').innerHTML = `<b>${money(ann.total/12)}/month · ${money(ann.total)}/year</b> in card spend.`;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RENDER — 2 · CPP
+   ══════════════════════════════════════════════════════════════ */
+
+function buildCpp(){
+  const g = $('#cppGrid'); g.innerHTML='';
+  CPP.forEach(c=>{
+    g.appendChild(field(c.label, `floor ${c.floor}¢ · typical ${c.real}¢`,
+      ()=>S.cpp[c.k], v=>S.cpp[c.k]=v, {step:0.05, unit:'¢', money:false}));
+  });
+  const g2 = $('#cashoutGrid'); g2.innerHTML='';
+  g2.appendChild(field('Amex MR cash-out rate', 'what Amex pays you to walk away',
+    ()=>S.cashout.MR, v=>S.cashout.MR=v, {step:0.05, unit:'¢', money:false}));
+  g2.appendChild(field('Chase UR cash-out rate', 'statement credit / direct deposit',
+    ()=>S.cashout.UR, v=>S.cashout.UR=v, {step:0.05, unit:'¢', money:false}));
+  const box = el('div','field');
+  box.appendChild(el('label',null,'What 100,000 points is worth<span class="h">cash-out vs your transfer valuation</span>'));
+  box.appendChild(el('div','cashoutOut'));
+  box.lastChild.id='cashoutOut';
+  g2.appendChild(box);
+}
+
+// The price of a point you SPEND. Cashing out is the guaranteed alternative;
+// the transfer valuation is only real if you actually make that transfer.
+function basisFor(cur){
+  if(cur==='CASH') return 1.0;
+  return S.basis==='cashout' ? S.cashout[cur] : S.cpp[cur];
+}
+
+function renderCashout(){
+  const o = $('#cashoutOut');
+  if(!o) return;
+  o.innerHTML = `<div style="font-family:var(--mono);font-size:.92rem;font-weight:700;padding:9px 0;line-height:1.5">
+    <span style="color:var(--gold)">MR ${money(1000*S.cashout.MR)}</span> · <span style="color:var(--blue)">UR ${money(1000*S.cashout.UR)}</span>
+    <span style="color:var(--dim);font-weight:400"> cashed out</span><br>
+    <span style="color:var(--dim);font-weight:400">vs ${money(1000*S.cpp.MR)} / ${money(1000*S.cpp.UR)} transferred</span></div>`;
+}
+
+document.querySelectorAll('[data-preset]').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-preset]').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    const p = b.dataset.preset;
+    CPP.forEach(c=>S.cpp[c.k] = p==='floor'?c.floor : p==='max'?c.max : c.real);
+    if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    save(); update();
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════
+   RENDER — 3 · CARD COMPARISON
+   ══════════════════════════════════════════════════════════════ */
+
+function buildFees(){
+  const g = $('#feeGrid'); g.innerHTML='';
+  CARDS.filter(c=>!c.baseline).forEach(c=>{
+    g.appendChild(field(c.name+' — annual fee', '', ()=>S.fee[c.id], v=>S.fee[c.id]=v, {step:5}));
+  });
+  CARDS.filter(c=>!c.baseline).forEach(c=>{
+    g.appendChild(field(c.name+' — credits used', 'only what you would have bought anyway',
+      ()=>S.credit[c.id], v=>S.credit[c.id]=v, {step:10}));
+  });
+}
+
+function renderCardTable(){
+  const ann = annualSpend();
+  const results = CARDS.map(c=>cardResult(c, ann));
+  const base = results.find(r=>r.card.baseline);
+  const best = results.reduce((a,b)=>b.net>a.net?b:a);
+
+  // ── table
+  const t = $('#cardTable');
+  let h = '<thead><tr><th>Card</th>';
+  CATS.forEach(c=>h+=`<th>${c.label.replace(' — ','<br>').replace('Dining & restaurants','Dining').replace('Everything else','Other')}</th>`);
+  h += '<th>Points / yr</th><th>cpp</th><th>Gross value</th><th>Net of fee</th><th>Return</th></tr></thead><tbody>';
+
+  results.forEach(r=>{
+    const isBest = r===best;
+    h += `<tr${isBest?' class="total"':''}><td style="color:${r.card.accent};font-weight:700">${r.card.name}${isBest?' ★':''}</td>`;
+    CATS.forEach(c=>{
+      const m = r.card.r[c.k];
+      h += `<td class="num ${m>2?'win':m<2?'lose':''}">${m}×</td>`;
+    });
+    h += `<td class="num">${pts(r.total)}</td>`;
+    h += `<td class="num">${r.card.cur==='CASH'?'—':cpp(r.rate)}</td>`;
+    h += `<td class="num">${money(r.gross)}</td>`;
+    h += `<td class="num" style="font-weight:700">${money(r.net)}</td>`;
+    const d = r.net - base.net;
+    h += `<td class="num ${d>0?'win':d<0?'lose':''}" style="font-weight:700">${pct(r.ret)}</td>`;
+    h += '</tr>';
+  });
+  h += '</tbody>';
+  t.innerHTML = h;
+
+  // ── bars
+  const bars = $('#cardBars'); bars.innerHTML='';
+  const max = Math.max(...results.map(r=>Math.abs(r.ret)), 2.5);
+  results.forEach(r=>{
+    const row = el('div','bar-row');
+    row.appendChild(el('div','bar-name', r.card.name));
+    const track = el('div','bar-track');
+    const fill = el('div','bar-fill');
+    fill.style.width = Math.max(0, Math.min(100, r.ret/max*100))+'%';
+    fill.style.background = `linear-gradient(90deg, ${r.card.accent}bb, ${r.card.accent})`;
+    track.appendChild(fill); row.appendChild(track);
+    const d = r.ret - base.ret;
+    row.appendChild(el('div','bar-val'+(r.card.baseline?'':(d>0?' win':' lose')), pct(r.ret)));
+    bars.appendChild(row);
+  });
+
+  // ── break-even cpp
+  const be = $('#breakEven'); be.innerHTML='';
+  CARDS.filter(c=>!c.baseline).forEach(c=>{
+    const r = results.find(x=>x.card===c);
+    // net(card) = net(baseline)  →  cpp = (baseNet - credits + fee) / points × 100
+    const need = r.total>0 ? (base.net - S.credit[c.id] + S.fee[c.id]) / r.total * 100 : Infinity;
+    const cur = S.cpp[c.cur];
+    const ok = cur >= need;
+    const s = el('div','stat');
+    s.appendChild(el('div','k', c.name));
+    const v = el('div','v'+(ok?' win':' lose'), need<=0 ? 'any value' : cpp(need));
+    s.appendChild(v);
+    s.appendChild(el('div','s', need<=0
+      ? `Credits alone already beat the ${pct(base.ret)} baseline.`
+      : `You are valuing ${c.cur} at <b style="color:${ok?'var(--up)':'var(--down)'}">${cpp(cur)}</b> — ${ok?'above':'below'} break-even by ${cpp(Math.abs(cur-need))}.`));
+    be.appendChild(s);
+  });
+
+  return results;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RENDER — 4 · HOTEL
+   ══════════════════════════════════════════════════════════════ */
+
+function buildHotel(){
+  const g1 = $('#hotelGrid'); g1.innerHTML='';
+  g1.appendChild(selectField('Hotel program','', Object.entries(PROGS).map(([k,v])=>[k,v.name]),
+    ()=>S.hotel.prog,
+    v=>{
+      S.hotel.prog = v;
+      const p = PROGS[v];
+      S.hotel.pts = p.pts;                              // reset to that program's typical award
+      S.hotel.elite = 0;
+      if(!p.xfer[S.hotel.src] && S.hotel.src!=='OWN') S.hotel.src = p.xfer.UR ? 'UR' : (p.xfer.MR ? 'MR' : 'OWN');
+      buildEliteSrc();
+    }));
+  g1.appendChild(field('Cash rate per night','before tax and fees', ()=>S.hotel.rate, v=>S.hotel.rate=v, {step:10}));
+  g1.appendChild(field('Points per night','award price you are quoted', ()=>S.hotel.pts, v=>S.hotel.pts=v, {step:1000, money:false}));
+  g1.appendChild(field('Nights','', ()=>S.hotel.nights, v=>S.hotel.nights=Math.max(1,v), {step:1, money:false, min:1}));
+
+  const g2 = $('#hotelGrid2'); g2.innerHTML='';
+  g2.appendChild(field('Tax','on the cash rate', ()=>S.hotel.tax, v=>S.hotel.tax=v, {step:.5, unit:'%', money:false}));
+  g2.appendChild(field('Resort / destination fee','per night, cash stays', ()=>S.hotel.resort, v=>S.hotel.resort=v, {step:5}));
+  g2.appendChild(el('div','field',null)).id = 'eliteSlot';
+  g2.appendChild(el('div','field',null)).id = 'srcSlot';
+  buildEliteSrc();
+
+  const g3 = $('#hotelGrid3'); g3.innerHTML='';
+  g3.appendChild(field('Transfer bonus','if one is running', ()=>S.hotel.bonus, v=>S.hotel.bonus=v, {step:5, unit:'%', money:false}));
+  g3.appendChild(selectField('Card you would pay with','affects the cash side', CARDS.map(c=>[c.id,c.name]),
+    ()=>S.hotel.card, v=>S.hotel.card=v));
+  g3.appendChild(selectField('Price the points you burn at','what you give up instead', [
+      ['cashout','Cash-out value — the sure thing'],
+      ['transfer','My transfer valuation — if I would really do it'],
+    ], ()=>S.basis, v=>S.basis=v));
+}
+
+// Elite tiers and available transfer sources are program-specific, so these
+// two controls are the only ones rebuilt when the program changes.
+function buildEliteSrc(){
+  const P = PROGS[S.hotel.prog];
+  const srcOpts = [];
+  if(P.xfer.UR) srcOpts.push(['UR','Transfer Chase UR']);
+  if(P.xfer.MR) srcOpts.push(['MR','Transfer Amex MR']);
+  srcOpts.push(['OWN','Points I already hold']);
+  if(!srcOpts.some(o=>o[0]===S.hotel.src)) S.hotel.src = srcOpts[0][0];
+
+  const es = $('#eliteSlot'), ss = $('#srcSlot');
+  es.innerHTML=''; ss.innerHTML='';
+  es.appendChild(selectField('Your elite status','',
+    P.elites.map((e,i)=>[i, e[1]?`${e[0]} (+${Math.round(e[1]*100)}%)`:e[0]]),
+    ()=>S.hotel.elite, v=>S.hotel.elite=parseInt(v,10)));
+  ss.appendChild(selectField('Where the points come from','', srcOpts,
+    ()=>S.hotel.src, v=>S.hotel.src=v));
+
+  // drop bindings whose nodes were just discarded
+  for(let i=BOUND.length-1;i>=0;i--) if(!BOUND[i].node.isConnected) BOUND.splice(i,1);
+}
+
+function renderXferNote(){
+  const P = PROGS[S.hotel.prog];
+  const xf = [
+    P.xfer.UR ? `Chase UR → ${P.name} 1:${P.xfer.UR}` : `Chase UR → ${P.name}: <span class="lose">not a partner</span>`,
+    P.xfer.MR ? `Amex MR → ${P.name} 1:${P.xfer.MR}` : `Amex MR → ${P.name}: <span class="lose">not a partner</span>`,
+  ];
+  $('#xferNote').innerHTML = `<b>${P.chart}.</b> ${xf.join(' · ')}. ${P.why}`;
+}
+
+function hotelMath(){
+  const H = S.hotel, P = PROGS[H.prog];
+  const card = CARDS.find(c=>c.id===H.card) || CARDS[0];
+  const N = Math.max(1, H.nights);
+  const tax = 1 + H.tax/100;
+  const eliteBonus = P.elites[H.elite] ? P.elites[H.elite][1] : 0;
+
+  // 5th night free: Marriott on any 5+ night award; Hilton for Gold and above.
+  const fifthApplies = P.fifth==='always' || (P.fifth==='gold' && H.elite>=2);
+  const freeNights = fifthApplies ? Math.floor(N/5) : 0;
+  const paidAward = N - freeNights;
+  const pointsUsed = H.pts * paidAward;
+
+  // Cash side
+  const room = H.rate * N;
+  const cashTotal = (H.rate + H.resort) * N * tax;
+  const hotelPts = room * P.base * (1+eliteBonus);           // base points on room rate only
+  const cardPts  = cashTotal * card.r.hotels;
+  // Card points earned are priced on the SAME basis as card points spent —
+  // valuing what you earn at 1.7¢ while pricing what you burn at 0.6¢ would
+  // stack the deck against redeeming.
+  const cardCpp  = basisFor(card.cur);
+  const hotelPtsVal = hotelPts * S.cpp[H.prog]/100;
+  const cardPtsVal  = cardPts * cardCpp/100;
+  const netCash = cashTotal - hotelPtsVal - cardPtsVal;
+
+  // Points side — what you give up by burning them here instead of elsewhere.
+  const ratio = P.xfer[H.src] || 1;
+  const bonusMult = 1 + H.bonus/100;
+  const transferable = H.src!=='OWN';
+  const sourcePts = transferable ? pointsUsed / ratio / bonusMult : pointsUsed;
+  // Hotel points you already hold cannot be cashed out at all, so their only
+  // alternative use is another award night — priced at the program's own cpp.
+  const sourceCpp = transferable ? basisFor(H.src) : S.cpp[H.prog];
+  const oppCost = sourcePts * sourceCpp/100;
+
+  // Achieved value per point
+  const cppAchieved = pointsUsed ? cashTotal / pointsUsed * 100 : 0;
+  const cppSourceAchieved = sourcePts ? cashTotal / sourcePts * 100 : 0;
+
+  const advantage = netCash - oppCost;   // positive → points win
+
+  // Break-even nightly cash rate (pre-tax) where the two sides tie
+  const A = N*tax*(1 - card.r.hotels*cardCpp/100);
+  const B = N*P.base*(1+eliteBonus)*S.cpp[H.prog]/100;
+  const denom = A - B;
+  const breakEvenRate = denom!==0 ? (oppCost - A*H.resort) / denom : NaN;
+
+  return {P, card, N, freeNights, paidAward, pointsUsed, cashTotal, room, hotelPts, cardPts,
+          hotelPtsVal, cardPtsVal, netCash, sourcePts, sourceCpp, oppCost, transferable, cardCpp,
+          cppAchieved, cppSourceAchieved, advantage, breakEvenRate, eliteBonus, ratio};
+}
+
+function renderHotel(){
+  const m = hotelMath(), H = S.hotel;
+
+  // ── stats
+  const st = $('#hotelStats'); st.innerHTML='';
+  const stat=(k,v,s,cls)=>{const d=el('div','stat');d.appendChild(el('div','k',k));d.appendChild(el('div','v'+(cls?' '+cls:''),v));if(s)d.appendChild(el('div','s',s));st.appendChild(d);};
+
+  const good = m.cppAchieved >= S.cpp[H.prog];
+  stat('Value per hotel point', cpp(m.cppAchieved),
+    `Your baseline for ${m.P.name} is ${cpp(S.cpp[H.prog])}. This redemption is ${good?'above':'below'} it.`,
+    good?'win':'lose');
+
+  if(m.transferable){
+    const g2 = m.cppSourceAchieved >= m.sourceCpp;
+    stat(`Value per ${H.src} point`, cpp(m.cppSourceAchieved),
+      `${pts(m.sourcePts)} ${H.src} transferred${H.bonus?` with a ${H.bonus}% bonus`:''} at 1:${m.ratio}. Cashing out instead gets you ${cpp(S.cashout[H.src])}.`,
+      g2?'win':'lose');
+  }
+  stat('Points needed', pts(m.pointsUsed),
+    m.freeNights ? `${m.paidAward} paid award nights + ${m.freeNights} free (5th night free).` : `${m.paidAward} award nights.`);
+  stat('Cash price', money(m.cashTotal), `${m.N} nights at ${money(H.rate)} + ${H.tax}% tax${H.resort?` + ${money(H.resort)}/night fees`:''}.`);
+  stat('True cash cost', money(m.netCash), `After ${money(m.hotelPtsVal)} of hotel points and ${money(m.cardPtsVal)} of card points earned on the stay.`);
+  stat('Cost of the points', money(m.oppCost), m.transferable
+    ? (S.basis==='cashout'
+        ? `Cashing out ${pts(m.sourcePts)} ${H.src} at ${cpp(m.sourceCpp)} would put ${money(m.oppCost)} in your pocket instead.`
+        : `${pts(m.sourcePts)} ${H.src} transferred elsewhere at your ${cpp(m.sourceCpp)} valuation.`)
+    : `${pts(m.pointsUsed)} hotel points at your ${cpp(m.sourceCpp)} baseline — these cannot be cashed out.`);
+
+  // ── verdict
+  const v = $('#hotelVerdict');
+  const adv = m.advantage;
+  const big = Math.abs(adv) > m.cashTotal*0.12;
+  const cls = adv > 0 ? (big?'go':'eh') : 'no';
+  const title = adv > 0
+    ? (big ? `Redeem the points — you come out ${money(adv)} ahead` : `Slight edge to points — ${money(adv)}`)
+    : `Pay cash — points lose by ${money(-adv)}`;
+
+  const beTxt = isFinite(m.breakEvenRate) && m.breakEvenRate>0
+    ? `Break-even is a cash rate of <b>${money(m.breakEvenRate)}/night</b> before tax: above that, points win; below it, cash does.`
+    : `On these assumptions the cash side wins at every rate — the earning you give up outweighs the award.`;
+
+  const costTxt = m.transferable
+    ? (S.basis==='cashout'
+        ? `Burning the points costs <b>${money(m.oppCost)}</b> — that is what ${pts(m.sourcePts)} ${H.src} would have
+           paid you in cash at ${cpp(m.sourceCpp)} per point.`
+        : `Burning the points costs <b>${money(m.oppCost)}</b> — what ${pts(m.sourcePts)} ${H.src} would be worth at
+           your ${cpp(m.sourceCpp)} transfer valuation.`)
+    : `Burning the points costs <b>${money(m.oppCost)}</b> at your ${cpp(m.sourceCpp)} baseline for ${m.P.name}.`;
+
+  v.innerHTML = `<div class="verdict ${cls}">
+    <div class="vt">${title}</div>
+    <div class="vb">
+      Paying cash really costs <b>${money(m.netCash)}</b> once you subtract the ${pts(m.hotelPts)} ${m.P.name} points
+      and ${pts(m.cardPts)} ${m.card.cur==='CASH'?'cents of cash back':m.card.cur} you earn on the stay
+      (both sides valued at ${cpp(m.cardCpp)} per card point, so the comparison is like-for-like).
+      ${costTxt}
+      ${beTxt}
+    </div>
+  </div>`;
+
+  // ── all-programs comparison at the same room
+  const t = $('#hotelTable');
+  let h = `<thead><tr><th>Program</th><th>Award pricing</th><th>Earn / $</th><th>Your cpp</th>
+    <th>Most points worth paying</th><th>…as Chase UR</th><th>…as Amex MR</th></tr></thead><tbody>`;
+  Object.entries(PROGS).forEach(([k,p])=>{
+    const c = S.cpp[k];
+    const need = m.cashTotal / (c/100);
+    const ur = p.xfer.UR ? pts(need/p.xfer.UR) : '—';
+    const mr = p.xfer.MR ? pts(need/p.xfer.MR) : '—';
+    const sel = k===H.prog;
+    h += `<tr${sel?' class="total"':''}><td style="font-weight:${sel?700:600}">${p.name}</td>
+      <td style="text-align:left;white-space:normal;font-size:.8rem;color:var(--muted)">${p.chart}</td>
+      <td class="num">${p.base}×</td><td class="num ${c>=1.5?'win':c<0.6?'lose':'mid'}">${cpp(c)}</td>
+      <td class="num">${pts(need)}</td>
+      <td class="num ${p.xfer.UR?'':'lose'}">${ur}</td><td class="num ${p.xfer.MR?'':'lose'}">${mr}</td></tr>`;
+  });
+  h += '</tbody>';
+  t.innerHTML = h;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RENDER — 5 · PROGRAM REFERENCE
+   ══════════════════════════════════════════════════════════════ */
+
+function renderProgTable(){
+  const t = $('#progTable');
+  let h = `<thead><tr><th>Program</th><th>Base earn</th><th>Top elite bonus</th><th>Effective earn</th>
+    <th>Typical cpp</th><th>Return on hotel spend</th><th>5th night free</th></tr></thead><tbody>`;
+  Object.entries(PROGS).forEach(([k,p])=>{
+    const top = p.elites[p.elites.length-1];
+    const eff = p.base*(1+top[1]);
+    const ret = eff * S.cpp[k];
+    h += `<tr><td style="font-weight:600">${p.name}</td>
+      <td class="num">${p.base}×</td>
+      <td class="num">${top[0]} +${Math.round(top[1]*100)}%</td>
+      <td class="num">${eff.toFixed(1)}×</td>
+      <td class="num">${cpp(S.cpp[k])}</td>
+      <td class="num ${ret>=8?'win':ret>=5?'mid':'lose'}" style="font-weight:700">${ret.toFixed(1)}%</td>
+      <td class="num">${p.fifth==='always'?'Yes':p.fifth==='gold'?'Gold+':'No'}</td></tr>`;
+  });
+  h += '</tbody>';
+  t.innerHTML = h;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BOOT
+   ══════════════════════════════════════════════════════════════ */
+
+// Controls are built once; update() only recomputes the read-only output.
+function update(){
+  syncInputs();
+  renderSpendTotal();
+  renderCashout();
+  renderCardTable();
+  renderXferNote();
+  renderHotel();
+  renderProgTable();
+}
+
+buildSpend();
+buildCpp();
+buildFees();
+buildHotel();
+update();
+</script>
+</body>
+</html>
