@@ -1,4 +1,8 @@
 {
+ "00090Q103": [
+  "ADT",
+  "ADT Inc"
+ ],
  "00287Y109": [
   "ABBV",
   "AbbVie"
@@ -11,6 +15,14 @@
   "AMD",
   "AMD"
  ],
+ "01609W102": [
+  "BABA",
+  "Alibaba"
+ ],
+ "02005N100": [
+  "ALLY",
+  "Ally Financial Inc"
+ ],
  "02079K107": [
   "GOOG",
   "Alphabet C"
@@ -19,13 +31,45 @@
   "GOOGL",
   "Alphabet A"
  ],
+ "02156K103": [
+  "OPTU",
+  "Optimum Communications, Inc"
+ ],
  "023135106": [
   "AMZN",
   "Amazon"
  ],
+ "02376R102": [
+  "AAL",
+  "American Airlines Group Inc"
+ ],
+ "025816109": [
+  "AXP",
+  "American Express Co"
+ ],
+ "031162100": [
+  "AMGN",
+  "Amgen Inc"
+ ],
+ "031652100": [
+  "AMKR",
+  "Amkor Technology, Inc"
+ ],
+ "032654105": [
+  "ADI",
+  "Analog Devices Inc"
+ ],
+ "03524A108": [
+  "BUD",
+  "Anheuser-Busch InBev"
+ ],
  "037833100": [
   "AAPL",
   "Apple"
+ ],
+ "038169207": [
+  "APLD",
+  "Applied Digital Corp"
  ],
  "038222105": [
   "AMAT",
@@ -35,13 +79,45 @@
   "APP",
   "AppLovin"
  ],
+ "03990B101": [
+  "ARES",
+  "Ares Management Corp"
+ ],
  "04010E109": [
   "AGX",
   "Argan"
  ],
+ "040413205": [
+  "ANET",
+  "Arista Networks, Inc"
+ ],
+ "042068205": [
+  "ARM",
+  "ARM Holdings"
+ ],
+ "04317A107": [
+  "ARTV",
+  "Artiva Biotherapeutics, Inc"
+ ],
  "04626A103": [
   "ALAB",
   "Astera Labs"
+ ],
+ "049560105": [
+  "ATO",
+  "Atmos Energy Corp"
+ ],
+ "053484101": [
+  "AVB",
+  "Avalonbay Communities Inc"
+ ],
+ "056752108": [
+  "BIDU",
+  "Baidu"
+ ],
+ "058498106": [
+  "BALL",
+  "BALL Corp"
  ],
  "060505104": [
   "BAC",
@@ -51,33 +127,145 @@
   "BRK.B",
   "Berkshire B"
  ],
+ "09290D101": [
+  "BLK",
+  "BlackRock, Inc"
+ ],
+ "093712107": [
+  "BE",
+  "Bloom Energy Corp"
+ ],
+ "097023105": [
+  "BA",
+  "Boeing Co"
+ ],
+ "101137107": [
+  "BSX",
+  "Boston Scientific Corp"
+ ],
  "11135F101": [
   "AVGO",
   "Broadcom"
+ ],
+ "12008R107": [
+  "BLDR",
+  "Builders FirstSource, Inc"
+ ],
+ "12047B105": [
+  "BMBL",
+  "Bumble Inc"
+ ],
+ "125523100": [
+  "CI",
+  "Cigna Group"
  ],
  "12572Q105": [
   "CME",
   "CME Group"
  ],
+ "126650100": [
+  "CVS",
+  "CVS HEALTH Corp"
+ ],
+ "127097103": [
+  "CTRA",
+  "Coterra Energy"
+ ],
+ "13321L108": [
+  "CCJ",
+  "Cameco Corp"
+ ],
+ "14040H105": [
+  "COF",
+  "Capital One Financial Corp"
+ ],
+ "143130102": [
+  "KMX",
+  "Carmax Inc"
+ ],
  "149123101": [
   "CAT",
   "Caterpillar"
+ ],
+ "15675D103": [
+  "CBRS",
+  "Cerebras Systems Inc"
+ ],
+ "16115Q308": [
+  "GTLS",
+  "Chart Industries"
+ ],
+ "16119P108": [
+  "CHTR",
+  "Charter Communications"
+ ],
+ "16411R208": [
+  "LNG",
+  "Cheniere Energy, Inc"
  ],
  "166764100": [
   "CVX",
   "Chevron"
  ],
+ "169656105": [
+  "CMG",
+  "Chipotle Mexican Grill Inc"
+ ],
  "17275R102": [
   "CSCO",
   "Cisco Systems"
+ ],
+ "172967424": [
+  "C",
+  "Citigroup Inc"
+ ],
+ "185123106": [
+  "CWAN",
+  "Clearwater Analytics"
+ ],
+ "191216100": [
+  "KO",
+  "Coca Cola Co"
+ ],
+ "19247G107": [
+  "COHR",
+  "Coherent Corp"
+ ],
+ "20030N101": [
+  "CMCSA",
+  "Comcast"
+ ],
+ "203668108": [
+  "CYH",
+  "Community Health Systems Inc"
+ ],
+ "20602D101": [
+  "CNXC",
+  "Concentrix Corp"
  ],
  "20825C104": [
   "COP",
   "ConocoPhillips"
  ],
+ "209115104": [
+  "ED",
+  "Consolidated Edison Inc"
+ ],
+ "21036P108": [
+  "STZ",
+  "Constellation Brands, Inc"
+ ],
  "218352102": [
   "CORT",
   "Corcept Therapeutics"
+ ],
+ "21873S108": [
+  "CRWV",
+  "CoreWeave, Inc"
+ ],
+ "21874A106": [
+  "CORZ",
+  "Core Scientific"
  ],
  "219350105": [
   "GLW",
@@ -87,17 +275,93 @@
   "COST",
   "Costco"
  ],
+ "22266T109": [
+  "CPNG",
+  "Coupang, Inc"
+ ],
  "22788C105": [
   "CRWD",
   "CrowdStrike"
+ ],
+ "23331A109": [
+  "DHI",
+  "D.R. Horton"
+ ],
+ "235851102": [
+  "DHR",
+  "Danaher"
+ ],
+ "23918K108": [
+  "DVA",
+  "Davita Inc"
  ],
  "24703L202": [
   "DELL",
   "Dell Technologies"
  ],
+ "247361702": [
+  "DAL",
+  "Delta Air Lines, Inc"
+ ],
+ "25179M103": [
+  "DVN",
+  "Devon Energy"
+ ],
+ "253868103": [
+  "DLR",
+  "Digital Realty Trust, Inc"
+ ],
+ "25402D102": [
+  "DOCN",
+  "DigitalOcean Holdings, Inc"
+ ],
+ "260557103": [
+  "DOW",
+  "Dow Inc"
+ ],
+ "26441C204": [
+  "DUK",
+  "Duke Energy"
+ ],
+ "26875P101": [
+  "EOG",
+  "Eog Resources Inc"
+ ],
+ "26884L109": [
+  "EQT",
+  "EQT Corp"
+ ],
+ "278768106": [
+  "ECHO",
+  "EchoStar CORP"
+ ],
+ "281020107": [
+  "EIX",
+  "Edison International"
+ ],
+ "29250N105": [
+  "ENB",
+  "Enbridge"
+ ],
+ "29273V100": [
+  "ET",
+  "Energy Transfer LP"
+ ],
+ "293792107": [
+  "EPD",
+  "Enterprise Products"
+ ],
+ "29444U700": [
+  "EQIX",
+  "Equinix Inc"
+ ],
  "29765A101": [
   "LIFE",
   "Ethos Technologies"
+ ],
+ "30040W108": [
+  "ES",
+  "Eversource Energy"
  ],
  "30161Q104": [
   "EXEL",
@@ -115,6 +379,22 @@
   "FRVO",
   "Fervo Energy"
  ],
+ "34631F102": [
+  "FPS",
+  "Forgent Power Solutions, Inc"
+ ],
+ "34959E109": [
+  "FTNT",
+  "Fortinet, Inc"
+ ],
+ "35671D857": [
+  "FCX",
+  "Freeport-Mcmoran Inc"
+ ],
+ "36472T109": [
+  "TDAY",
+  "USA TODAY Co., Inc"
+ ],
  "36828A101": [
   "GEV",
   "GE Vernova"
@@ -123,9 +403,45 @@
   "GE",
   "GE Aerospace"
  ],
+ "370920100": [
+  "GENB",
+  "Generate Biomedicines, Inc"
+ ],
+ "372460105": [
+  "GPC",
+  "Genuine Parts Co"
+ ],
+ "37890B100": [
+  "GBTG",
+  "Global Business Travel Group, Inc"
+ ],
  "38141G104": [
   "GS",
   "Goldman Sachs"
+ ],
+ "382550101": [
+  "GT",
+  "Goodyear"
+ ],
+ "406216101": [
+  "HAL",
+  "Halliburton Co"
+ ],
+ "427866108": [
+  "HSY",
+  "Hershey Co"
+ ],
+ "428103105": [
+  "HESM",
+  "Hess Midstream LP"
+ ],
+ "43283X105": [
+  "HGV",
+  "Hilton Grand Vacations Inc"
+ ],
+ "436440101": [
+  "HOLX",
+  "Hologic"
  ],
  "43849R105": [
   "HONA",
@@ -163,6 +479,14 @@
   "INTU",
   "Intuit"
  ],
+ "46120E602": [
+  "ISRG",
+  "Intuitive Surgical Inc"
+ ],
+ "46187W107": [
+  "INVH",
+  "Invitation Homes Inc"
+ ],
  "464287200": [
   "IVV",
   "iShares Core S&P 500 ETF"
@@ -170,6 +494,10 @@
  "464287614": [
   "ETHA",
   "iShares Ethereum Trust"
+ ],
+ "46428Q109": [
+  "SLV",
+  "iShares Silver Trust"
  ],
  "46434G103": [
   "IEMG",
@@ -179,6 +507,10 @@
   "JPM",
   "JPMorgan"
  ],
+ "47215P106": [
+  "JD",
+  "JD.com"
+ ],
  "478160104": [
   "JNJ",
   "Johnson & Johnson"
@@ -187,17 +519,97 @@
   "KLAC",
   "KLA Corporation"
  ],
+ "49271V100": [
+  "KDP",
+  "Keurig Dr Pepper Inc"
+ ],
+ "494368103": [
+  "KMB",
+  "Kimberly Clark Corp"
+ ],
+ "49456B101": [
+  "KMI",
+  "Kinder Morgan, Inc"
+ ],
  "496902404": [
   "KGC",
   "Kinross Gold"
+ ],
+ "500754106": [
+  "KHC",
+  "Kraft Heinz Co"
+ ],
+ "501044101": [
+  "KR",
+  "Kroger Co"
+ ],
+ "502431109": [
+  "LHX",
+  "L3Harris"
  ],
  "512807306": [
   "LRCX",
   "Lam Research"
  ],
+ "518415104": [
+  "LSCC",
+  "Lattice Semiconductor Corp"
+ ],
+ "52476L109": [
+  "LGN",
+  "Legence Corp"
+ ],
+ "526057104": [
+  "LEN",
+  "Lennar Corp"
+ ],
+ "526057302": [
+  "LEN.B",
+  "Lennar B"
+ ],
  "532457108": [
   "LLY",
   "Eli Lilly"
+ ],
+ "53566V106": [
+  "LINE",
+  "Lineage, Inc"
+ ],
+ "539830109": [
+  "LMT",
+  "Lockheed Martin Corp"
+ ],
+ "55024U109": [
+  "LITE",
+  "Lumentum Holdings Inc"
+ ],
+ "55024UAF6": [
+  "LITE",
+  "Lumentum Holdings Inc"
+ ],
+ "55024UAH2": [
+  "LITE",
+  "Lumentum Holdings Inc"
+ ],
+ "55087P104": [
+  "LYFT",
+  "Lyft, Inc"
+ ],
+ "55306N104": [
+  "MKSI",
+  "Mks Inc"
+ ],
+ "55336V100": [
+  "MPLX",
+  "Mplx"
+ ],
+ "55616P104": [
+  "M",
+  "Macy's"
+ ],
+ "56585A102": [
+  "MPC",
+  "Marathon Petroleum Corp"
  ],
  "573874104": [
   "MRVL",
@@ -207,6 +619,10 @@
   "MA",
   "Mastercard"
  ],
+ "57638P104": [
+  "MBC",
+  "MasterBrand, Inc"
+ ],
  "580135101": [
   "MCD",
   "McDonald's"
@@ -214,6 +630,10 @@
  "58155Q103": [
   "MCK",
   "McKesson"
+ ],
+ "58733R102": [
+  "MELI",
+  "Mercadolibre Inc"
  ],
  "594918104": [
   "MSFT",
@@ -223,17 +643,57 @@
   "MU",
   "Micron"
  ],
+ "608190104": [
+  "MHK",
+  "Mohawk Industries Inc"
+ ],
  "61225M102": [
   "GLUE",
   "Monte Rosa Therapeutics"
+ ],
+ "615369105": [
+  "MCO",
+  "Moody's"
  ],
  "617446448": [
   "MS",
   "Morgan Stanley"
  ],
+ "629377508": [
+  "NRG",
+  "Nrg Energy, Inc"
+ ],
+ "636180101": [
+  "NFG",
+  "National Fuel Gas Co"
+ ],
  "64110L106": [
   "NFLX",
   "Netflix"
+ ],
+ "64361Q101": [
+  "VNOM",
+  "Viper Energy, Inc"
+ ],
+ "650111107": [
+  "NYT",
+  "New York Times Co"
+ ],
+ "651639106": [
+  "NEM",
+  "Newmont"
+ ],
+ "65473P105": [
+  "NI",
+  "Nisource Inc"
+ ],
+ "654902204": [
+  "NOK",
+  "Nokia"
+ ],
+ "670346105": [
+  "NUE",
+  "Nucor Corp"
  ],
  "67066G104": [
   "NVDA",
@@ -243,9 +703,29 @@
   "OXY",
   "Occidental"
  ],
+ "67623C307": [
+  "OPI",
+  "Office Properties Income Trust"
+ ],
+ "682680103": [
+  "OKE",
+  "Oneok Inc"
+ ],
  "68389X105": [
   "ORCL",
   "Oracle"
+ ],
+ "69047Q102": [
+  "OVV",
+  "Ovintiv Inc"
+ ],
+ "690742101": [
+  "OC",
+  "Owens Corning"
+ ],
+ "69331C108": [
+  "PCG",
+  "PG&E Corp"
  ],
  "69608A108": [
   "PLTR",
@@ -259,9 +739,49 @@
   "PBLS",
   "Parabilis Medicines"
  ],
+ "701094104": [
+  "PH",
+  "Parker-Hannifin Corp"
+ ],
+ "703481101": [
+  "PTEN",
+  "Patterson Uti Energy Inc"
+ ],
+ "71654V408": [
+  "PBR",
+  "Petrobras"
+ ],
+ "722304102": [
+  "PDD",
+  "PDD Holdings Inc"
+ ],
+ "72352L106": [
+  "PINS",
+  "Pinterest, Inc"
+ ],
+ "726503105": [
+  "PAA",
+  "Plains All American"
+ ],
+ "741623102": [
+  "PRMB",
+  "Primo Brands Corp"
+ ],
+ "742718109": [
+  "PG",
+  "PROCTER & GAMBLE Co"
+ ],
  "747525103": [
   "QCOM",
   "Qualcomm"
+ ],
+ "750102105": [
+  "RXT",
+  "Rackspace Technology, Inc"
+ ],
+ "75513E101": [
+  "RTX",
+  "RTX Corp"
  ],
  "75943R102": [
   "RLAY",
@@ -270,6 +790,10 @@
  "76155X100": [
   "RVMD",
   "Revolution Medicines"
+ ],
+ "778296103": [
+  "ROST",
+  "Ross Stores, Inc"
  ],
  "780259305": [
   "SHEL",
@@ -283,6 +807,14 @@
   "SPY",
   "SPDR S&P 500 ETF Trust"
  ],
+ "78463V107": [
+  "GLD",
+  "Spdr Gold Trust"
+ ],
+ "78467X109": [
+  "DIA",
+  "SPDR Dow Jones Industrial Average ETF"
+ ],
  "79466L302": [
   "CRM",
   "Salesforce"
@@ -291,9 +823,25 @@
   "SNDK",
   "SanDisk"
  ],
+ "803054204": [
+  "SAP",
+  "Sap Se"
+ ],
  "808513105": [
   "SCHW",
   "Charles Schwab"
+ ],
+ "81762P102": [
+  "NOW",
+  "ServiceNow, Inc"
+ ],
+ "829933100": [
+  "SIRI",
+  "SiriusXM"
+ ],
+ "833445109": [
+  "SNOW",
+  "Snowflake Inc"
  ],
  "84615Q103": [
   "SPCX",
@@ -303,6 +851,10 @@
   "STRL",
   "Sterling Infrastructure"
  ],
+ "861012102": [
+  "STM",
+  "STMicroelectronics"
+ ],
  "86800U104": [
   "SMCI",
   "Super Micro"
@@ -311,17 +863,41 @@
   "SMCI",
   "Super Micro Computer"
  ],
+ "871607107": [
+  "SNPS",
+  "Synopsys Inc"
+ ],
  "872540109": [
   "TJX",
   "TJX Companies"
+ ],
+ "872657101": [
+  "TPG",
+  "Tpg"
  ],
  "874039100": [
   "TSM",
   "TSMC ADR"
  ],
+ "87612E106": [
+  "TGT",
+  "Target"
+ ],
+ "87612G101": [
+  "TRGP",
+  "Targa Resources Corp"
+ ],
+ "87807B107": [
+  "TRP",
+  "TC Energy"
+ ],
  "87990A106": [
   "TNYA",
   "Tenaya Therapeutics"
+ ],
+ "880770102": [
+  "TER",
+  "Teradyne, Inc"
  ],
  "88160R101": [
   "TSLA",
@@ -330,6 +906,18 @@
  "882508104": [
   "TXN",
   "Texas Instruments"
+ ],
+ "90353T100": [
+  "UBER",
+  "Uber Technologies, Inc"
+ ],
+ "907818108": [
+  "UNP",
+  "Union Pacific"
+ ],
+ "912932100": [
+  "UNIT",
+  "Uniti Group Inc"
  ],
  "91307C102": [
   "UTHR",
@@ -347,9 +935,17 @@
   "BNDX",
   "Vanguard Total Intl Bond ETF"
  ],
+ "92276F100": [
+  "VTR",
+  "Ventas, Inc"
+ ],
  "922908363": [
   "VOO",
   "Vanguard S&P 500 ETF"
+ ],
+ "92333F101": [
+  "VG",
+  "Venture Global, Inc"
  ],
  "92343E102": [
   "VRSN",
@@ -363,17 +959,61 @@
   "V",
   "Visa"
  ],
+ "928298108": [
+  "VSH",
+  "Vishay Intertechnology Inc"
+ ],
+ "92840M102": [
+  "VST",
+  "Vistra Corp"
+ ],
  "931142103": [
   "WMT",
   "Walmart"
+ ],
+ "934423104": [
+  "WBD",
+  "Warner Bros. Discovery, Inc"
+ ],
+ "949746101": [
+  "WFC",
+  "Wells Fargo"
  ],
  "958102105": [
   "WDC",
   "Western Digital"
  ],
+ "958669103": [
+  "WES",
+  "Western Midstream Partners, LP"
+ ],
+ "963320106": [
+  "WHR",
+  "Whirlpool"
+ ],
+ "969457100": [
+  "WMB",
+  "Williams Companies"
+ ],
+ "D18190898": [
+  "DB",
+  "Deutsche Bank"
+ ],
+ "G2004J103": [
+  "CCL",
+  "Carnival Corp Ltd"
+ ],
  "G25457105": [
   "CRDO",
   "Credo Technology"
+ ],
+ "G25508105": [
+  "CRH",
+  "Crh"
+ ],
+ "G4253H101": [
+  "JHX",
+  "James Hardie"
  ],
  "G54950103": [
   "LIN",
@@ -387,8 +1027,32 @@
   "NU",
   "Nu Holdings"
  ],
+ "G6700G107": [
+  "NVT",
+  "nVent Electric plc"
+ ],
  "G7997R103": [
   "STX",
   "Seagate Technology"
+ ],
+ "H1467J104": [
+  "CB",
+  "Chubb Ltd"
+ ],
+ "M87915274": [
+  "TSEM",
+  "Tower Semiconductor Ltd"
+ ],
+ "N07059210": [
+  "ASML",
+  "ASML Holding"
+ ],
+ "N97284108": [
+  "NBIS",
+  "Nebius Group N.V"
+ ],
+ "Y2573F102": [
+  "FLEX",
+  "Flex Ltd"
  ]
 }

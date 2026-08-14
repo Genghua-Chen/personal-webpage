@@ -1,5 +1,5 @@
 {
- "last_updated": "2026-08-13",
+ "last_updated": "2026-08-14",
  "source": "dataroma.com · holdingschannel.com · SEC EDGAR 13F filings",
  "funds": [
   {
@@ -660,89 +660,169 @@
    "manager": "Ken Griffin",
    "emoji": "⚔️",
    "category": "Multi-Strategy",
-   "quarter": "Q1 2026",
-   "quarter_date": "2026-03-31",
-   "aum_bn": 618.46,
-   "num_holdings": 5000,
+   "quarter": "Q2 2026",
+   "quarter_date": "2026-06-30",
+   "aum_bn": 875.1,
+   "num_holdings": 7166,
    "holdings": [
     {
-     "ticker": "NVDA",
-     "company": "Nvidia Corporation",
-     "value_mn": 5910,
-     "pct": 0.96,
-     "shares": 18660000,
-     "activity": "Reduced"
+     "ticker": "SPY",
+     "company": "SPDR S&P 500 ETF Trust",
+     "value_mn": 59248.6,
+     "pct": 6.77,
+     "shares": 79339890,
+     "activity": "Added"
+    },
+    {
+     "ticker": "QQQ",
+     "company": "Invesco QQQ Trust",
+     "value_mn": 50079.3,
+     "pct": 5.72,
+     "shares": 68005626,
+     "activity": "Added"
+    },
+    {
+     "ticker": "MU",
+     "company": "Micron",
+     "value_mn": 39282.2,
+     "pct": 4.49,
+     "shares": 34031523,
+     "activity": "Added"
     },
     {
      "ticker": "TSLA",
-     "company": "Tesla Inc.",
-     "value_mn": 4860,
-     "pct": 0.79,
-     "shares": 2090000,
+     "company": "Tesla",
+     "value_mn": 23800.6,
+     "pct": 2.72,
+     "shares": 56587138,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "NVDA",
+     "company": "Nvidia",
+     "value_mn": 23733.4,
+     "pct": 2.71,
+     "shares": 118613867,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "SNDK",
+     "company": "SanDisk",
+     "value_mn": 22214.1,
+     "pct": 2.54,
+     "shares": 9769881,
+     "activity": "Added"
+    },
+    {
+     "ticker": "AMD",
+     "company": "AMD",
+     "value_mn": 19309.1,
+     "pct": 2.21,
+     "shares": 33239330,
+     "activity": "Added"
+    },
+    {
+     "ticker": "MSFT",
+     "company": "Microsoft",
+     "value_mn": 17428.4,
+     "pct": 1.99,
+     "shares": 46722305,
      "activity": "Added"
     },
     {
      "ticker": "AAPL",
-     "company": "Apple Inc.",
-     "value_mn": 4740,
-     "pct": 0.77,
-     "shares": 5210000,
-     "activity": "Reduced"
+     "company": "Apple",
+     "value_mn": 17391.5,
+     "pct": 1.99,
+     "shares": 60103476,
+     "activity": "Added"
     },
     {
-     "ticker": "GLD",
-     "company": "SPDR Gold Trust",
-     "value_mn": 4200,
-     "pct": 0.68,
-     "shares": 186000,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "MSFT",
-     "company": "Microsoft Corp.",
-     "value_mn": 4090,
-     "pct": 0.66,
-     "shares": 2640000,
-     "activity": "Reduced"
+     "ticker": "VANECK ETF TRUST",
+     "company": "Vaneck Etf Trust",
+     "value_mn": 16506.9,
+     "pct": 1.89,
+     "shares": 25167215,
+     "activity": "Added"
     },
     {
      "ticker": "META",
-     "company": "Meta Platforms Inc.",
-     "value_mn": 3590,
-     "pct": 0.58,
-     "shares": 1830000,
+     "company": "Meta Platforms",
+     "value_mn": 14391.1,
+     "pct": 1.64,
+     "shares": 25548322,
      "activity": "Added"
-    },
-    {
-     "ticker": "AMZN",
-     "company": "Amazon.com Inc.",
-     "value_mn": 3200,
-     "pct": 0.52,
-     "shares": 8100000,
-     "activity": "Reduced"
     },
     {
      "ticker": "IVV",
-     "company": "iShares Core S&P 500",
-     "value_mn": 2730,
-     "pct": 0.44,
-     "shares": 4060000,
-     "activity": "Added"
-    },
-    {
-     "ticker": "GOOG",
-     "company": "Alphabet Inc. CL C",
-     "value_mn": 1640,
-     "pct": 0.27,
-     "shares": 2400000,
+     "company": "iShares Core S&P 500 ETF",
+     "value_mn": 13437.7,
+     "pct": 1.54,
+     "shares": 17943489,
      "activity": "Added"
     },
     {
      "ticker": "GOOGL",
-     "company": "Alphabet Inc.",
-     "value_mn": 1500,
-     "pct": 0.24,
-     "shares": 2840000,
+     "company": "Alphabet A",
+     "value_mn": 12776.7,
+     "pct": 1.46,
+     "shares": 35751981,
+     "activity": "Added"
+    },
+    {
+     "ticker": "ISHARES TR",
+     "company": "Ishares Tr",
+     "value_mn": 12692.6,
+     "pct": 1.45,
+     "shares": 42245166,
+     "activity": "Added"
+    },
+    {
+     "ticker": "AMZN",
+     "company": "Amazon",
+     "value_mn": 12249.9,
+     "pct": 1.4,
+     "shares": 51396803,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "TSM",
+     "company": "TSMC ADR",
+     "value_mn": 8634.0,
+     "pct": 0.99,
+     "shares": 18078939,
+     "activity": "Added"
+    },
+    {
+     "ticker": "INTC",
+     "company": "Intel",
+     "value_mn": 8327.3,
+     "pct": 0.95,
+     "shares": 59638211,
+     "activity": "Added"
+    },
+    {
+     "ticker": "GOOG",
+     "company": "Alphabet C",
+     "value_mn": 8060.4,
+     "pct": 0.92,
+     "shares": 22812733,
+     "activity": "Added"
+    },
+    {
+     "ticker": "GLD",
+     "company": "Spdr Gold Trust",
+     "value_mn": 7898.4,
+     "pct": 0.9,
+     "shares": 21441002,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "AVGO",
+     "company": "Broadcom",
+     "value_mn": 7836.4,
+     "pct": 0.9,
+     "shares": 20744815,
      "activity": "Reduced"
     }
    ]
@@ -753,241 +833,169 @@
    "manager": "Warren Buffett",
    "emoji": "🏛️",
    "category": "Value",
-   "quarter": "Q1 2026",
-   "quarter_date": "2026-03-31",
-   "aum_bn": 263.1,
+   "quarter": "Q2 2026",
+   "quarter_date": "2026-06-30",
+   "aum_bn": 299.25,
    "num_holdings": 29,
    "holdings": [
     {
      "ticker": "AAPL",
-     "company": "Apple Inc.",
-     "value_mn": 57800,
-     "pct": 21.99,
+     "company": "Apple",
+     "value_mn": 65950.3,
+     "pct": 22.04,
      "shares": 227917808,
      "activity": "Held"
     },
     {
      "ticker": "AXP",
-     "company": "American Express",
-     "value_mn": 45900,
-     "pct": 17.43,
+     "company": "American Express Co",
+     "value_mn": 51282.3,
+     "pct": 17.14,
      "shares": 151610700,
      "activity": "Held"
     },
     {
      "ticker": "KO",
-     "company": "Coca-Cola Co.",
-     "value_mn": 30400,
-     "pct": 11.56,
+     "company": "Coca Cola Co",
+     "value_mn": 32508.0,
+     "pct": 10.86,
      "shares": 400000000,
      "activity": "Held"
     },
     {
+     "ticker": "GOOGL",
+     "company": "Alphabet A",
+     "value_mn": 28157.6,
+     "pct": 9.41,
+     "shares": 78791167,
+     "activity": "Added"
+    },
+    {
      "ticker": "BAC",
      "company": "Bank of America",
-     "value_mn": 25000,
-     "pct": 9.52,
-     "shares": 513624165,
+     "value_mn": 27543.8,
+     "pct": 9.2,
+     "shares": 483394015,
      "activity": "Reduced"
     },
     {
      "ticker": "CVX",
-     "company": "Chevron Corp.",
-     "value_mn": 17500,
-     "pct": 6.64,
+     "company": "Chevron",
+     "value_mn": 13986.1,
+     "pct": 4.67,
      "shares": 84375856,
-     "activity": "Reduced"
+     "activity": "Held"
     },
     {
      "ticker": "OXY",
-     "company": "Occidental Petroleum",
-     "value_mn": 17200,
-     "pct": 6.55,
+     "company": "Occidental",
+     "value_mn": 12868.2,
+     "pct": 4.3,
      "shares": 264941431,
      "activity": "Held"
     },
     {
-     "ticker": "GOOGL",
-     "company": "Alphabet Inc.",
-     "value_mn": 15600,
-     "pct": 5.93,
-     "shares": 54249798,
-     "activity": "Added"
-    },
-    {
      "ticker": "CB",
-     "company": "Chubb Limited",
-     "value_mn": 11200,
-     "pct": 4.24,
+     "company": "Chubb Ltd",
+     "value_mn": 11670.1,
+     "pct": 3.9,
      "shares": 34249183,
      "activity": "Held"
     },
     {
      "ticker": "MCO",
-     "company": "Moody's Corp.",
-     "value_mn": 10800,
-     "pct": 4.09,
+     "company": "Moody's",
+     "value_mn": 11173.4,
+     "pct": 3.73,
      "shares": 24669778,
      "activity": "Held"
     },
     {
+     "ticker": "GOOG",
+     "company": "Alphabet C",
+     "value_mn": 9606.5,
+     "pct": 3.21,
+     "shares": 27188433,
+     "activity": "Added"
+    },
+    {
      "ticker": "KHC",
-     "company": "Kraft Heinz Co.",
-     "value_mn": 7300,
-     "pct": 2.78,
+     "company": "Kraft Heinz Co",
+     "value_mn": 7691.5,
+     "pct": 2.57,
      "shares": 325634818,
      "activity": "Held"
     },
     {
      "ticker": "DVA",
-     "company": "DaVita HealthCare",
-     "value_mn": 4600,
-     "pct": 1.76,
-     "shares": 30100585,
+     "company": "Davita Inc",
+     "value_mn": 6425.3,
+     "pct": 2.15,
+     "shares": 28880209,
      "activity": "Reduced"
     },
     {
-     "ticker": "KR",
-     "company": "Kroger Co.",
-     "value_mn": 3600,
-     "pct": 1.38,
-     "shares": 50000000,
-     "activity": "Held"
+     "ticker": "DAL",
+     "company": "Delta Air Lines, Inc",
+     "value_mn": 5368.6,
+     "pct": 1.79,
+     "shares": 57320000,
+     "activity": "Added"
     },
     {
      "ticker": "SIRI",
-     "company": "SiriusXM Holdings",
-     "value_mn": 2900,
-     "pct": 1.09,
+     "company": "SiriusXM",
+     "value_mn": 3686.8,
+     "pct": 1.23,
      "shares": 124807117,
      "activity": "Held"
     },
     {
-     "ticker": "DAL",
-     "company": "Delta Air Lines",
-     "value_mn": 2600,
-     "pct": 1.01,
-     "shares": 39809456,
-     "activity": "New"
-    },
-    {
      "ticker": "VRSN",
-     "company": "Verisign Inc.",
-     "value_mn": 2200,
-     "pct": 0.85,
+     "company": "VeriSign",
+     "value_mn": 2261.5,
+     "pct": 0.76,
      "shares": 8989880,
      "activity": "Held"
     },
     {
-     "ticker": "COF",
-     "company": "Capital One Financial",
-     "value_mn": 1300,
-     "pct": 0.5,
-     "shares": 7150000,
-     "activity": "Held"
-    },
-    {
-     "ticker": "NYT",
-     "company": "New York Times CL A",
-     "value_mn": 1300,
-     "pct": 0.48,
-     "shares": 15146535,
-     "activity": "Added"
+     "ticker": "KR",
+     "company": "Kroger Co",
+     "value_mn": 2165.7,
+     "pct": 0.72,
+     "shares": 39000000,
+     "activity": "Reduced"
     },
     {
      "ticker": "ALLY",
-     "company": "Ally Financial",
-     "value_mn": 1100,
-     "pct": 0.43,
-     "shares": 29000000,
-     "activity": "Held"
-    },
-    {
-     "ticker": "GOOG",
-     "company": "Alphabet Inc. CL C",
-     "value_mn": 1000,
-     "pct": 0.39,
-     "shares": 3585215,
-     "activity": "New"
-    },
-    {
-     "ticker": "LLYVK",
-     "company": "Liberty Media Corp. C",
-     "value_mn": 1000,
-     "pct": 0.38,
-     "shares": 10587143,
+     "company": "Ally Financial Inc",
+     "value_mn": 1240.7,
+     "pct": 0.41,
+     "shares": 27000000,
      "activity": "Reduced"
     },
     {
      "ticker": "LEN",
-     "company": "Lennar Corp.",
-     "value_mn": 877,
-     "pct": 0.33,
-     "shares": 10099642,
+     "company": "Lennar Corp",
+     "value_mn": 1186.5,
+     "pct": 0.4,
+     "shares": 13111741,
      "activity": "Added"
     },
     {
-     "ticker": "NUE",
-     "company": "Nucor Corp.",
-     "value_mn": 661,
-     "pct": 0.25,
-     "shares": 3907075,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "LLYVA",
-     "company": "Liberty Media Corp. A",
-     "value_mn": 457,
-     "pct": 0.17,
-     "shares": 4986588,
+     "ticker": "LIBERTY LIVE HOLDINGS IN",
+     "company": "Liberty Live Holdings Inc",
+     "value_mn": 1118.4,
+     "pct": 0.37,
+     "shares": 10587143,
      "activity": "Held"
     },
     {
-     "ticker": "LPX",
-     "company": "Louisiana-Pacific",
-     "value_mn": 412,
-     "pct": 0.16,
-     "shares": 5664793,
-     "activity": "Held"
-    },
-    {
-     "ticker": "STZ",
-     "company": "Constellation Brands",
-     "value_mn": 95,
-     "pct": 0.04,
-     "shares": 632890,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "NVR",
-     "company": "NVR Inc.",
-     "value_mn": 73,
-     "pct": 0.03,
-     "shares": 11112,
-     "activity": "Held"
-    },
-    {
-     "ticker": "M",
-     "company": "Macy's Inc.",
-     "value_mn": 55,
-     "pct": 0.02,
-     "shares": 3038355,
-     "activity": "New"
-    },
-    {
-     "ticker": "JEF",
-     "company": "Jefferies Financial",
-     "value_mn": 18,
-     "pct": 0.01,
-     "shares": 433558,
-     "activity": "Held"
-    },
-    {
-     "ticker": "LEN.B",
-     "company": "Lennar Corp. CL B",
-     "value_mn": 20,
-     "pct": 0.01,
-     "shares": 237703,
+     "ticker": "NYT",
+     "company": "New York Times Co",
+     "value_mn": 1098.7,
+     "pct": 0.37,
+     "shares": 15700000,
      "activity": "Added"
     }
    ]
@@ -998,201 +1006,169 @@
    "manager": "Izzy Englander",
    "emoji": "⚡",
    "category": "Multi-Strategy",
-   "quarter": "Q1 2026",
-   "quarter_date": "2026-03-31",
-   "aum_bn": 240.34,
-   "num_holdings": 3000,
+   "quarter": "Q2 2026",
+   "quarter_date": "2026-06-30",
+   "aum_bn": 276.29,
+   "num_holdings": 4182,
    "holdings": [
     {
-     "ticker": "IVV",
-     "company": "iShares Core S&P 500",
-     "value_mn": 8482,
-     "pct": 3.53,
-     "shares": 12985806,
+     "ticker": "ISHARES  TR",
+     "company": "Ishares  Tr",
+     "value_mn": 14508.4,
+     "pct": 5.25,
+     "shares": 48288880,
      "activity": "Reduced"
     },
     {
-     "ticker": "SPYM",
-     "company": "SPDR Series Trust",
-     "value_mn": 1651,
-     "pct": 0.69,
-     "shares": 21566182,
+     "ticker": "IVV",
+     "company": "iShares Core S&P 500 ETF",
+     "value_mn": 10861.8,
+     "pct": 3.93,
+     "shares": 14503932,
+     "activity": "Added"
+    },
+    {
+     "ticker": "SPY",
+     "company": "SPDR S&P 500 ETF Trust",
+     "value_mn": 10389.7,
+     "pct": 3.76,
+     "shares": 13912809,
+     "activity": "Added"
+    },
+    {
+     "ticker": "NVDA",
+     "company": "Nvidia",
+     "value_mn": 9038.0,
+     "pct": 3.27,
+     "shares": 45169614,
+     "activity": "Added"
+    },
+    {
+     "ticker": "QQQ",
+     "company": "Invesco QQQ Trust",
+     "value_mn": 7681.1,
+     "pct": 2.78,
+     "shares": 10430555,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "MU",
+     "company": "Micron",
+     "value_mn": 5001.7,
+     "pct": 1.81,
+     "shares": 4333125,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "MSFT",
+     "company": "Microsoft",
+     "value_mn": 4949.9,
+     "pct": 1.79,
+     "shares": 13269704,
+     "activity": "Added"
+    },
+    {
+     "ticker": "AMZN",
+     "company": "Amazon",
+     "value_mn": 4445.7,
+     "pct": 1.61,
+     "shares": 18652845,
+     "activity": "Added"
+    },
+    {
+     "ticker": "AMD",
+     "company": "AMD",
+     "value_mn": 4356.5,
+     "pct": 1.58,
+     "shares": 7499384,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "AAPL",
+     "company": "Apple",
+     "value_mn": 4254.3,
+     "pct": 1.54,
+     "shares": 14702399,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "META",
+     "company": "Meta Platforms",
+     "value_mn": 3561.0,
+     "pct": 1.29,
+     "shares": 6321744,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "SPCX",
+     "company": "SpaceX",
+     "value_mn": 3195.5,
+     "pct": 1.16,
+     "shares": 18856163,
      "activity": "New"
     },
     {
-     "ticker": "WDC",
-     "company": "Western Digital Corp.",
-     "value_mn": 1510,
-     "pct": 0.63,
-     "shares": 5471000,
+     "ticker": "GOOGL",
+     "company": "Alphabet A",
+     "value_mn": 2922.7,
+     "pct": 1.06,
+     "shares": 8178373,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "TSLA",
+     "company": "Tesla",
+     "value_mn": 2525.6,
+     "pct": 0.91,
+     "shares": 6004843,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "VANECK  ETF  TRUST",
+     "company": "Vaneck  Etf  Trust",
+     "value_mn": 2176.1,
+     "pct": 0.79,
+     "shares": 3317771,
      "activity": "Added"
     },
     {
-     "ticker": "NSC",
-     "company": "Norfolk Southern Corp.",
-     "value_mn": 1316,
-     "pct": 0.55,
-     "shares": 4584086,
+     "ticker": "AVGO",
+     "company": "Broadcom",
+     "value_mn": 2117.1,
+     "pct": 0.77,
+     "shares": 5604405,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "SELECT  SECTOR  SPDR  TR",
+     "company": "Select  Sector  Spdr  Tr",
+     "value_mn": 1791.0,
+     "pct": 0.65,
+     "shares": 33722497,
      "activity": "Added"
+    },
+    {
+     "ticker": "INTC",
+     "company": "Intel",
+     "value_mn": 1759.4,
+     "pct": 0.64,
+     "shares": 12600251,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "TSM",
+     "company": "TSMC ADR",
+     "value_mn": 1691.1,
+     "pct": 0.61,
+     "shares": 3541145,
+     "activity": "Reduced"
     },
     {
      "ticker": "WBD",
-     "company": "Warner Bros. Discovery",
-     "value_mn": 1019,
-     "pct": 0.42,
-     "shares": 43939392,
-     "activity": "Added"
-    },
-    {
-     "ticker": "LITE",
-     "company": "Lumentum Holdings",
-     "value_mn": 1015,
-     "pct": 0.42,
-     "shares": 7000000,
-     "activity": "Added"
-    },
-    {
-     "ticker": "EA",
-     "company": "Electronic Arts",
-     "value_mn": 776,
-     "pct": 0.32,
-     "shares": 4275528,
-     "activity": "Added"
-    },
-    {
-     "ticker": "IBIT",
-     "company": "iShares Bitcoin Trust",
-     "value_mn": 750,
-     "pct": 0.31,
-     "shares": 19287318,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "SNDK",
-     "company": "SanDisk Corp.",
-     "value_mn": 736,
-     "pct": 0.31,
-     "shares": 1142295,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "BLK",
-     "company": "BlackRock Inc.",
-     "value_mn": 697,
-     "pct": 0.29,
-     "shares": 641558,
-     "activity": "Added"
-    },
-    {
-     "ticker": "FCX",
-     "company": "Freeport-McMoRan",
-     "value_mn": 652,
-     "pct": 0.27,
-     "shares": 12667694,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "IVZ",
-     "company": "Invesco Ltd.",
-     "value_mn": 630,
-     "pct": 0.26,
-     "shares": 21648675,
-     "activity": "Added"
-    },
-    {
-     "ticker": "MS",
-     "company": "Morgan Stanley",
-     "value_mn": 614,
-     "pct": 0.26,
-     "shares": 3997261,
-     "activity": "Added"
-    },
-    {
-     "ticker": "VOO",
-     "company": "Vanguard S&P 500 ETF",
-     "value_mn": 608,
-     "pct": 0.25,
-     "shares": 1016744,
-     "activity": "Added"
-    },
-    {
-     "ticker": "BAC",
-     "company": "Bank of America",
-     "value_mn": 600,
-     "pct": 0.25,
-     "shares": 14269820,
-     "activity": "Added"
-    },
-    {
-     "ticker": "C",
-     "company": "Citigroup Inc.",
-     "value_mn": 600,
-     "pct": 0.25,
-     "shares": 4809646,
-     "activity": "Added"
-    },
-    {
-     "ticker": "CBRE",
-     "company": "CBRE Group Inc.",
-     "value_mn": 585,
-     "pct": 0.24,
-     "shares": 4294149,
-     "activity": "Added"
-    },
-    {
-     "ticker": "KVUE",
-     "company": "Kenvue Inc.",
-     "value_mn": 559,
-     "pct": 0.23,
-     "shares": 31801263,
-     "activity": "Added"
-    },
-    {
-     "ticker": "AEP",
-     "company": "American Electric Power",
-     "value_mn": 525,
-     "pct": 0.22,
-     "shares": 4151358,
-     "activity": "Added"
-    },
-    {
-     "ticker": "SATS",
-     "company": "EchoStar Corp.",
-     "value_mn": 525,
-     "pct": 0.22,
-     "shares": 80285000,
-     "activity": "Added"
-    },
-    {
-     "ticker": "NVT",
-     "company": "nVent Electric",
-     "value_mn": 530,
-     "pct": 0.22,
-     "shares": 4478152,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "FE",
-     "company": "FirstEnergy Corp.",
-     "value_mn": 517,
-     "pct": 0.22,
-     "shares": 10194994,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "BABA",
-     "company": "Alibaba Group Holdings",
-     "value_mn": 470,
-     "pct": 0.2,
-     "shares": 45565000,
-     "activity": "Added"
-    },
-    {
-     "ticker": "CTRA",
-     "company": "Coterra Energy Inc.",
-     "value_mn": 447,
-     "pct": 0.19,
-     "shares": 10747271,
+     "company": "Warner Bros. Discovery, Inc",
+     "value_mn": 1685.5,
+     "pct": 0.61,
+     "shares": 63222475,
      "activity": "Added"
     }
    ]
@@ -1203,89 +1179,169 @@
    "manager": "John Overdeck",
    "emoji": "📐",
    "category": "Quant",
-   "quarter": "Q1 2026",
-   "quarter_date": "2026-03-31",
-   "aum_bn": 123.86,
-   "num_holdings": 5000,
+   "quarter": "Q2 2026",
+   "quarter_date": "2026-06-30",
+   "aum_bn": 138.12,
+   "num_holdings": 3963,
    "holdings": [
     {
-     "ticker": "NVDA",
-     "company": "Nvidia Corporation",
-     "value_mn": 1950,
-     "pct": 1.57,
-     "shares": 11200000,
-     "activity": "Added"
-    },
-    {
-     "ticker": "AAPL",
-     "company": "Apple Inc.",
-     "value_mn": 1509,
-     "pct": 1.22,
-     "shares": 5900000,
-     "activity": "Added"
+     "ticker": "WESTERN DIGITAL CORP",
+     "company": "Western Digital Corp",
+     "value_mn": 1497.9,
+     "pct": 1.08,
+     "shares": 88951000,
+     "activity": "Reduced"
     },
     {
      "ticker": "AMZN",
-     "company": "Amazon.com Inc.",
-     "value_mn": 1317,
-     "pct": 1.06,
-     "shares": 6300000,
-     "activity": "Added"
+     "company": "Amazon",
+     "value_mn": 1393.9,
+     "pct": 1.01,
+     "shares": 5848287,
+     "activity": "Reduced"
     },
     {
-     "ticker": "GOOGL",
-     "company": "Alphabet Inc.",
-     "value_mn": 1274,
-     "pct": 1.03,
-     "shares": 4400000,
-     "activity": "Added"
+     "ticker": "NVDA",
+     "company": "Nvidia",
+     "value_mn": 1381.0,
+     "pct": 1.0,
+     "shares": 6901974,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "AAPL",
+     "company": "Apple",
+     "value_mn": 1275.0,
+     "pct": 0.92,
+     "shares": 4406113,
+     "activity": "Reduced"
     },
     {
      "ticker": "TSLA",
-     "company": "Tesla Inc.",
-     "value_mn": 1082,
-     "pct": 0.87,
-     "shares": 2900000,
+     "company": "Tesla",
+     "value_mn": 1261.9,
+     "pct": 0.91,
+     "shares": 3000296,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "BRK.B",
+     "company": "Berkshire B",
+     "value_mn": 1180.8,
+     "pct": 0.85,
+     "shares": 2359695,
      "activity": "Added"
     },
     {
      "ticker": "JPM",
-     "company": "JPMorgan Chase & Co.",
-     "value_mn": 975,
-     "pct": 0.79,
-     "shares": 3300000,
+     "company": "JPMorgan",
+     "value_mn": 982.4,
+     "pct": 0.71,
+     "shares": 3001216,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "ASML",
+     "company": "ASML Holding",
+     "value_mn": 978.4,
+     "pct": 0.71,
+     "shares": 491805,
      "activity": "Added"
     },
     {
-     "ticker": "PLTR",
-     "company": "Palantir Technologies",
-     "value_mn": 937,
-     "pct": 0.76,
-     "shares": 6400000,
+     "ticker": "AMD",
+     "company": "AMD",
+     "value_mn": 965.0,
+     "pct": 0.7,
+     "shares": 1661119,
      "activity": "Added"
     },
     {
      "ticker": "COST",
-     "company": "Costco Wholesale",
-     "value_mn": 872,
-     "pct": 0.7,
-     "shares": 874800,
-     "activity": "Added"
-    },
-    {
-     "ticker": "TJX",
-     "company": "TJX Companies Inc.",
-     "value_mn": 837,
-     "pct": 0.68,
-     "shares": 5200000,
+     "company": "Costco",
+     "value_mn": 948.6,
+     "pct": 0.69,
+     "shares": 1014031,
      "activity": "Added"
     },
     {
      "ticker": "MA",
-     "company": "Mastercard Inc.",
-     "value_mn": 836,
-     "pct": 0.67,
-     "shares": 1700000,
+     "company": "Mastercard",
+     "value_mn": 947.7,
+     "pct": 0.69,
+     "shares": 1845239,
+     "activity": "Added"
+    },
+    {
+     "ticker": "GOOGL",
+     "company": "Alphabet A",
+     "value_mn": 878.0,
+     "pct": 0.64,
+     "shares": 2456751,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "C",
+     "company": "Citigroup Inc",
+     "value_mn": 857.7,
+     "pct": 0.62,
+     "shares": 6127926,
+     "activity": "Added"
+    },
+    {
+     "ticker": "SPY",
+     "company": "SPDR S&P 500 ETF Trust",
+     "value_mn": 857.4,
+     "pct": 0.62,
+     "shares": 1148149,
+     "activity": "Added"
+    },
+    {
+     "ticker": "BSX",
+     "company": "Boston Scientific Corp",
+     "value_mn": 828.9,
+     "pct": 0.6,
+     "shares": 19420323,
+     "activity": "Added"
+    },
+    {
+     "ticker": "GS",
+     "company": "Goldman Sachs",
+     "value_mn": 816.0,
+     "pct": 0.59,
+     "shares": 806845,
+     "activity": "Added"
+    },
+    {
+     "ticker": "LMT",
+     "company": "Lockheed Martin Corp",
+     "value_mn": 804.3,
+     "pct": 0.58,
+     "shares": 1578736,
+     "activity": "Added"
+    },
+    {
+     "ticker": "ISRG",
+     "company": "Intuitive Surgical Inc",
+     "value_mn": 796.5,
+     "pct": 0.58,
+     "shares": 2002928,
+     "activity": "Added"
+    },
+    {
+     "ticker": "SCHW",
+     "company": "Charles Schwab",
+     "value_mn": 784.4,
+     "pct": 0.57,
+     "shares": 8501355,
+     "activity": "Added"
+    },
+    {
+     "ticker": "KMB",
+     "company": "Kimberly Clark Corp",
+     "value_mn": 781.0,
+     "pct": 0.57,
+     "shares": 7115332,
      "activity": "Added"
     }
    ]
@@ -1296,210 +1352,170 @@
    "manager": "Steve Cohen",
    "emoji": "🎲",
    "category": "Multi-Strategy",
-   "quarter": "Q1 2026",
-   "quarter_date": "2026-03-31",
-   "aum_bn": 78.05,
-   "num_holdings": 4733,
+   "quarter": "Q2 2026",
+   "quarter_date": "2026-06-30",
+   "aum_bn": 90.68,
+   "num_holdings": 2452,
    "holdings": [
     {
-     "ticker": "NVDA",
-     "company": "Nvidia Corp",
-     "value_mn": 1322.76,
-     "pct": 1.69,
-     "shares": 7584654,
+     "ticker": "SPY",
+     "company": "SPDR S&P 500 ETF Trust",
+     "value_mn": 2231.7,
+     "pct": 2.46,
+     "shares": 2988500,
+     "activity": "Added"
+    },
+    {
+     "ticker": "CRDO",
+     "company": "Credo Technology",
+     "value_mn": 1737.7,
+     "pct": 1.92,
+     "shares": 6389932,
      "activity": "Reduced"
     },
     {
      "ticker": "AMZN",
-     "company": "Amazon.com Inc",
-     "value_mn": 1032.81,
-     "pct": 1.32,
-     "shares": 4958984,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "ANET",
-     "company": "Arista Networks",
-     "value_mn": 803.66,
-     "pct": 1.03,
-     "shares": 6545561,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "SPYCALL",
-     "company": "SPDR S&P 500 Call Options",
-     "value_mn": 800.18,
-     "pct": 1.02,
-     "shares": 1230400,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "SPYPUT",
-     "company": "SPDR S&P 500 Put Options",
-     "value_mn": 796.15,
-     "pct": 1.02,
-     "shares": 1224200,
+     "company": "Amazon",
+     "value_mn": 1238.9,
+     "pct": 1.37,
+     "shares": 5198116,
      "activity": "Reduced"
     },
     {
      "ticker": "ASML",
-     "company": "ASML Holding NV",
-     "value_mn": 745.91,
-     "pct": 0.95,
-     "shares": 564726,
+     "company": "ASML Holding",
+     "value_mn": 1195.2,
+     "pct": 1.32,
+     "shares": 600761,
+     "activity": "Added"
+    },
+    {
+     "ticker": "AMD",
+     "company": "AMD",
+     "value_mn": 1000.9,
+     "pct": 1.1,
+     "shares": 1722936,
      "activity": "Reduced"
     },
     {
-     "ticker": "CRDO",
-     "company": "Credo Technology Group",
-     "value_mn": 702.11,
+     "ticker": "MU",
+     "company": "Micron",
+     "value_mn": 997.2,
+     "pct": 1.1,
+     "shares": 863883,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "PG",
+     "company": "PROCTER & GAMBLE Co",
+     "value_mn": 964.2,
+     "pct": 1.06,
+     "shares": 6575596,
+     "activity": "Added"
+    },
+    {
+     "ticker": "ANET",
+     "company": "Arista Networks, Inc",
+     "value_mn": 915.5,
+     "pct": 1.01,
+     "shares": 5389337,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "MKSI",
+     "company": "Mks Inc",
+     "value_mn": 890.2,
+     "pct": 0.98,
+     "shares": 2001343,
+     "activity": "Added"
+    },
+    {
+     "ticker": "STX",
+     "company": "Seagate Technology",
+     "value_mn": 854.6,
+     "pct": 0.94,
+     "shares": 885614,
+     "activity": "Added"
+    },
+    {
+     "ticker": "SNOW",
+     "company": "Snowflake Inc",
+     "value_mn": 819.7,
      "pct": 0.9,
-     "shares": 7479599,
+     "shares": 3220866,
+     "activity": "Added"
+    },
+    {
+     "ticker": "TSM",
+     "company": "TSMC ADR",
+     "value_mn": 800.4,
+     "pct": 0.88,
+     "shares": 1675897,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "ORCL",
+     "company": "Oracle",
+     "value_mn": 686.1,
+     "pct": 0.76,
+     "shares": 4681880,
+     "activity": "Added"
+    },
+    {
+     "ticker": "RTX",
+     "company": "RTX Corp",
+     "value_mn": 667.1,
+     "pct": 0.74,
+     "shares": 3516007,
      "activity": "Added"
     },
     {
      "ticker": "AVGO",
-     "company": "Broadcom Inc",
-     "value_mn": 701.42,
-     "pct": 0.9,
-     "shares": 2266228,
+     "company": "Broadcom",
+     "value_mn": 643.0,
+     "pct": 0.71,
+     "shares": 1702100,
      "activity": "Reduced"
     },
     {
-     "ticker": "QQQPUT",
-     "company": "Invesco QQQ Put Options",
-     "value_mn": 680.5,
-     "pct": 0.87,
-     "shares": 1179000,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "TER",
-     "company": "Teradyne Inc",
-     "value_mn": 677.33,
-     "pct": 0.87,
-     "shares": 2284718,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "TSM",
-     "company": "Taiwan Semiconductor",
-     "value_mn": 627.85,
-     "pct": 0.8,
-     "shares": 1857807,
-     "activity": "Reduced"
+     "ticker": "ISHARES TR",
+     "company": "Ishares Tr",
+     "value_mn": 606.6,
+     "pct": 0.67,
+     "shares": 2019100,
+     "activity": "Added"
     },
     {
      "ticker": "AMAT",
      "company": "Applied Materials",
-     "value_mn": 586.9,
-     "pct": 0.75,
-     "shares": 1717122,
+     "value_mn": 556.2,
+     "pct": 0.61,
+     "shares": 769284,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "JNJ",
+     "company": "Johnson & Johnson",
+     "value_mn": 548.9,
+     "pct": 0.61,
+     "shares": 2161400,
      "activity": "Added"
     },
     {
-     "ticker": "EQIX",
-     "company": "Equinix Inc",
-     "value_mn": 524.23,
-     "pct": 0.67,
-     "shares": 534800,
+     "ticker": "INTC",
+     "company": "Intel",
+     "value_mn": 546.4,
+     "pct": 0.6,
+     "shares": 3913295,
      "activity": "Reduced"
     },
     {
      "ticker": "META",
      "company": "Meta Platforms",
-     "value_mn": 519.64,
-     "pct": 0.66,
-     "shares": 908254,
-     "activity": "Added"
-    },
-    {
-     "ticker": "SPOT",
-     "company": "Spotify Technology",
-     "value_mn": 444.23,
+     "value_mn": 520.8,
      "pct": 0.57,
-     "shares": 916117,
+     "shares": 924633,
      "activity": "Reduced"
-    },
-    {
-     "ticker": "RTX",
-     "company": "RTX Corp",
-     "value_mn": 394.94,
-     "pct": 0.5,
-     "shares": 2047379,
-     "activity": "Added"
-    },
-    {
-     "ticker": "AKAM",
-     "company": "Akamai Technologies",
-     "value_mn": 379.1,
-     "pct": 0.48,
-     "shares": 3300815,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "XYZ",
-     "company": "Block Inc",
-     "value_mn": 379.03,
-     "pct": 0.48,
-     "shares": 6298335,
-     "activity": "Added"
-    },
-    {
-     "ticker": "MKSI",
-     "company": "MKS Instruments",
-     "value_mn": 370.07,
-     "pct": 0.47,
-     "shares": 1610331,
-     "activity": "Added"
-    },
-    {
-     "ticker": "HD",
-     "company": "Home Depot Inc",
-     "value_mn": 368.68,
-     "pct": 0.47,
-     "shares": 1120985,
-     "activity": "Added"
-    },
-    {
-     "ticker": "ADI",
-     "company": "Analog Devices Inc",
-     "value_mn": 360.74,
-     "pct": 0.46,
-     "shares": 1133911,
-     "activity": "Added"
-    },
-    {
-     "ticker": "AS",
-     "company": "Amer Sports Inc",
-     "value_mn": 326.35,
-     "pct": 0.42,
-     "shares": 9913351,
-     "activity": "Added"
-    },
-    {
-     "ticker": "PG",
-     "company": "Procter & Gamble",
-     "value_mn": 303.37,
-     "pct": 0.39,
-     "shares": 2100311,
-     "activity": "Added"
-    },
-    {
-     "ticker": "TMUS",
-     "company": "T-Mobile US Inc",
-     "value_mn": 302.79,
-     "pct": 0.39,
-     "shares": 1441655,
-     "activity": "Added"
-    },
-    {
-     "ticker": "FIX",
-     "company": "Comfort Systems USA",
-     "value_mn": 302.32,
-     "pct": 0.39,
-     "shares": 219232,
-     "activity": "Added"
     }
    ]
   },
@@ -2409,90 +2425,170 @@
    "manager": "Ray Dalio",
    "emoji": "🌊",
    "category": "Macro",
-   "quarter": "Q1 2026",
-   "quarter_date": "2026-03-31",
-   "aum_bn": 22.4,
-   "num_holdings": 100,
+   "quarter": "Q2 2026",
+   "quarter_date": "2026-06-30",
+   "aum_bn": 24.38,
+   "num_holdings": 997,
    "holdings": [
     {
      "ticker": "SPY",
-     "company": "SPDR S&P 500 ETF",
-     "value_mn": 2838,
-     "pct": 12.67,
-     "shares": 4364862,
-     "activity": "Reduced"
+     "company": "SPDR S&P 500 ETF Trust",
+     "value_mn": 3973.0,
+     "pct": 16.3,
+     "shares": 5320308,
+     "activity": "Added"
     },
     {
      "ticker": "IVV",
-     "company": "iShares Core S&P 500",
-     "value_mn": 1750,
-     "pct": 7.81,
-     "shares": 2679084,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "AMZN",
-     "company": "Amazon.com Inc.",
-     "value_mn": 914,
-     "pct": 4.08,
-     "shares": 4388711,
+     "company": "iShares Core S&P 500 ETF",
+     "value_mn": 2248.4,
+     "pct": 9.22,
+     "shares": 3002286,
      "activity": "Added"
     },
     {
      "ticker": "NVDA",
-     "company": "Nvidia Corp.",
-     "value_mn": 818,
-     "pct": 3.65,
-     "shares": 4693003,
-     "activity": "Added"
-    },
-    {
-     "ticker": "GOOGL",
-     "company": "Alphabet Inc.",
-     "value_mn": 574,
-     "pct": 2.56,
-     "shares": 1997674,
-     "activity": "Added"
+     "company": "Nvidia",
+     "value_mn": 773.6,
+     "pct": 3.17,
+     "shares": 3866195,
+     "activity": "Reduced"
     },
     {
      "ticker": "AVGO",
-     "company": "Broadcom Inc.",
-     "value_mn": 568,
-     "pct": 2.54,
-     "shares": 1835380,
+     "company": "Broadcom",
+     "value_mn": 497.8,
+     "pct": 2.04,
+     "shares": 1317923,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "AMZN",
+     "company": "Amazon",
+     "value_mn": 482.8,
+     "pct": 1.98,
+     "shares": 2025481,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "GOOGL",
+     "company": "Alphabet A",
+     "value_mn": 472.5,
+     "pct": 1.94,
+     "shares": 1322176,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "LRCX",
+     "company": "Lam Research",
+     "value_mn": 406.6,
+     "pct": 1.67,
+     "shares": 938224,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "VOO",
+     "company": "Vanguard S&P 500 ETF",
+     "value_mn": 314.8,
+     "pct": 1.29,
+     "shares": 458381,
      "activity": "Added"
     },
     {
-     "ticker": "MU",
-     "company": "Micron Technology",
-     "value_mn": 498,
-     "pct": 2.22,
-     "shares": 1475704,
-     "activity": "Added"
+     "ticker": "AMD",
+     "company": "AMD",
+     "value_mn": 312.9,
+     "pct": 1.28,
+     "shares": 538632,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "ISHARES INC",
+     "company": "Ishares Inc",
+     "value_mn": 279.6,
+     "pct": 1.15,
+     "shares": 1384772,
+     "activity": "Reduced"
     },
     {
      "ticker": "MSFT",
-     "company": "Microsoft Corp.",
-     "value_mn": 401,
-     "pct": 1.79,
-     "shares": 1084979,
+     "company": "Microsoft",
+     "value_mn": 265.6,
+     "pct": 1.09,
+     "shares": 711896,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "NEM",
+     "company": "Newmont",
+     "value_mn": 251.7,
+     "pct": 1.03,
+     "shares": 2695170,
+     "activity": "Added"
+    },
+    {
+     "ticker": "AMAT",
+     "company": "Applied Materials",
+     "value_mn": 210.7,
+     "pct": 0.86,
+     "shares": 291426,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "ORCL",
+     "company": "Oracle",
+     "value_mn": 210.0,
+     "pct": 0.86,
+     "shares": 1432967,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "STX",
+     "company": "Seagate Technology",
+     "value_mn": 192.8,
+     "pct": 0.79,
+     "shares": 199822,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "JNJ",
+     "company": "Johnson & Johnson",
+     "value_mn": 169.9,
+     "pct": 0.7,
+     "shares": 669135,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "VANGUARD INTL EQUITY IND",
+     "company": "Vanguard Intl Equity Index F",
+     "value_mn": 164.0,
+     "pct": 0.67,
+     "shares": 2746819,
      "activity": "Added"
     },
     {
      "ticker": "GEV",
-     "company": "GE Vernova Inc.",
-     "value_mn": 379,
-     "pct": 1.69,
-     "shares": 434897,
+     "company": "GE Vernova",
+     "value_mn": 144.2,
+     "pct": 0.59,
+     "shares": 122768,
      "activity": "Reduced"
     },
     {
-     "ticker": "TSM",
-     "company": "Taiwan Semiconductor",
-     "value_mn": 363,
-     "pct": 1.62,
-     "shares": 1077079,
-     "activity": "New"
+     "ticker": "UNP",
+     "company": "Union Pacific",
+     "value_mn": 139.9,
+     "pct": 0.57,
+     "shares": 514266,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "MU",
+     "company": "Micron",
+     "value_mn": 134.7,
+     "pct": 0.55,
+     "shares": 116666,
+     "activity": "Reduced"
     }
    ]
   },
@@ -2502,66 +2598,74 @@
    "manager": "Jensen Huang",
    "emoji": "🎮",
    "category": "AI Core Holdings",
-   "quarter": "Q1 2026",
-   "quarter_date": "2026-03-31",
-   "aum_bn": 18.37,
-   "num_holdings": 7,
+   "quarter": "Q2 2026",
+   "quarter_date": "2026-06-30",
+   "aum_bn": 63.44,
+   "num_holdings": 8,
    "holdings": [
     {
      "ticker": "INTC",
-     "company": "Intel Corp",
-     "value_mn": 9478.09,
-     "pct": 51.58,
+     "company": "Intel",
+     "value_mn": 29989.3,
+     "pct": 47.27,
      "shares": 214776632,
      "activity": "Held"
     },
     {
-     "ticker": "CRWV",
-     "company": "CoreWeave Inc",
-     "value_mn": 3657.62,
-     "pct": 19.91,
-     "shares": 47213353,
-     "activity": "Added"
+     "ticker": "SPCX",
+     "company": "SpaceX",
+     "value_mn": 20975.6,
+     "pct": 33.06,
+     "shares": 122764805,
+     "activity": "New"
     },
     {
-     "ticker": "SNPS",
-     "company": "Synopsys Inc",
-     "value_mn": 1911.71,
-     "pct": 10.4,
-     "shares": 4821717,
+     "ticker": "CRWV",
+     "company": "CoreWeave, Inc",
+     "value_mn": 4699.6,
+     "pct": 7.41,
+     "shares": 47213353,
      "activity": "Held"
     },
     {
      "ticker": "COHR",
      "company": "Coherent Corp",
-     "value_mn": 1855.22,
-     "pct": 10.1,
+     "value_mn": 3072.2,
+     "pct": 4.84,
      "shares": 7788161,
-     "activity": "New"
+     "activity": "Held"
     },
     {
      "ticker": "NOK",
-     "company": "Nokia Corp",
-     "value_mn": 1337.77,
-     "pct": 7.28,
+     "company": "Nokia",
+     "value_mn": 2209.7,
+     "pct": 3.48,
      "shares": 166389351,
      "activity": "Held"
     },
     {
-     "ticker": "YNDX",
-     "company": "Yandex NV",
-     "value_mn": 123.52,
-     "pct": 0.67,
+     "ticker": "SNPS",
+     "company": "Synopsys Inc",
+     "value_mn": 2150.8,
+     "pct": 3.39,
+     "shares": 4821717,
+     "activity": "Held"
+    },
+    {
+     "ticker": "NBIS",
+     "company": "Nebius Group N.V",
+     "value_mn": 328.8,
+     "pct": 0.52,
      "shares": 1190476,
      "activity": "Held"
     },
     {
      "ticker": "GENB",
-     "company": "Genie Energy",
-     "value_mn": 10.42,
-     "pct": 0.06,
+     "company": "Generate Biomedicines, Inc",
+     "value_mn": 14.1,
+     "pct": 0.02,
      "shares": 833325,
-     "activity": "New"
+     "activity": "Held"
     }
    ]
   },
@@ -2886,209 +2990,169 @@
    "manager": "Marc Rowan",
    "emoji": "🦅",
    "category": "Private Equity",
-   "quarter": "Q1 2026",
-   "quarter_date": "2026-03-31",
-   "aum_bn": 7.6,
-   "num_holdings": 125,
+   "quarter": "Q2 2026",
+   "quarter_date": "2026-06-30",
+   "aum_bn": 8.94,
+   "num_holdings": 87,
    "holdings": [
     {
-     "ticker": "DEBT-ECHOPRN",
-     "company": "EchoStar Corp Note 3.875%",
-     "value_mn": 827.15,
-     "pct": 10.88,
-     "shares": 230885639,
-     "activity": "Reduced"
+     "ticker": "ISHARES TR",
+     "company": "Ishares Tr",
+     "value_mn": 1201.8,
+     "pct": 13.44,
+     "shares": 4000000,
+     "activity": "Added"
     },
     {
-     "ticker": "PXED",
-     "company": "PXED Corp",
-     "value_mn": 783.4,
-     "pct": 10.3,
-     "shares": 24901319,
+     "ticker": "ECHOSTAR CORP",
+     "company": "Echostar Corp",
+     "value_mn": 968.8,
+     "pct": 10.84,
+     "shares": 309816036,
+     "activity": "Added"
+    },
+    {
+     "ticker": "RXT",
+     "company": "Rackspace Technology, Inc",
+     "value_mn": 846.3,
+     "pct": 9.47,
+     "shares": 129609000,
      "activity": "Held"
     },
     {
-     "ticker": "SMHPUT",
-     "company": "VanEck Semiconductor ETF Puts",
-     "value_mn": 766.8,
-     "pct": 10.09,
-     "shares": 2000000,
-     "activity": "Reduced"
+     "ticker": "PHOENIX ED PARTNERS INC",
+     "company": "Phoenix Ed Partners Inc",
+     "value_mn": 818.0,
+     "pct": 9.15,
+     "shares": 24901320,
+     "activity": "Added"
     },
     {
      "ticker": "HGV",
-     "company": "Hilton Grand Vacations",
-     "value_mn": 713.78,
-     "pct": 9.39,
-     "shares": 18245825,
-     "activity": "Held"
+     "company": "Hilton Grand Vacations Inc",
+     "value_mn": 654.4,
+     "pct": 7.32,
+     "shares": 12495825,
+     "activity": "Reduced"
     },
     {
-     "ticker": "ADT",
-     "company": "ADT Inc",
-     "value_mn": 670.14,
-     "pct": 8.81,
-     "shares": 102000366,
-     "activity": "Held"
+     "ticker": "NVDA",
+     "company": "Nvidia",
+     "value_mn": 582.3,
+     "pct": 6.51,
+     "shares": 2910000,
+     "activity": "Added"
     },
     {
-     "ticker": "AERO",
-     "company": "Grupo Aeromexico",
-     "value_mn": 385.35,
-     "pct": 5.07,
+     "ticker": "GRUPO AEROMEXICO SAB DE ",
+     "company": "Grupo Aeromexico Sab De Cv",
+     "value_mn": 495.1,
+     "pct": 5.54,
      "shares": 27505017,
      "activity": "Held"
     },
     {
      "ticker": "VOO",
      "company": "Vanguard S&P 500 ETF",
-     "value_mn": 352.87,
-     "pct": 4.64,
-     "shares": 590523,
-     "activity": "New"
-    },
-    {
-     "ticker": "JPMPUT",
-     "company": "JPMorgan Chase Put Options",
-     "value_mn": 327.99,
-     "pct": 4.31,
-     "shares": 1115000,
-     "activity": "New"
-    },
-    {
-     "ticker": "IWMPUT",
-     "company": "iShares Russell 2000 ETF Puts",
-     "value_mn": 322.4,
-     "pct": 4.24,
-     "shares": 1300000,
+     "value_mn": 406.8,
+     "pct": 4.55,
+     "shares": 592238,
      "activity": "Added"
     },
     {
-     "ticker": "SATS",
-     "company": "EchoStar Corp",
-     "value_mn": 220.61,
-     "pct": 2.9,
-     "shares": 1884465,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "NVDA",
-     "company": "Nvidia Corp",
-     "value_mn": 174.4,
-     "pct": 2.29,
-     "shares": 1000000,
+     "ticker": "ECHO",
+     "company": "EchoStar CORP",
+     "value_mn": 375.4,
+     "pct": 4.2,
+     "shares": 3698611,
      "activity": "Added"
     },
     {
-     "ticker": "NVDAPUT",
-     "company": "Nvidia Put Options",
-     "value_mn": 174.4,
-     "pct": 2.29,
-     "shares": 1000000,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "KMX",
-     "company": "CarMax Inc",
-     "value_mn": 172.34,
-     "pct": 2.27,
-     "shares": 4144741,
-     "activity": "Reduced"
+     "ticker": "SPCX",
+     "company": "SpaceX",
+     "value_mn": 345.7,
+     "pct": 3.87,
+     "shares": 2023307,
+     "activity": "New"
     },
     {
      "ticker": "GBTG",
-     "company": "Global Business Travel Group",
-     "value_mn": 127.7,
-     "pct": 1.68,
-     "shares": 22884991,
-     "activity": "Held"
+     "company": "Global Business Travel Group, Inc",
+     "value_mn": 203.9,
+     "pct": 2.28,
+     "shares": 21712184,
+     "activity": "Reduced"
     },
     {
-     "ticker": "RXT",
-     "company": "Rackspace Technology",
-     "value_mn": 127.02,
-     "pct": 1.67,
-     "shares": 129609000,
-     "activity": "Held"
-    },
-    {
-     "ticker": "CMCSA",
-     "company": "Comcast Corp",
-     "value_mn": 124.48,
-     "pct": 1.64,
-     "shares": 4335672,
-     "activity": "Added"
-    },
-    {
-     "ticker": "TPG",
-     "company": "TPG Inc",
-     "value_mn": 102.54,
-     "pct": 1.35,
-     "shares": 2531318,
+     "ticker": "PRMB",
+     "company": "Primo Brands Corp",
+     "value_mn": 168.3,
+     "pct": 1.88,
+     "shares": 6885351,
      "activity": "New"
     },
     {
      "ticker": "UNIT",
      "company": "Uniti Group Inc",
-     "value_mn": 86.97,
-     "pct": 1.14,
-     "shares": 9271714,
+     "value_mn": 122.0,
+     "pct": 1.37,
+     "shares": 10638901,
+     "activity": "Added"
+    },
+    {
+     "ticker": "CORZ",
+     "company": "Core Scientific",
+     "value_mn": 115.7,
+     "pct": 1.29,
+     "shares": 4520165,
+     "activity": "New"
+    },
+    {
+     "ticker": "KMX",
+     "company": "Carmax Inc",
+     "value_mn": 105.1,
+     "pct": 1.18,
+     "shares": 1986285,
      "activity": "Reduced"
     },
     {
      "ticker": "TDAY",
-     "company": "Tradeweb Markets",
-     "value_mn": 85.51,
-     "pct": 1.12,
+     "company": "USA TODAY Co., Inc",
+     "value_mn": 103.7,
+     "pct": 1.16,
      "shares": 12128756,
      "activity": "Held"
     },
     {
-     "ticker": "INVH",
-     "company": "Invitation Homes",
-     "value_mn": 50.16,
-     "pct": 0.66,
-     "shares": 2018707,
-     "activity": "Added"
-    },
-    {
-     "ticker": "VTR",
-     "company": "Ventas Inc",
-     "value_mn": 47.54,
-     "pct": 0.63,
-     "shares": 581300,
-     "activity": "Added"
-    },
-    {
-     "ticker": "VICI",
-     "company": "VICI Properties",
-     "value_mn": 46.44,
-     "pct": 0.61,
-     "shares": 1699715,
-     "activity": "Added"
-    },
-    {
-     "ticker": "CHDN",
-     "company": "Churchill Downs",
-     "value_mn": 42.85,
-     "pct": 0.56,
-     "shares": 476982,
+     "ticker": "TSM",
+     "company": "TSMC ADR",
+     "value_mn": 95.5,
+     "pct": 1.07,
+     "shares": 200000,
      "activity": "New"
     },
     {
-     "ticker": "PSA",
-     "company": "Public Storage",
-     "value_mn": 39.0,
-     "pct": 0.51,
-     "shares": 143980,
+     "ticker": "GPC",
+     "company": "Genuine Parts Co",
+     "value_mn": 88.3,
+     "pct": 0.99,
+     "shares": 748047,
+     "activity": "New"
+    },
+    {
+     "ticker": "INVH",
+     "company": "Invitation Homes Inc",
+     "value_mn": 78.8,
+     "pct": 0.88,
+     "shares": 2608707,
      "activity": "Added"
     },
     {
-     "ticker": "EXR",
-     "company": "Extra Space Storage",
-     "value_mn": 37.57,
-     "pct": 0.49,
-     "shares": 286510,
+     "ticker": "TPG",
+     "company": "Tpg",
+     "value_mn": 77.3,
+     "pct": 0.87,
+     "shares": 1907135,
      "activity": "Reduced"
     }
    ]
@@ -3099,258 +3163,170 @@
    "manager": "David Tepper",
    "emoji": "🐎",
    "category": "Macro / Value",
-   "quarter": "Q1 2026",
-   "quarter_date": "2026-03-31",
-   "aum_bn": 5.93,
-   "num_holdings": 31,
+   "quarter": "Q2 2026",
+   "quarter_date": "2026-06-30",
+   "aum_bn": 7.73,
+   "num_holdings": 27,
    "holdings": [
     {
      "ticker": "AMZN",
-     "company": "Amazon.com Inc.",
-     "value_mn": 899,
-     "pct": 15.16,
-     "shares": 4320000,
+     "company": "Amazon",
+     "value_mn": 1191.7,
+     "pct": 15.43,
+     "shares": 5000000,
      "activity": "Added"
     },
     {
      "ticker": "MU",
-     "company": "Micron Technology",
-     "value_mn": 562,
-     "pct": 9.48,
-     "shares": 1665000,
+     "company": "Micron",
+     "value_mn": 1125.4,
+     "pct": 14.57,
+     "shares": 975000,
+     "activity": "Reduced"
+    },
+    {
+     "ticker": "TSM",
+     "company": "TSMC ADR",
+     "value_mn": 788.0,
+     "pct": 10.2,
+     "shares": 1650000,
      "activity": "Added"
     },
     {
      "ticker": "GOOG",
-     "company": "Alphabet Inc. CL C",
-     "value_mn": 497,
-     "pct": 8.38,
-     "shares": 1732700,
-     "activity": "Reduced"
+     "company": "Alphabet C",
+     "value_mn": 653.7,
+     "pct": 8.46,
+     "shares": 1850000,
+     "activity": "Added"
     },
     {
      "ticker": "UBER",
-     "company": "Uber Technologies",
-     "value_mn": 455,
-     "pct": 7.68,
-     "shares": 6332720,
+     "company": "Uber Technologies, Inc",
+     "value_mn": 555.2,
+     "pct": 7.19,
+     "shares": 7694071,
      "activity": "Added"
     },
     {
-     "ticker": "TSM",
-     "company": "Taiwan Semiconductor",
-     "value_mn": 448,
-     "pct": 7.56,
-     "shares": 1327500,
-     "activity": "Added"
-    },
-    {
-     "ticker": "BABA",
-     "company": "Alibaba Group Holdings",
-     "value_mn": 434,
-     "pct": 7.33,
-     "shares": 3465000,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "VST",
-     "company": "Vistra Corp.",
-     "value_mn": 304,
-     "pct": 5.12,
-     "shares": 2022332,
-     "activity": "Added"
-    },
-    {
-     "ticker": "EWY",
-     "company": "iShares MSCI S Korea ETF",
-     "value_mn": 295,
-     "pct": 4.98,
-     "shares": 2400000,
-     "activity": "Added"
-    },
-    {
-     "ticker": "NVDA",
-     "company": "NVIDIA Corp.",
-     "value_mn": 256,
-     "pct": 4.33,
-     "shares": 1471500,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "NRG",
-     "company": "NRG Energy Inc.",
-     "value_mn": 253,
-     "pct": 4.27,
-     "shares": 1734442,
+     "ticker": "ISHARES INC",
+     "company": "Ishares Inc",
+     "value_mn": 489.6,
+     "pct": 6.34,
+     "shares": 2425000,
      "activity": "Added"
     },
     {
      "ticker": "META",
-     "company": "Meta Platforms Inc.",
-     "value_mn": 249,
-     "pct": 4.21,
-     "shares": 436500,
-     "activity": "Reduced"
+     "company": "Meta Platforms",
+     "value_mn": 380.2,
+     "pct": 4.92,
+     "shares": 675000,
+     "activity": "Added"
     },
     {
-     "ticker": "SNDK",
-     "company": "SanDisk Corp.",
-     "value_mn": 178,
-     "pct": 3.01,
-     "shares": 281250,
+     "ticker": "VST",
+     "company": "Vistra Corp",
+     "value_mn": 351.4,
+     "pct": 4.55,
+     "shares": 2215272,
+     "activity": "Added"
+    },
+    {
+     "ticker": "NVDA",
+     "company": "Nvidia",
+     "value_mn": 305.1,
+     "pct": 3.95,
+     "shares": 1525000,
+     "activity": "Added"
+    },
+    {
+     "ticker": "NRG",
+     "company": "Nrg Energy, Inc",
+     "value_mn": 257.1,
+     "pct": 3.33,
+     "shares": 1760000,
+     "activity": "Added"
+    },
+    {
+     "ticker": "AAPL",
+     "company": "Apple",
+     "value_mn": 241.6,
+     "pct": 3.13,
+     "shares": 835000,
      "activity": "New"
     },
     {
-     "ticker": "GLW",
-     "company": "Corning Inc.",
-     "value_mn": 153,
-     "pct": 2.59,
-     "shares": 1129500,
+     "ticker": "BABA",
+     "company": "Alibaba",
+     "value_mn": 192.0,
+     "pct": 2.48,
+     "shares": 2000000,
      "activity": "Reduced"
     },
     {
-     "ticker": "WHR",
-     "company": "Whirlpool Corp.",
-     "value_mn": 105,
-     "pct": 1.77,
-     "shares": 1950000,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "PDD",
-     "company": "Pinduoduo Inc.",
-     "value_mn": 91,
-     "pct": 1.55,
-     "shares": 900000,
-     "activity": "Reduced"
+     "ticker": "BA",
+     "company": "Boeing Co",
+     "value_mn": 173.2,
+     "pct": 2.24,
+     "shares": 800000,
+     "activity": "New"
     },
     {
      "ticker": "LRCX",
      "company": "Lam Research",
-     "value_mn": 81,
-     "pct": 1.38,
+     "value_mn": 165.7,
+     "pct": 2.15,
      "shares": 382500,
-     "activity": "Reduced"
+     "activity": "Held"
     },
     {
      "ticker": "BIDU",
-     "company": "Baidu Inc.",
-     "value_mn": 77,
-     "pct": 1.3,
-     "shares": 692100,
+     "company": "Baidu",
+     "value_mn": 148.0,
+     "pct": 1.92,
+     "shares": 1295000,
      "activity": "Added"
     },
     {
-     "ticker": "LHX",
-     "company": "L3Harris Technologies",
-     "value_mn": 68,
-     "pct": 1.15,
-     "shares": 198000,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "RTX",
-     "company": "RTX Corp.",
-     "value_mn": 65,
-     "pct": 1.11,
-     "shares": 342000,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "ASML",
-     "company": "ASML Holding NV",
-     "value_mn": 65,
-     "pct": 1.1,
-     "shares": 49500,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "QCOM",
-     "company": "QUALCOMM Inc.",
-     "value_mn": 64,
-     "pct": 1.08,
-     "shares": 498613,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "BALL",
-     "company": "Ball Corp.",
-     "value_mn": 49,
-     "pct": 0.83,
-     "shares": 837000,
-     "activity": "Reduced"
+     "ticker": "AAL",
+     "company": "American Airlines Group Inc",
+     "value_mn": 135.5,
+     "pct": 1.75,
+     "shares": 7500000,
+     "activity": "New"
     },
     {
      "ticker": "AMD",
-     "company": "Advanced Micro Devices",
-     "value_mn": 45,
-     "pct": 0.76,
-     "shares": 221400,
+     "company": "AMD",
+     "value_mn": 114.7,
+     "pct": 1.49,
+     "shares": 197500,
      "activity": "Reduced"
     },
     {
-     "ticker": "JD",
-     "company": "JD.com Inc.",
-     "value_mn": 38,
-     "pct": 0.65,
-     "shares": 1305000,
-     "activity": "Reduced"
+     "ticker": "CRWV",
+     "company": "CoreWeave, Inc",
+     "value_mn": 107.3,
+     "pct": 1.39,
+     "shares": 1078248,
+     "activity": "New"
     },
     {
-     "ticker": "LYFT",
-     "company": "Lyft Inc.",
-     "value_mn": 35,
-     "pct": 0.61,
-     "shares": 2700000,
-     "activity": "Reduced"
+     "ticker": "ASML",
+     "company": "ASML Holding",
+     "value_mn": 99.5,
+     "pct": 1.29,
+     "shares": 50000,
+     "activity": "Added"
     },
     {
-     "ticker": "MSFT",
-     "company": "Microsoft Corp.",
-     "value_mn": 33,
-     "pct": 0.56,
-     "shares": 90000,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "KWEB",
-     "company": "KraneShares CSI China ETF",
-     "value_mn": 30,
-     "pct": 0.52,
-     "shares": 1080000,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "ET",
-     "company": "Energy Transfer LP",
-     "value_mn": 30,
-     "pct": 0.51,
-     "shares": 1576125,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "MPLX",
-     "company": "MPLX LP",
-     "value_mn": 28,
-     "pct": 0.48,
-     "shares": 502460,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "UNH",
-     "company": "United Health Group",
-     "value_mn": 24,
-     "pct": 0.41,
-     "shares": 90000,
-     "activity": "Reduced"
-    },
-    {
-     "ticker": "DB",
-     "company": "Deutsche Bank AG",
-     "value_mn": 7,
-     "pct": 0.13,
-     "shares": 257616,
-     "activity": "Reduced"
+     "ticker": "AVGO",
+     "company": "Broadcom",
+     "value_mn": 56.7,
+     "pct": 0.73,
+     "shares": 150000,
+     "activity": "New"
     }
    ]
   },
