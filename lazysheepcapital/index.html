@@ -405,11 +405,11 @@
         <div class="tool-icon">🏦</div>
         <div class="tool-title">聪明钱追踪</div>
         <div class="tool-en">Smart Money Tracker</div>
-        <div class="tool-desc">实时追踪 Bridgewater、Berkshire、Pershing Square 等 17 家顶级机构的 13F 季度持仓变化，量化聪明钱动向与信号强度，内置全市场热力图与机构横向对比。</div>
+        <div class="tool-desc">实时追踪 Bridgewater、Berkshire、Pershing Square 等 <span id="tcInstCount">21</span> 家顶级机构的 13F 季度持仓变化，量化聪明钱动向与信号强度，内置全市场热力图与机构横向对比。</div>
         <div class="tool-footer">
           <div class="tool-tags">
             <span class="tool-tag">13F 披露</span>
-            <span class="tool-tag">Q1 2026</span>
+            <span class="tool-tag" id="tcQuarter">Q2 2026</span>
             <span class="tool-tag">热力图</span>
           </div>
           <span class="tool-cta">进入 →</span>
@@ -714,10 +714,18 @@
         ]);
         const smRows = smText.trim().split("\n").slice(1).map(splitLine);
         const eaRows = eaText.trim().split("\n").slice(1).map(splitLine);
-        document.getElementById("statInst").textContent     = new Set(smRows.map(r => r[1])).size;
+        const instCount = new Set(smRows.map(r => r[1])).size;
+        document.getElementById("statInst").textContent     = instCount;
         document.getElementById("statQuarters").textContent = new Set(smRows.map(r => r[2])).size;
         document.getElementById("statMoves").textContent    = smRows.length;
         document.getElementById("statEarnings").textContent = new Set(eaRows.map(r => r[0])).size;
+
+        /* 工具卡的机构数与季度标签同样跟着 CSV 走，避免每季度手改 */
+        document.getElementById("tcInstCount").textContent = instCount;
+        const qKey = q => { const m = /^Q(\d)\s+(\d{4})$/.exec((q || "").trim()); return m ? +m[2] * 10 + +m[1] : 0; };
+        const latestQ = [...new Set(smRows.map(r => (r[2] || "").trim()))]
+          .filter(q => qKey(q) > 0).sort((a, b) => qKey(b) - qKey(a))[0];
+        if (latestQ) document.getElementById("tcQuarter").textContent = latestQ;
       } catch (e) { /* 静态值兜底 */ }
     })();
   </script>
