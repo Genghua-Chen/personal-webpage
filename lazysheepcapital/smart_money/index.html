@@ -622,6 +622,9 @@
 
     const inst = allInstRows[0];
     const hasHoldings = !!FUND_NAME_MAP[state.selectedInst];
+    /* allInstRows is in CSV order (oldest first), so allInstRows[0] is the EARLIEST
+       filing — take the max instead. quarter_end_date is ISO, so string compare is fine. */
+    const latestFiling = allInstRows.reduce((mx, r) => r.quarter_end_date > mx ? r.quarter_end_date : mx, "");
 
     const quarters = allQuarters().filter(q => allInstRows.some(r => r.quarter === q));
     const qtabRows = state.activeQTab === "All" ? allInstRows : allInstRows.filter(r => r.quarter === state.activeQTab);
@@ -701,7 +704,7 @@
     el.detail.innerHTML = `
       <div class="detail-head">
         <h2>${esc(inst.institution)}</h2>
-        <p>${esc(inst.category)} &nbsp;·&nbsp; Latest filing: ${esc(inst.quarter_end_date)}</p>
+        <p>${esc(inst.category)} &nbsp;·&nbsp; Latest filing: ${esc(latestFiling || inst.quarter_end_date)}</p>
       </div>
       <div class="detail-body">
         ${dtabsHtml}
