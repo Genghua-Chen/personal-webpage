@@ -34,7 +34,7 @@ const state = {
   adjustments: [],
   showAdjust: true,
   layout: 'bar',
-  framed: false,
+  framed: true,
   size: 'original',
   quality: 95,
   keepExif: true,
