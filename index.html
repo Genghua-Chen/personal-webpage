@@ -71,9 +71,9 @@
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 1.2rem;
-      max-width: 860px;
+      max-width: 700px;
       margin: 0 auto;
     }
 
@@ -137,6 +137,7 @@
     .card.blog    { border-top: 3px solid #d4d4d4; }
     .card.notes   { border-top: 3px solid #2d6a4f; }
     .card.capital { border-top: 3px solid #2c65d8; }
+    .card.frame   { border-top: 3px solid #e3000f; }
 
     /* ── Footer ── */
     footer {
@@ -153,10 +154,6 @@
       .hero  { padding-top: 4rem; }
     }
 
-    @media (min-width: 641px) and (max-width: 860px) {
-      .cards { grid-template-columns: repeat(2, 1fr); }
-      .card.capital { grid-column: 1 / -1; max-width: 360px; margin: 0 auto; width: 100%; }
-    }
   </style>
 </head>
 <body>
@@ -190,6 +187,13 @@
         <h2>Lazy Sheep Capital</h2>
         <p>Market briefing tool — searchable stock reports with sector filters and research notes.</p>
         <div class="card-arrow">Open briefing →</div>
+      </a>
+
+      <a class="card frame" href="photo-frame/index.html">
+        <div class="card-icon">🎞️</div>
+        <h2>Photo Frame</h2>
+        <p>Add a clean border with camera, lens and exposure info to your photos — full resolution, right in the browser.</p>
+        <div class="card-arrow">Frame a photo →</div>
       </a>
 
     </div>
