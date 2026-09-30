@@ -57,7 +57,9 @@ export function computeLayout(src, content, options, measure) {
   };
 
   const framed = !!options.framed;
-  const framePad = framed ? Math.round(M.frame * u) : 0;
+  // Multiple of 8 so the photo sits on the same 8×8 JPEG block grid as the
+  // original file: re-encoding aligned blocks loses noticeably less detail.
+  const framePad = framed ? Math.max(8, Math.round((M.frame * u) / 8) * 8) : 0;
   const imgRect = { x: framePad, y: framePad, w: imgW, h: imgH };
   const outW = imgW + framePad * 2;
   // Framed: text lines up with the photo's edges. Unframed: inset from the image edge.

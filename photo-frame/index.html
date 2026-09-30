@@ -86,9 +86,25 @@
   /* ── editor ── */
   .editor{grid-template-columns:1fr;gap:0;padding:0 0 calc(150px + env(safe-area-inset-bottom));margin:0 -16px}
   .stage-wrap{background:var(--stage);border-bottom:1.5px solid var(--rule)}
+  .editor > *{min-width:0} /* let the thumbnail strip scroll instead of widening the page */
   .lighttable{padding:clamp(16px,5vw,32px);display:flex;align-items:center;justify-content:center;min-height:220px}
   #preview{display:block;max-width:100%;max-height:60vh;width:auto;height:auto;box-shadow:0 1px 2px rgba(0,0,0,.18),0 8px 24px rgba(0,0,0,.12)}
   .stage-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--line2);font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+  .meta-actions{display:flex;gap:14px;flex:none}
+  .count{color:var(--ink);font-weight:700;margin-right:8px}
+  .notice.batch{border-left-color:var(--ink)}
+
+  /* batch thumbnails */
+  .strip{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;border-bottom:1px solid var(--line2);background:var(--bg);scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+  .thumb{position:relative;flex:none}
+  .thumb-pick{display:block;width:64px;height:64px;padding:0;border:1.5px solid var(--line2);background:var(--bg2)}
+  .thumb-pick img{display:block;width:100%;height:100%;object-fit:cover}
+  .thumb.on .thumb-pick{border:2.5px solid var(--ink)}
+  .thumb-remove{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border:none;border-radius:50%;background:var(--ink);color:var(--bg);font-size:.8rem;line-height:1;display:grid;place-items:center}
+  .thumb-remove:hover{background:var(--red)}
+  .thumb-add{flex:none;width:64px;height:64px;border:1.5px dashed var(--line2);background:var(--bg);font-size:1.5rem;color:var(--muted)}
+  .thumb-add:hover{border-color:var(--ink);color:var(--ink)}
+  body.exporting .strip button,body.exporting .meta-actions{pointer-events:none;opacity:.5}
   .link{background:none;border:none;color:var(--ink);font-weight:700;font-size:.8rem;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
   .link:hover{color:var(--red)}
   .notice{margin:0 16px 12px;border-left:3px solid var(--red);background:#fff;padding:10px 12px;font-size:.84rem;color:var(--ink2)}
@@ -186,6 +202,7 @@
       <dl class="spec">
         <dt data-i18n="specFormats"></dt><dd data-i18n="formats"></dd>
         <dt data-i18n="specOutput"></dt><dd data-i18n="specOutputValue"></dd>
+        <dt data-i18n="specBatch"></dt><dd data-i18n="specBatchValue"></dd>
         <dt data-i18n="specPrivacy"></dt><dd data-i18n="privacy"></dd>
       </dl>
     </div>
@@ -203,16 +220,21 @@
 
   <section class="loading" aria-live="polite">
     <div class="spinner"></div>
-    <p data-i18n="loading"></p>
+    <p id="loadingText"></p>
   </section>
 
   <section class="editor">
     <div class="stage-wrap">
+      <div id="strip" class="strip" hidden></div>
       <div class="lighttable"><canvas id="preview" width="1" height="1"></canvas></div>
       <div class="stage-meta">
-        <span id="sourceInfo"></span>
-        <button class="link" type="button" data-pick data-i18n="pickAnother"></button>
+        <span><b id="photoCount" class="count"></b><span id="sourceInfo"></span></span>
+        <span class="meta-actions">
+          <button class="link" type="button" id="addPhotos" data-i18n="addPhotos"></button>
+          <button class="link" type="button" id="pickAnother" data-pick></button>
+        </span>
       </div>
+      <p id="batchHint" class="notice batch" hidden></p>
       <p id="noExif" class="notice" data-i18n="noExif" hidden></p>
     </div>
 
@@ -278,14 +300,14 @@
         <button id="shareBtn" class="primary" type="button" data-i18n="save"></button>
         <a id="downloadBtn" class="secondary" href="#" data-i18n="download"></a>
       </div>
-      <p class="hint" data-i18n="saveHint"></p>
+      <p class="hint" id="resultHint"></p>
     </div>
     <button id="exportBtn" class="primary" type="button"></button>
   </div>
 </div>
 
 <div id="toast" role="status" hidden></div>
-<input type="file" id="fileInput" class="visually-hidden" accept="image/*,.heic,.heif,.avif" tabindex="-1" aria-hidden="true">
+<input type="file" id="fileInput" class="visually-hidden" accept="image/*,.heic,.heif,.avif" multiple tabindex="-1" aria-hidden="true">
 
 <footer data-i18n="footer"></footer>
 

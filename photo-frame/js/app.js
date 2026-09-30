@@ -3,6 +3,7 @@ import { FIELDS, EXPOSURE_FIELDS, detectFields, focalText, xmpAdjustments } from
 import { computeLayout, drawFrame } from './layout.js';
 import { buildExifSegment, buildIccSegments } from './exif-writer.js';
 import { JpegEncoder } from './jpeg-encoder.js';
+import { makeZip } from './zip.js';
 import { t, getLang, setLang, ADJUSTMENT_KEYS } from './i18n.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -16,34 +17,37 @@ const FIELD_PLACEHOLDER = {
 };
 const PREVIEW_SOURCE_MAX = 2400; // px, long side of the cached downscaled photo
 const PREVIEW_MAX_PIXELS = 3_500_000;
+const THUMB_MAX = 240;
 const TILE_MAX_W = 4096;
 const TILE_MAX_PIXELS = 4_000_000; // well under iOS Safari's ~16.7M canvas limit
 
+// One entry per chosen photo. Only the selected photo is kept decoded
+// (state.cur), so a batch of 48MP photos doesn't exhaust memory on iPhone.
+//   item = { id, file, meta, detected, values, adjustments, srcW, srcH,
+//            colorSpace, embedIcc, thumb, sourceNote }
 const state = {
-  file: null,
-  meta: null,
-  img: null,
-  srcW: 0,
-  srcH: 0,
-  previewSrc: null,
-  colorSpace: 'srgb',
-  embedIcc: null,
-  detected: null,
-  fields: {},
+  items: [],
+  current: -1,
+  cur: null, // { item, img, previewSrc }
+  // Shared across the batch:
+  fieldOn: Object.fromEntries(FIELDS.map((f) => [f, f !== 'ev'])),
   equivalentFocal: true,
-  adjustments: [],
   showAdjust: true,
   layout: 'bar',
   framed: true,
   size: 'original',
   quality: 95,
   keepExif: true,
-  result: null,
+  result: null, // { files: [{ name, blob, w, h }], url, zipUrl }
   exporting: false,
-  sourceNote: '',
+  busy: false,
 };
 
 const measureCtx = document.createElement('canvas').getContext('2d');
+let nextId = 1;
+
+const currentItem = () => state.items[state.current] ?? null;
+const isBatch = () => state.items.length > 1;
 
 // MARK: color
 
@@ -54,48 +58,84 @@ const P3_SUPPORTED = (() => {
   } catch { return false; }
 })();
 
-function context2d(canvas, opts = {}) {
-  return canvas.getContext('2d', { colorSpace: state.colorSpace, ...opts }) || canvas.getContext('2d', opts);
+function context2d(canvas, colorSpace, opts = {}) {
+  return canvas.getContext('2d', { colorSpace, ...opts }) || canvas.getContext('2d', opts);
+}
+
+function colorFor(meta) {
+  const desc = iccDescription(meta.icc);
+  if (/p3/i.test(desc) && P3_SUPPORTED) return { colorSpace: 'display-p3', embedIcc: meta.icc };
+  // Anything else is converted to sRGB by the browser when drawn.
+  return { colorSpace: 'srgb', embedIcc: /srgb/i.test(desc) ? meta.icc : null };
 }
 
 // MARK: loading
 
-async function loadFile(file) {
-  if (!file) return;
+/** Reads the chosen files. replace=false appends to the current batch. */
+async function addFiles(fileList, { replace }) {
+  const files = [...fileList].filter((f) => f.type.startsWith('image/') || /\.(heic|heif|avif|jpe?g|png|webp|tiff?)$/i.test(f.name));
+  if (!files.length || state.exporting || state.busy) return;
+  state.busy = true;
   clearResult();
-  showStage('loading');
-  try {
-    const buf = new Uint8Array(await file.arrayBuffer());
-    const meta = readMetadata(buf);
-    const img = await decodeImage(file);
+  const hadItems = state.items.length > 0 && !replace;
+  if (!hadItems) showStage('loading');
 
-    const desc = iccDescription(meta.icc);
-    if (/p3/i.test(desc) && P3_SUPPORTED) {
-      state.colorSpace = 'display-p3';
-      state.embedIcc = meta.icc;
-    } else {
-      // Anything else is converted to sRGB by the browser when drawn.
-      state.colorSpace = 'srgb';
-      state.embedIcc = /srgb/i.test(desc) ? meta.icc : null;
+  const added = [];
+  let firstImg = null;
+  let failed = 0;
+  for (let i = 0; i < files.length; i++) {
+    setLoading(t('loadingN', { i: i + 1, n: files.length }));
+    try {
+      const { item, img } = await loadItem(files[i]);
+      added.push(item);
+      if (!firstImg) firstImg = img; else releaseImage(img);
+    } catch (err) {
+      console.warn('could not open', files[i].name, err);
+      failed++;
     }
-
-    Object.assign(state, { file, meta, img, srcW: img.naturalWidth, srcH: img.naturalHeight });
-    state.detected = detectFields(meta, { equivalentFocal: state.equivalentFocal });
-    resetFields();
-    state.adjustments = xmpAdjustments(meta.xmp).map((a) => ({ key: a.key, label: t(a.key), value: a.value, labelEdited: false }));
-    state.previewSrc = makePreviewSource(img);
-    state.sourceNote = decodedSmallerNote(meta, img);
-
-    renderFields();
-    renderAdjustments();
-    renderSourceInfo();
-    showStage('editor');
-    scheduleRender();
-  } catch (err) {
-    console.error(err);
-    showStage(state.img ? 'editor' : 'empty');
-    toast(err.message === 'decode' ? t('decodeFailed') : t('exportFailed', { msg: err.message }));
   }
+  setLoading('');
+  state.busy = false;
+
+  if (!added.length) {
+    showStage(state.items.length ? 'editor' : 'empty');
+    toast(t('decodeFailed'));
+    return;
+  }
+  if (replace || !state.items.length) {
+    releaseCurrent();
+    state.items = added;
+    state.fieldOn = Object.fromEntries(FIELDS.map((f) => [f, f !== 'ev']));
+    // Show exposure compensation if any photo actually used it.
+    if (added.some((it) => it.values.ev)) state.fieldOn.ev = true;
+  } else {
+    state.items.push(...added);
+  }
+  if (failed) toast(t('skipped', { n: failed }));
+  showStage('editor');
+  await select(state.items.indexOf(added[0]), firstImg);
+}
+
+async function loadItem(file) {
+  const buf = new Uint8Array(await file.arrayBuffer());
+  const meta = readMetadata(buf);
+  const img = await decodeImage(file);
+  const detected = detectFields(meta, { equivalentFocal: state.equivalentFocal });
+  const item = {
+    id: nextId++,
+    file,
+    meta,
+    detected,
+    values: Object.fromEntries(FIELDS.map((f) => [f, detected.values[f] || ''])),
+    adjustments: xmpAdjustments(meta.xmp).map((a) => ({ key: a.key, label: t(a.key), value: a.value, labelEdited: false })),
+    srcW: img.naturalWidth,
+    srcH: img.naturalHeight,
+    ...colorFor(meta),
+    thumb: makeThumb(img),
+    sourceNote: '',
+  };
+  item.sourceNote = decodedSmallerNote(meta, img);
+  return { item, img };
 }
 
 function decodeImage(file) {
@@ -105,23 +145,43 @@ function decodeImage(file) {
     img.decoding = 'async';
     // No img.decode(): it can stall indefinitely while the page is in the
     // background (e.g. the user switches apps mid-load); onload is enough.
-    img.onload = () => {
-      if (!img.naturalWidth) return reject(new Error('decode'));
-      if (state.img?.src?.startsWith('blob:')) URL.revokeObjectURL(state.img.src);
-      resolve(img);
-    };
+    img.onload = () => (img.naturalWidth ? resolve(img) : reject(new Error('decode')));
     img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('decode')); };
     img.src = url;
   });
 }
 
-function makePreviewSource(img) {
+function releaseImage(img) {
+  if (!img) return;
+  if (img.src.startsWith('blob:')) URL.revokeObjectURL(img.src);
+  img.removeAttribute('src');
+}
+
+function releaseCurrent() {
+  if (!state.cur) return;
+  releaseImage(state.cur.img);
+  state.cur.previewSrc.width = state.cur.previewSrc.height = 0;
+  state.cur = null;
+}
+
+function makeThumb(img) {
+  const k = Math.min(1, THUMB_MAX / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(img.naturalWidth * k));
+  c.height = Math.max(1, Math.round(img.naturalHeight * k));
+  const ctx = c.getContext('2d');
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', 0.8);
+}
+
+function makePreviewSource(img, colorSpace) {
   const long = Math.max(img.naturalWidth, img.naturalHeight);
   const k = Math.min(1, PREVIEW_SOURCE_MAX / long);
   const c = document.createElement('canvas');
   c.width = Math.max(1, Math.round(img.naturalWidth * k));
   c.height = Math.max(1, Math.round(img.naturalHeight * k));
-  const ctx = context2d(c);
+  const ctx = context2d(c, colorSpace);
   ctx.imageSmoothingQuality = 'high';
   ctx.drawImage(img, 0, 0, c.width, c.height);
   return c;
@@ -136,37 +196,64 @@ function decodedSmallerNote(meta, img) {
   return decLong < fileLong * 0.98 ? t('downscaledSource', { w: img.naturalWidth, h: img.naturalHeight }) : '';
 }
 
-// MARK: content
-
-function resetFields() {
-  const { values } = state.detected;
-  for (const f of FIELDS) state.fields[f] = { value: values[f] || '', on: !!values[f] && f !== 'ev' };
-  if (values.ev) state.fields.ev.on = true;
+/** Makes items[index] the selected photo, decoding it if needed. */
+async function select(index, img = null) {
+  const item = state.items[index];
+  if (!item) return;
+  state.current = index;
+  if (state.cur?.item !== item) {
+    releaseCurrent();
+    const decoded = img ?? await decodeImage(item.file);
+    if (state.items[state.current] !== item) { releaseImage(decoded); return; } // selection moved on
+    state.cur = { item, img: decoded, previewSrc: makePreviewSource(decoded, item.colorSpace) };
+  } else if (img && img !== state.cur.img) {
+    releaseImage(img);
+  }
+  renderStrip();
+  renderFields();
+  renderAdjustments();
+  renderSourceInfo();
+  updateExportButton();
+  scheduleRender();
 }
 
-function content() {
-  const v = (f) => (state.fields[f]?.on ? state.fields[f].value.trim() : '');
+function removeItem(index) {
+  if (state.exporting || state.busy) return;
+  const [removed] = state.items.splice(index, 1);
+  clearResult();
+  if (state.cur?.item === removed) releaseCurrent();
+  if (!state.items.length) {
+    state.current = -1;
+    showStage('empty');
+    updateExportButton();
+    return;
+  }
+  select(Math.min(index, state.items.length - 1));
+}
+
+// MARK: content
+
+function content(item) {
+  const v = (f) => (state.fieldOn[f] ? (item.values[f] || '').trim() : '');
   return {
     title: v('camera'),
     subtitle: v('lens'),
     params: EXPOSURE_FIELDS.map(v).filter(Boolean),
     caption: v('date'),
     adjustments: state.showAdjust
-      ? state.adjustments.map((a) => [a.label.trim(), a.value.trim()].filter(Boolean).join(' ')).filter(Boolean)
+      ? item.adjustments.map((a) => [a.label.trim(), a.value.trim()].filter(Boolean).join(' ')).filter(Boolean)
       : [],
   };
 }
 
-function layoutFor(maxLong) {
+function layoutFor(item) {
   return computeLayout(
-    { width: state.srcW, height: state.srcH },
-    content(),
-    { layout: state.layout, framed: state.framed, maxLong },
+    { width: item.srcW, height: item.srcH },
+    content(item),
+    { layout: state.layout, framed: state.framed, maxLong: state.size === 'original' ? 0 : Number(state.size) },
     measureCtx,
   );
 }
-
-const maxLong = () => (state.size === 'original' ? 0 : Number(state.size));
 
 // MARK: preview
 
@@ -182,39 +269,61 @@ function scheduleRender() {
 }
 
 function renderPreview() {
-  if (!state.img) return;
-  const L = layoutFor(maxLong());
+  const cur = state.cur;
+  if (!cur) return;
+  const { item, previewSrc: ps } = cur;
+  const L = layoutFor(item);
   const s = Math.min(1, Math.sqrt(PREVIEW_MAX_PIXELS / (L.outW * L.outH)));
   const canvas = $('#preview');
   const w = Math.max(1, Math.round(L.outW * s)), h = Math.max(1, Math.round(L.outH * s));
-  if (canvas.width !== w || canvas.height !== h || canvas.dataset.cs !== state.colorSpace) {
+  if (canvas.width !== w || canvas.height !== h || canvas.dataset.cs !== item.colorSpace) {
     canvas.width = w;
     canvas.height = h;
-    canvas.dataset.cs = state.colorSpace;
+    canvas.dataset.cs = item.colorSpace;
   }
-  const ctx = context2d(canvas);
-  const ps = state.previewSrc;
+  const ctx = context2d(canvas, item.colorSpace);
   drawFrame(ctx, L, ps, { width: ps.width, height: ps.height }, { x: 0, y: 0, w: L.outW, h: L.outH }, w / L.outW);
 
   const notes = [t('outputSize', { w: L.outW, h: L.outH })];
   if (L.upscaled) notes.push(t('upscaled'));
-  if (state.sourceNote) notes.push(state.sourceNote);
+  if (item.sourceNote) notes.push(item.sourceNote);
   $('#outputInfo').textContent = notes.join(' ');
 }
 
 // MARK: export
 
-async function exportImage() {
-  if (!state.img || state.exporting) return;
+async function exportAll() {
+  if (!state.items.length || state.exporting || state.busy) return;
   state.exporting = true;
-  updateExportButton(0);
+  const items = [...state.items];
+  const n = items.length;
+  const files = [];
+  const usedNames = new Set();
+  let failed = 0;
+  updateExportButton({ i: 0, n, p: 0 });
   try {
-    const blob = await encodeFullSize((p) => updateExportButton(p));
-    const L = layoutFor(maxLong());
-    const base = (state.file.name || 'photo').replace(/\.[^.]+$/, '');
-    const name = `${base}-frame.jpg`;
-    state.result = { blob, url: URL.createObjectURL(blob), name, w: L.outW, h: L.outH };
+    for (let i = 0; i < n; i++) {
+      const item = items[i];
+      const reuse = state.cur?.item === item;
+      let img = null;
+      try {
+        img = reuse ? state.cur.img : await decodeImage(item.file);
+        const L = layoutFor(item);
+        const blob = await encodeFullSize(item, img, L, (p) => updateExportButton({ i, n, p }));
+        files.push({ name: uniqueName(item.file.name, usedNames), blob, w: L.outW, h: L.outH });
+      } catch (err) {
+        console.error(err);
+        failed++;
+        if (n === 1) throw err;
+      } finally {
+        if (!reuse) releaseImage(img);
+      }
+    }
+    if (!files.length) throw new Error(t('partialFail', { n: failed }));
+    state.result = { files, url: URL.createObjectURL(files[0].blob), zipUrl: null };
+    if (files.length > 1) state.result.zipUrl = URL.createObjectURL(await makeZip(files));
     showResult();
+    if (failed) toast(t('partialFail', { n: failed }));
   } catch (err) {
     console.error(err);
     toast(t('exportFailed', { msg: err.message || String(err) }));
@@ -224,23 +333,30 @@ async function exportImage() {
   }
 }
 
-async function encodeFullSize(onProgress) {
-  const L = layoutFor(maxLong());
+function uniqueName(original, used) {
+  const base = (original || 'photo').replace(/\.[^.]+$/, '');
+  let name = `${base}-frame.jpg`;
+  for (let k = 2; used.has(name); k++) name = `${base}-frame-${k}.jpg`;
+  used.add(name);
+  return name;
+}
+
+async function encodeFullSize(item, img, L, onProgress) {
   if (L.outW > 65535 || L.outH > 65535) throw new Error('image is larger than JPEG allows (65535 px)');
 
   const segments = [];
   if (state.keepExif) {
-    const exif = buildExifSegment(state.meta.tiff, L.outW, L.outH);
+    const exif = buildExifSegment(item.meta.tiff, L.outW, L.outH);
     if (exif) segments.push(exif);
   }
-  segments.push(...buildIccSegments(state.embedIcc));
+  segments.push(...buildIccSegments(item.embedIcc));
 
   const encoder = await createEncoder(L.outW, L.outH, state.quality, segments);
   const tileW = Math.min(L.outW, TILE_MAX_W);
   const stripH = Math.max(8, Math.floor(Math.min(2048, TILE_MAX_PIXELS / tileW) / 8) * 8);
   const canvas = document.createElement('canvas');
-  const ctx = context2d(canvas, { willReadFrequently: true });
-  const srcSize = { width: state.srcW, height: state.srcH };
+  const ctx = context2d(canvas, item.colorSpace, { willReadFrequently: true });
+  const srcSize = { width: item.srcW, height: item.srcH };
 
   let pending = null;
   try {
@@ -251,7 +367,7 @@ async function encodeFullSize(onProgress) {
         const w = Math.min(tileW, L.outW - x);
         if (canvas.width !== w) canvas.width = w;
         if (canvas.height !== rows) canvas.height = rows;
-        drawFrame(ctx, L, state.img, srcSize, { x, y, w, h: rows }, 1);
+        drawFrame(ctx, L, img, srcSize, { x, y, w, h: rows }, 1);
         const data = ctx.getImageData(0, 0, w, rows).data;
         if (w === L.outW) { strip = data; break; }
         strip ??= new Uint8ClampedArray(L.outW * rows * 4);
@@ -317,18 +433,27 @@ function workerEncoder() {
 
 function showResult() {
   const r = state.result;
+  const files = r.files;
+  const batch = files.length > 1;
+  const mb = (files.reduce((s, f) => s + f.blob.size, 0) / 1048576).toFixed(1);
   $('#result').hidden = false;
   $('#exportBtn').hidden = true;
-  $('#resultInfo').textContent = t('done', { w: r.w, h: r.h, mb: (r.blob.size / 1048576).toFixed(1) });
+  $('#resultInfo').textContent = batch
+    ? t('doneBatch', { n: files.length, mb })
+    : t('done', { w: files[0].w, h: files[0].h, mb });
+  $('#shareBtn').textContent = batch ? t('saveAll', { n: files.length }) : t('save');
+  $('#resultHint').textContent = batch ? t('saveHintBatch', { n: files.length }) : t('saveHint');
   const a = $('#downloadBtn');
-  a.href = r.url;
-  a.download = r.name;
+  a.textContent = batch ? t('downloadZip') : t('download');
+  a.href = batch ? r.zipUrl : r.url;
+  a.download = batch ? `photo-frame-${files.length}.zip` : files[0].name;
   $('#result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function clearResult() {
   if (!state.result) return;
   URL.revokeObjectURL(state.result.url);
+  if (state.result.zipUrl) URL.revokeObjectURL(state.result.zipUrl);
   state.result = null;
   $('#result').hidden = true;
   $('#exportBtn').hidden = false;
@@ -337,10 +462,10 @@ function clearResult() {
 async function shareResult() {
   const r = state.result;
   if (!r) return;
-  const file = new File([r.blob], r.name, { type: 'image/jpeg' });
-  if (navigator.canShare?.({ files: [file] })) {
+  const files = r.files.map((f) => new File([f.blob], f.name, { type: 'image/jpeg' }));
+  if (navigator.canShare?.({ files })) {
     try {
-      await navigator.share({ files: [file] });
+      await navigator.share({ files });
     } catch (err) {
       if (err.name !== 'AbortError') toast(t('shareFailed'));
     }
@@ -355,16 +480,56 @@ function showStage(stage) {
   document.body.dataset.stage = stage;
 }
 
+function setLoading(text) {
+  $('#loadingText').textContent = text || t('loading');
+}
+
+function renderStrip() {
+  const strip = $('#strip');
+  strip.hidden = !isBatch();
+  $('#batchHint').hidden = !isBatch();
+  $('#batchHint').textContent = t('batchHint', { n: state.items.length });
+  $('#photoCount').textContent = isBatch() ? `${state.current + 1} / ${state.items.length}` : '';
+  strip.textContent = '';
+  if (!isBatch()) return;
+  state.items.forEach((item, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'thumb' + (i === state.current ? ' on' : '');
+    cell.innerHTML = `<button type="button" class="thumb-pick"><img alt=""></button><button type="button" class="thumb-remove">×</button>`;
+    const pick = cell.querySelector('.thumb-pick');
+    pick.querySelector('img').src = item.thumb;
+    pick.setAttribute('aria-label', item.file.name);
+    pick.addEventListener('click', () => { if (!state.exporting) select(i); });
+    const rm = cell.querySelector('.thumb-remove');
+    rm.setAttribute('aria-label', `${t('remove')} ${item.file.name}`);
+    rm.addEventListener('click', () => removeItem(i));
+    strip.append(cell);
+  });
+  const add = document.createElement('button');
+  add.type = 'button';
+  add.className = 'thumb-add';
+  add.textContent = '+';
+  add.setAttribute('aria-label', t('addPhotos'));
+  add.addEventListener('click', () => pickFiles(true));
+  strip.append(add);
+  strip.querySelector('.thumb.on')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+
 function renderSourceInfo() {
-  const fmt = (state.meta.format || '').toUpperCase();
-  $('#sourceInfo').textContent = t('sourceInfo', { w: state.srcW, h: state.srcH, fmt });
-  const hasInfo = Object.values(state.detected.values).some(Boolean);
-  $('#noExif').hidden = hasInfo;
-  const { raw } = state.detected;
-  $('#equivRow').hidden = !(raw.focal35 > 0 && raw.focal > 0 && Math.round(raw.focal35) !== Math.round(raw.focal));
+  const item = currentItem();
+  if (!item) return;
+  const fmt = (item.meta.format || '').toUpperCase();
+  $('#sourceInfo').textContent = t('sourceInfo', { w: item.srcW, h: item.srcH, fmt });
+  $('#noExif').hidden = Object.values(item.detected.values).some(Boolean);
+  const differs = (it) => it.detected.raw.focal35 > 0 && it.detected.raw.focal > 0
+    && Math.round(it.detected.raw.focal35) !== Math.round(it.detected.raw.focal);
+  $('#equivRow').hidden = !state.items.some(differs);
+  $('#pickAnother').textContent = isBatch() ? t('pickAgain') : t('pickAnother');
 }
 
 function renderFields() {
+  const item = currentItem();
+  if (!item) return;
   const list = $('#fields');
   list.textContent = '';
   for (const f of FIELDS) {
@@ -379,19 +544,19 @@ function renderFields() {
     const input = row.querySelector('.field-input');
     row.querySelector('.field-name').textContent = t(FIELD_LABEL[f]);
     on.setAttribute('aria-label', t(FIELD_LABEL[f]));
-    on.checked = state.fields[f].on;
-    input.value = state.fields[f].value;
+    on.checked = state.fieldOn[f];
+    input.value = item.values[f];
     input.placeholder = FIELD_PLACEHOLDER[f];
     row.classList.toggle('off', !on.checked);
     on.addEventListener('change', () => {
-      state.fields[f].on = on.checked;
+      state.fieldOn[f] = on.checked; // shared: hides/shows this field on every photo
       row.classList.toggle('off', !on.checked);
       scheduleRender();
     });
     input.addEventListener('input', () => {
-      const wasEmpty = !state.fields[f].value;
-      state.fields[f].value = input.value;
-      if (wasEmpty && input.value) { state.fields[f].on = on.checked = true; row.classList.remove('off'); }
+      const wasEmpty = !item.values[f];
+      item.values[f] = input.value; // per photo
+      if (wasEmpty && input.value) { state.fieldOn[f] = on.checked = true; row.classList.remove('off'); }
       scheduleRender();
     });
     list.append(row);
@@ -399,9 +564,11 @@ function renderFields() {
 }
 
 function renderAdjustments() {
+  const item = currentItem();
+  if (!item) return;
   const list = $('#adjustList');
   list.textContent = '';
-  state.adjustments.forEach((a, i) => {
+  item.adjustments.forEach((a, i) => {
     const row = document.createElement('div');
     row.className = 'adj';
     row.innerHTML = `
@@ -418,10 +585,10 @@ function renderAdjustments() {
     remove.setAttribute('aria-label', t('remove'));
     name.addEventListener('input', () => { a.label = name.value; a.labelEdited = true; scheduleRender(); });
     value.addEventListener('input', () => { a.value = value.value; scheduleRender(); });
-    remove.addEventListener('click', () => { state.adjustments.splice(i, 1); renderAdjustments(); scheduleRender(); });
+    remove.addEventListener('click', () => { item.adjustments.splice(i, 1); renderAdjustments(); scheduleRender(); });
     list.append(row);
   });
-  $('#adjustEmpty').hidden = state.adjustments.length > 0;
+  $('#adjustEmpty').hidden = item.adjustments.length > 0;
 
   const sel = $('#addAdjust');
   sel.textContent = '';
@@ -435,23 +602,38 @@ function applyI18n() {
   document.title = t('pageTitle');
   for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n);
   for (const el of document.querySelectorAll('[data-i18n-html]')) el.innerHTML = t(el.dataset.i18nHtml);
-  if (state.img) {
-    for (const a of state.adjustments) if (a.key && !a.labelEdited) a.label = t(a.key);
+  setLoading('');
+  if (state.items.length) {
+    for (const item of state.items) {
+      for (const a of item.adjustments) if (a.key && !a.labelEdited) a.label = t(a.key);
+    }
+    if (state.cur) state.cur.item.sourceNote = decodedSmallerNote(state.cur.item.meta, state.cur.img);
+    renderStrip();
     renderFields();
     renderAdjustments();
     renderSourceInfo();
-    state.sourceNote = decodedSmallerNote(state.meta, state.img);
     scheduleRender();
   }
   updateExportButton();
   if (state.result) showResult();
 }
 
+/** progress: { i, n, p } while exporting. */
 function updateExportButton(progress) {
   const btn = $('#exportBtn');
+  const n = state.items.length;
   btn.disabled = state.exporting;
-  btn.textContent = state.exporting ? t('exporting', { p: progress ?? 0 }) : t('export');
-  btn.style.setProperty('--progress', state.exporting ? `${progress ?? 0}%` : '0%');
+  if (state.exporting && progress) {
+    const overall = Math.round(((progress.i + progress.p / 100) / progress.n) * 100);
+    btn.textContent = progress.n > 1
+      ? t('exportingBatch', { i: progress.i + 1, n: progress.n, p: progress.p })
+      : t('exporting', { p: progress.p });
+    btn.style.setProperty('--progress', `${overall}%`);
+  } else {
+    btn.textContent = n > 1 ? t('exportAll', { n }) : t('export');
+    btn.style.setProperty('--progress', '0%');
+  }
+  document.body.classList.toggle('exporting', state.exporting);
 }
 
 let toastTimer;
@@ -476,13 +658,27 @@ function syncSegments() {
 
 // MARK: wiring
 
+let appendMode = false;
+function pickFiles(append) {
+  if (state.exporting || state.busy) return;
+  appendMode = append;
+  $('#fileInput').click();
+}
+
 function init() {
   applyI18n();
   syncSegments();
 
   const input = $('#fileInput');
-  input.addEventListener('change', () => { loadFile(input.files[0]); input.value = ''; });
-  for (const b of document.querySelectorAll('[data-pick]')) b.addEventListener('click', () => input.click());
+  input.addEventListener('change', () => {
+    const files = [...input.files];
+    const append = appendMode;
+    appendMode = false;
+    input.value = '';
+    addFiles(files, { replace: !append });
+  });
+  for (const b of document.querySelectorAll('[data-pick]')) b.addEventListener('click', () => pickFiles(false));
+  $('#addPhotos').addEventListener('click', () => pickFiles(true));
 
   const drop = document.body;
   drop.addEventListener('dragover', (e) => { e.preventDefault(); document.body.classList.add('dragging'); });
@@ -490,8 +686,9 @@ function init() {
   drop.addEventListener('drop', (e) => {
     e.preventDefault();
     document.body.classList.remove('dragging');
-    const file = [...(e.dataTransfer?.files || [])].find((f) => f.type.startsWith('image/') || /\.(heic|heif|avif)$/i.test(f.name));
-    if (file) loadFile(file);
+    const files = [...(e.dataTransfer?.files || [])];
+    // Dropping onto the editor adds to the batch; onto the start page starts a new one.
+    if (files.length) addFiles(files, { replace: !state.items.length });
   });
 
   for (const seg of document.querySelectorAll('.seg')) {
@@ -507,13 +704,15 @@ function init() {
 
   $('#equivalentFocal').addEventListener('change', (e) => {
     state.equivalentFocal = e.target.checked;
-    state.fields.focal.value = focalText(state.detected.raw, state.equivalentFocal);
+    for (const item of state.items) item.values.focal = focalText(item.detected.raw, state.equivalentFocal);
     renderFields();
     scheduleRender();
   });
   $('#resetInfo').addEventListener('click', () => {
-    state.detected = detectFields(state.meta, { equivalentFocal: state.equivalentFocal });
-    resetFields();
+    const item = currentItem();
+    if (!item) return;
+    item.detected = detectFields(item.meta, { equivalentFocal: state.equivalentFocal });
+    item.values = Object.fromEntries(FIELDS.map((f) => [f, item.detected.values[f] || '']));
     renderFields();
     scheduleRender();
   });
@@ -521,10 +720,11 @@ function init() {
   $('#showAdjust').addEventListener('change', (e) => { state.showAdjust = e.target.checked; scheduleRender(); });
   $('#keepExif').addEventListener('change', (e) => { state.keepExif = e.target.checked; clearResult(); });
   $('#addAdjust').addEventListener('change', (e) => {
+    const item = currentItem();
     const key = e.target.value;
-    if (!key) return;
+    if (!key || !item) return;
     const custom = key === '__custom';
-    state.adjustments.push({ key: custom ? null : key, label: custom ? '' : t(key), value: '', labelEdited: custom });
+    item.adjustments.push({ key: custom ? null : key, label: custom ? '' : t(key), value: '', labelEdited: custom });
     state.showAdjust = $('#showAdjust').checked = true;
     renderAdjustments();
     const rows = $('#adjustList').querySelectorAll('.adj');
@@ -532,7 +732,7 @@ function init() {
     scheduleRender();
   });
 
-  $('#exportBtn').addEventListener('click', exportImage);
+  $('#exportBtn').addEventListener('click', exportAll);
   $('#shareBtn').addEventListener('click', shareResult);
   $('#langBtn').addEventListener('click', () => { setLang(getLang() === 'zh' ? 'en' : 'zh'); applyI18n(); });
 }
