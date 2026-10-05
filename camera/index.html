@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>E 卡口全画幅镜头清单 · Genghua</title>
+  <link rel="icon" href="../blogs/imgs/Pigman.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, 'PingFang SC', sans-serif;
+      background: #fafafa;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main { flex: 1; width: 100%; max-width: 1080px; margin: 0 auto; padding: 2.4rem 1.4rem 4rem; }
+
+    .back { font-size: 0.8rem; color: #999; text-decoration: none; }
+    .back:hover { color: #333; }
+
+    header { margin: 1.4rem 0 1.8rem; }
+    header h1 { font-size: clamp(1.5rem, 3.5vw, 2rem); font-weight: 700; letter-spacing: -0.02em; }
+    header p { margin-top: 0.4rem; color: #777; font-size: 0.9rem; line-height: 1.6; }
+
+    /* ── Filters ── */
+    .filters {
+      background: #fff;
+      border: 1px solid #ebebeb;
+      border-radius: 14px;
+      padding: 1.1rem 1.2rem;
+      display: grid;
+      gap: 0.9rem;
+    }
+    .row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.2rem; }
+    .group { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+    .label { font-size: 0.75rem; font-weight: 600; color: #999; margin-right: 0.2rem; white-space: nowrap; }
+
+    .search {
+      flex: 1;
+      min-width: 200px;
+      font: inherit;
+      font-size: 0.9rem;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid #e2e2e2;
+      border-radius: 9px;
+      outline: none;
+    }
+    .search:focus { border-color: #999; }
+
+    .chip {
+      font: inherit;
+      font-size: 0.8rem;
+      padding: 0.32rem 0.75rem;
+      border: 1px solid #e2e2e2;
+      border-radius: 999px;
+      background: #fff;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .chip:hover { border-color: #bbb; }
+    .chip.on { background: #111; border-color: #111; color: #fff; }
+
+    .slider { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: #555; }
+    .slider input { width: 140px; accent-color: #111; }
+    .slider output { min-width: 4.5em; font-variant-numeric: tabular-nums; }
+
+    .reset { font: inherit; font-size: 0.78rem; color: #999; background: none; border: none; cursor: pointer; margin-left: auto; }
+    .reset:hover { color: #333; }
+
+    .count { margin: 1.2rem 0 0.6rem; font-size: 0.8rem; color: #999; }
+
+    /* ── Table ── */
+    .table-wrap { background: #fff; border: 1px solid #ebebeb; border-radius: 14px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    th, td { padding: 0.7rem 0.9rem; text-align: left; white-space: nowrap; }
+    th {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #999;
+      border-bottom: 1px solid #ebebeb;
+      cursor: pointer;
+      user-select: none;
+      position: sticky;
+      top: 0;
+      background: #fff;
+    }
+    th:hover { color: #333; }
+    th.sorted { color: #111; }
+    th .arrow { display: inline-block; width: 0.8em; }
+    td { border-bottom: 1px solid #f3f3f3; font-variant-numeric: tabular-nums; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+    .num { text-align: right; }
+
+    .name { font-weight: 600; color: #111; }
+    .brand { display: inline-block; font-size: 0.68rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 4px; margin-right: 0.45rem; vertical-align: 1px; }
+    .brand.Sony   { background: #f1f1f1; color: #333; }
+    .brand.Sigma  { background: #eef2fb; color: #2c65d8; }
+    .brand.Tamron { background: #fbf1ea; color: #b4561c; }
+
+    .const { font-size: 0.66rem; font-weight: 600; color: #2d6a4f; background: #eaf5ef; padding: 0.08rem 0.35rem; border-radius: 4px; margin-left: 0.3rem; }
+    .approx { color: #bbb; }
+
+    /* focal range bar, log scale 16–600mm */
+    .range { position: relative; width: 140px; height: 6px; background: #f1f1f1; border-radius: 3px; }
+    .range span { position: absolute; top: 0; height: 100%; min-width: 6px; border-radius: 3px; background: #111; }
+
+    .empty { padding: 2.4rem; text-align: center; color: #aaa; font-size: 0.9rem; }
+
+    .note { margin-top: 1rem; font-size: 0.75rem; color: #aaa; line-height: 1.6; }
+
+    footer { text-align: center; padding: 1.5rem; font-size: 0.78rem; color: #bbb; border-top: 1px solid #f0f0f0; }
+
+    @media (max-width: 640px) {
+      main { padding-top: 1.6rem; }
+      .reset { margin-left: 0; }
+      .col-range { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <a class="back" href="../index.html">← Genghua</a>
+
+    <header>
+      <h1>E 卡口全画幅镜头清单</h1>
+      <p>Sony / Sigma / Tamron 常用 FE 镜头，按焦段、光圈、重量、价格筛选。点表头排序。</p>
+    </header>
+
+    <section class="filters">
+      <div class="row">
+        <input class="search" id="q" type="search" placeholder="搜索型号，比如 GM、24–70、F1.4…" autocomplete="off">
+        <button class="reset" id="reset">重置筛选</button>
+      </div>
+      <div class="row">
+        <div class="group" data-filter="brand">
+          <span class="label">品牌</span>
+          <button class="chip" data-v="Sony">Sony</button>
+          <button class="chip" data-v="Sigma">Sigma</button>
+          <button class="chip" data-v="Tamron">Tamron</button>
+        </div>
+        <div class="group" data-filter="kind">
+          <span class="label">类型</span>
+          <button class="chip" data-v="zoom">变焦</button>
+          <button class="chip" data-v="prime">定焦</button>
+        </div>
+        <div class="group" data-filter="use">
+          <span class="label">用途</span>
+          <button class="chip" data-v="wide">超广角</button>
+          <button class="chip" data-v="standard">标准</button>
+          <button class="chip" data-v="tele">长焦</button>
+        </div>
+        <div class="group" data-filter="aperture">
+          <span class="label">光圈</span>
+          <button class="chip" data-v="constant">恒定光圈</button>
+          <button class="chip" data-v="fast">F2.8 及更大</button>
+        </div>
+      </div>
+      <div class="row">
+        <label class="slider">
+          <span class="label">重量 ≤</span>
+          <input type="range" id="maxWeight" min="250" max="2100" step="10">
+          <output id="maxWeightOut"></output>
+        </label>
+        <label class="slider">
+          <span class="label">价格 ≤</span>
+          <input type="range" id="maxPrice" min="400" max="3100" step="50">
+          <output id="maxPriceOut"></output>
+        </label>
+      </div>
+    </section>
+
+    <div class="count" id="count"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-sort="name">镜头 <span class="arrow"></span></th>
+            <th data-sort="year" class="num">年份 <span class="arrow"></span></th>
+            <th data-sort="wide">焦段 <span class="arrow"></span></th>
+            <th class="col-range" data-sort="wide">16 — 600mm <span class="arrow"></span></th>
+            <th data-sort="fMin">最大光圈 <span class="arrow"></span></th>
+            <th data-sort="weight" class="num">重量 <span class="arrow"></span></th>
+            <th data-sort="price" class="num">大概新价 <span class="arrow"></span></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <p class="note">价格为美国新品大概售价，会随促销浮动；带 ~ 的重量为约数。“F2.8 及更大”按广角端最大光圈算。</p>
+  </main>
+
+  <footer>© 2025 Genghua</footer>
+
+  <script>
+    // [brand, model, year, wide mm, tele mm, f at wide, f at tele, weight g, weight approx?, price low, price high]
+    const RAW = [
+      ['Sony',   'FE 28–70mm F3.5–5.6 OSS II',          2025,  28,  70, 3.5, 5.6,  293, false,  450,  450],
+      ['Sony',   'FE 24–50mm F2.8 G',                   2024,  24,  50, 2.8, 2.8,  440, false, 1200, 1200],
+      ['Sony',   'FE 20–70mm F4 G',                     2023,  20,  70, 4,   4,    488, false, 1200, 1200],
+      ['Tamron', '28–75mm F2.8 Di III VXD G2',          2021,  28,  75, 2.8, 2.8,  540, false,  700,  900],
+      ['Sigma',  '20–200mm F3.5–6.3 DG Contemporary',   2025,  20, 200, 3.5, 6.3,  540, false,  899,  899],
+      ['Sigma',  '24–70mm F2.8 DG DN II Art',           2024,  24,  70, 2.8, 2.8,  735, false, 1219, 1219],
+      ['Sony',   'FE 24–70mm F2.8 GM II',               2022,  24,  70, 2.8, 2.8,  695, false, 2450, 2450],
+      ['Sony',   'FE 24–105mm F4 G OSS',                2017,  24, 105, 4,   4,    663, true,  1400, 1400],
+      ['Sony',   'FE 24–70mm F4 ZA OSS',                2013,  24,  70, 4,   4,    426, false, 1000, 1000],
+      ['Sony',   'FE 50mm F1.4 GM',                     2023,  50,  50, 1.4, 1.4,  516, false, 1300, 1300],
+      ['Sony',   'FE 35mm F1.8',                        2019,  35,  35, 1.8, 1.8,  280, false,  800,  800],
+      ['Sony',   'FE 35mm F1.4 GM',                     2021,  35,  35, 1.4, 1.4,  524, false, 1500, 1500],
+      ['Sony',   'FE 20mm F1.8 G',                      2020,  20,  20, 1.8, 1.8,  373, false, 1000, 1000],
+      ['Sony',   'FE 16–25mm F2.8 G',                   2024,  16,  25, 2.8, 2.8,  409, true,  1300, 1300],
+      ['Sony',   'FE 16–35mm F2.8 GM II',               2023,  16,  35, 2.8, 2.8,  547, false, 2600, 2600],
+      ['Sony',   'FE 70–200mm F4 Macro G OSS II',       2023,  70, 200, 4,   4,    794, true,  1700, 1700],
+      ['Sony',   'FE 70–200mm F2.8 GM OSS II',          2021,  70, 200, 2.8, 2.8, 1045, true,  3100, 3100],
+      ['Sony',   'FE 70–300mm F4.5–5.6 G OSS',          2016,  70, 300, 4.5, 5.6,  854, true,  1400, 1400],
+      ['Sigma',  '150–600mm F5–6.3 DG DN OS Sports',    2021, 150, 600, 5,   6.3, 2100, true,  1650, 1650],
+    ];
+
+    const LENSES = RAW.map(([brand, model, year, wide, tele, fMin, fMax, weight, approx, pLo, pHi]) => ({
+      brand, model, year, wide, tele, fMin, fMax, weight, approx, pLo, pHi,
+      name: `${brand} ${model}`,
+      price: pLo,
+      kind: wide === tele ? 'prime' : 'zoom',
+      constant: wide !== tele && fMin === fMax,  // primes don't count as 恒定光圈
+      // a lens can serve more than one use: 20–200 is both standard and tele
+      use: [
+        wide <= 20 && 'wide',
+        wide < 70 && tele >= 35 && 'standard',
+        tele >= 100 && 'tele',
+      ].filter(Boolean),
+    }));
+
+    const WEIGHT_MAX = 2100, PRICE_MAX = 3100;
+    const state = { q: '', brand: new Set(), kind: new Set(), use: new Set(), aperture: new Set(),
+                    maxWeight: WEIGHT_MAX, maxPrice: PRICE_MAX, sort: 'wide', dir: 1 };
+
+    const $ = id => document.getElementById(id);
+    const fmtF = l => l.fMin === l.fMax ? `F${l.fMin}` : `F${l.fMin}–${l.fMax}`;
+    const fmtFocal = l => l.kind === 'prime' ? `${l.wide}mm` : `${l.wide}–${l.tele}mm`;
+    const fmtPrice = l => l.pLo === l.pHi ? `$${l.pLo.toLocaleString()}` : `$${l.pLo}–${l.pHi}`;
+    const logPos = mm => (Math.log(mm) - Math.log(16)) / (Math.log(600) - Math.log(16)) * 100;
+    const norm = s => s.toLowerCase().replace(/[–—]/g, '-').replace(/\s+/g, ' ');
+
+    function matches(l) {
+      if (state.q && !norm(l.name).includes(norm(state.q))) return false;
+      if (state.brand.size && !state.brand.has(l.brand)) return false;
+      if (state.kind.size && !state.kind.has(l.kind)) return false;
+      if (state.use.size && !l.use.some(u => state.use.has(u))) return false;
+      if (state.aperture.has('constant') && !l.constant) return false;
+      if (state.aperture.has('fast') && l.fMin > 2.8) return false;
+      if (l.weight > state.maxWeight) return false;
+      if (l.pLo > state.maxPrice) return false;
+      return true;
+    }
+
+    function render() {
+      const list = LENSES.filter(matches).sort((a, b) => {
+        const k = state.sort;
+        const r = typeof a[k] === 'string' ? a[k].localeCompare(b[k]) : a[k] - b[k];
+        return (r || a.tele - b.tele) * state.dir;
+      });
+
+      $('count').textContent = `${list.length} / ${LENSES.length} 支镜头`;
+      $('rows').innerHTML = list.length ? list.map(l => `
+        <tr>
+          <td><span class="brand ${l.brand}">${l.brand}</span><span class="name">${l.model}</span></td>
+          <td class="num">${l.year}</td>
+          <td>${fmtFocal(l)}</td>
+          <td class="col-range"><div class="range"><span style="left:${logPos(l.wide)}%;width:${logPos(l.tele) - logPos(l.wide)}%"></span></div></td>
+          <td>${fmtF(l)}${l.constant ? '<span class="const">恒定</span>' : ''}</td>
+          <td class="num">${l.approx ? '<span class="approx">~</span>' : ''}${l.weight.toLocaleString()}g</td>
+          <td class="num">${fmtPrice(l)}</td>
+        </tr>`).join('') : `<tr><td colspan="7" class="empty">没有符合条件的镜头</td></tr>`;
+
+      document.querySelectorAll('th[data-sort]').forEach(th => {
+        const on = th.dataset.sort === state.sort;
+        th.classList.toggle('sorted', on);
+        th.querySelector('.arrow').textContent = on ? (state.dir > 0 ? '↑' : '↓') : '';
+      });
+      document.querySelectorAll('.group').forEach(g => {
+        const set = state[g.dataset.filter];
+        g.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', set.has(c.dataset.v)));
+      });
+      $('maxWeight').value = state.maxWeight;
+      $('maxPrice').value = state.maxPrice;
+      $('maxWeightOut').textContent = state.maxWeight >= WEIGHT_MAX ? '不限' : `${state.maxWeight}g`;
+      $('maxPriceOut').textContent = state.maxPrice >= PRICE_MAX ? '不限' : `$${state.maxPrice.toLocaleString()}`;
+    }
+
+    document.querySelectorAll('.group').forEach(g => g.addEventListener('click', e => {
+      const v = e.target.dataset.v;
+      if (!v) return;
+      const set = state[g.dataset.filter];
+      set.has(v) ? set.delete(v) : set.add(v);
+      render();
+    }));
+
+    document.querySelectorAll('th[data-sort]').forEach(th => th.addEventListener('click', () => {
+      const k = th.dataset.sort;
+      if (state.sort === k) state.dir *= -1;
+      else { state.sort = k; state.dir = 1; }
+      render();
+    }));
+
+    $('q').addEventListener('input', e => { state.q = e.target.value.trim(); render(); });
+    $('maxWeight').addEventListener('input', e => { state.maxWeight = +e.target.value; render(); });
+    $('maxPrice').addEventListener('input', e => { state.maxPrice = +e.target.value; render(); });
+    $('reset').addEventListener('click', () => {
+      Object.assign(state, { q: '', maxWeight: WEIGHT_MAX, maxPrice: PRICE_MAX });
+      ['brand', 'kind', 'use', 'aperture'].forEach(k => state[k].clear());
+      $('q').value = '';
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
