@@ -27,6 +27,7 @@ ARM,ARM Holdings,Q4 FY2026,2026-05-06,AMC,reported,Q4 FY2026 — 3月季度；�
 ARM,ARM Holdings,Q1 FY2027,2026-07-29,AMC,reported,Q1 FY2027 — 6月季度；AI芯片授权持续扩张
 ASML,ASML Holding,Q1 2026,2026-04-15,BMO,reported,Q1 2026 日历季度；EUV订单关键
 ASML,ASML Holding,Q2 2026,2026-07-15,BMO,reported,Q2 2026 日历季度
+ASML,ASML Holding,Q3 2026,2026-10-14,BMO,reported,Q3 2026 日历季度；EUV 订单
 AVGO,Broadcom,Q2 FY2026,2026-06-03,AMC,reported,Q2 FY2026 — 4月季度；含AI ASIC收入
 AVGO,Broadcom,Q3 FY2026,2026-09-02,AMC,reported,Q3 FY2026
 AVGO,Broadcom,Q4 FY2026,2026-12-09,AMC,estimated,Q4 FY2026
@@ -34,11 +35,13 @@ AXTI,AXT Inc,Q1 2026,2026-04-30,AMC,reported,Q1 2026 — 磷化铟需求强劲�
 AXTI,AXT Inc,Q2 2026,2026-07-30,AMC,reported,Q2 2026 — 磷化铟历史最高季度预期
 BAC,Bank of America,Q1 2026,2026-04-15,BMO,reported,Q1 2026 日历季度
 BAC,Bank of America,Q2 2026,2026-07-14,BMO,reported,Q2 2026 日历季度
-BAC,Bank of America,Q3 2026,2026-10-14,BMO,confirmed,Q3 2026 日历季度
+BAC,Bank of America,Q3 2026,2026-10-14,BMO,reported,Q3 2026 日历季度
 BLK,BlackRock,Q1 2026,2026-04-14,BMO,reported,Q1 2026 日历季度
 BLK,BlackRock,Q2 2026,2026-07-15,BMO,reported,Q2 2026 日历季度
+BLK,BlackRock,Q3 2026,2026-10-14,BMO,reported,Q3 2026 日历季度
 BX,Blackstone,Q1 2026,2026-04-23,BMO,reported,Q1 2026 日历季度
 BX,Blackstone,Q2 2026,2026-07-23,BMO,reported,Q2 2026 日历季度
+BX,Blackstone,Q3 2026,2026-10-22,BMO,confirmed,Q3 2026 日历季度
 CEG,Constellation Energy,Q1 2026,2026-05-11,BMO,reported,Q1 2026 日历季度；核电PPA
 CEG,Constellation Energy,Q2 2026,2026-08-06,BMO,reported,Q2 2026 日历季度
 CGNX,Cognex,Q2 2026,2026-08-05,AMC,reported,Q2 2026 · 机器视觉
@@ -54,28 +57,33 @@ DELL,Dell Technologies,Q1 FY2027,2026-05-28,AMC,reported,Q1 FY2027 — 营收$43
 DELL,Dell Technologies,Q2 FY2027,2026-09-01,AMC,reported,Q2 FY2027 — 7月季度
 DLR,Digital Realty,Q1 2026,2026-04-23,AMC,reported,Q1 2026 日历季度
 DLR,Digital Realty,Q2 2026,2026-07-23,AMC,reported,Q2 2026 日历季度
+DLR,Digital Realty,Q3 2026,2026-10-29,AMC,confirmed,Q3 2026 日历季度；数据中心REIT
 EQIX,Equinix,Q1 2026,2026-04-29,AMC,reported,Q1 2026 日历季度；数据中心REIT
 EQIX,Equinix,Q2 2026,2026-07-29,AMC,reported,Q2 2026 日历季度
 ETN,Eaton Corporation,Q1 2026,2026-05-05,BMO,reported,Q1 2026 日历季度
 ETN,Eaton Corporation,Q2 2026,2026-07-31,BMO,reported,Q2 2026 日历季度
 GEV,GE Vernova,Q1 2026,2026-04-22,BMO,reported,Q1 2026 日历季度；$200B+ backlog
 GEV,GE Vernova,Q2 2026,2026-07-22,BMO,reported,Q2 2026 日历季度
+GEV,GE Vernova,Q3 2026,2026-10-28,BMO,confirmed,Q3 2026 日历季度
 GOOGL,Alphabet,Q1 2026,2026-04-29,AMC,reported,Q1 2026 日历季度
 GOOGL,Alphabet,Q2 2026,2026-07-22,AMC,reported,Q2 2026 日历季度
 GOOGL,Alphabet,Q3 2026,2026-10-27,AMC,estimated,Q3 2026 日历季度
 GS,Goldman Sachs,Q1 2026,2026-04-13,BMO,reported,Q1 2026 日历季度
 GS,Goldman Sachs,Q2 2026,2026-07-14,BMO,reported,Q2 2026 日历季度
-GS,Goldman Sachs,Q3 2026,2026-10-13,BMO,estimated,Q3 2026 日历季度
+GS,Goldman Sachs,Q3 2026,2026-10-13,BMO,reported,Q3 2026 日历季度
 HPE,HP Enterprise,Q2 FY2026,2026-06-01,AMC,reported,Q2 FY2026 — 4月季度
 HPE,HP Enterprise,Q3 FY2026,2026-09-02,AMC,reported,Q3 FY2026
 IBM,IBM,Q1 2026,2026-04-22,AMC,reported,Q1 2026 — 营收$15.9B 超预期；混合云+AI Watson加速
 IBM,IBM,Q2 2026,2026-07-22,AMC,reported,Q2 2026 — 日历季度
+IBM,IBM,Q3 2026,2026-10-21,AMC,confirmed,Q3 2026 — 日历季度
 INTC,Intel,Q1 2026,2026-04-23,AMC,reported,Q1 2026 日历季度
 INTC,Intel,Q2 2026,2026-07-23,AMC,reported,Q2 2026 日历季度
+INTC,Intel,Q3 2026,2026-10-29,AMC,confirmed,Q3 2026 日历季度
 ISRG,Intuitive Surgical,Q2 2026,2026-07-16,AMC,reported,Q2 2026 · 手术机器人
+ISRG,Intuitive Surgical,Q3 2026,2026-10-20,AMC,confirmed,Q3 2026 · 手术机器人
 JPM,JPMorgan Chase,Q1 2026,2026-04-14,BMO,reported,Q1 2026 日历季度
 JPM,JPMorgan Chase,Q2 2026,2026-07-14,BMO,reported,Q2 2026 日历季度
-JPM,JPMorgan Chase,Q3 2026,2026-10-13,BMO,confirmed,Q3 2026 日历季度
+JPM,JPMorgan Chase,Q3 2026,2026-10-13,BMO,reported,Q3 2026 日历季度
 KKR,KKR & Co,Q1 2026,2026-05-05,BMO,reported,Q1 2026 日历季度
 KKR,KKR & Co,Q2 2026,2026-07-30,BMO,reported,Q2 2026 日历季度
 KLAC,KLA Corporation,Q3 FY2026,2026-04-29,AMC,reported,Q3 FY2026 — 3月季度
@@ -84,21 +92,22 @@ LITE,Lumentum,Q3 FY2026,2026-05-05,AMC,reported,Q3 FY2026 — 3月季度
 LITE,Lumentum,Q4 FY2026,2026-08-11,AMC,reported,Q4 FY2026
 LRCX,Lam Research,Q3 FY2026,2026-04-22,AMC,reported,Q3 FY2026 — 3月季度
 LRCX,Lam Research,Q4 FY2026,2026-07-29,AMC,reported,Q4 FY2026
+LRCX,Lam Research,Q1 FY2027,2026-10-21,AMC,estimated,FQ1 2027 — 9月季度 · 日期估算
 META,Meta Platforms,Q1 2026,2026-04-29,AMC,reported,Q1 2026 日历季度
 META,Meta Platforms,Q2 2026,2026-07-29,AMC,reported,Q2 2026 日历季度
-META,Meta Platforms,Q3 2026,2026-10-22,AMC,estimated,Q3 2026 日历季度
+META,Meta Platforms,Q3 2026,2026-10-21,AMC,confirmed,Q3 2026 日历季度
 MOG.A,Moog Inc,Q3 FY2026,2026-07-31,BMO,reported,FQ3 2026 · 伺服执行器
 MP,MP Materials,Q2 2026,2026-08-06,AMC,reported,Q2 2026 · 稀土磁材
 MRVL,Marvell Technology,Q1 FY2027,2026-05-27,AMC,reported,Q1 FY2027 — 营收 +27.6% YoY；数据中心占比76%
 MRVL,Marvell Technology,Q2 FY2027,2026-08-27,AMC,reported,Q2 FY2027
 MS,Morgan Stanley,Q1 2026,2026-04-15,BMO,reported,Q1 2026 日历季度
 MS,Morgan Stanley,Q2 2026,2026-07-15,BMO,reported,Q2 2026 日历季度
-MS,Morgan Stanley,Q3 2026,2026-10-14,BMO,estimated,Q3 2026 日历季度
+MS,Morgan Stanley,Q3 2026,2026-10-14,BMO,reported,Q3 2026 日历季度
 MSFT,Microsoft,Q3 FY2026,2026-04-29,AMC,reported,Q3 FY2026 — 3月季度
 MSFT,Microsoft,Q4 FY2026,2026-07-29,AMC,reported,Q4 FY2026 — 6月季度
 MSFT,Microsoft,Q1 FY2027,2026-10-28,AMC,estimated,Q1 FY2027 — 9月季度
 MU,Micron Technology,Q3 FY2026,2026-06-24,AMC,reported,Q3 FY2026 — 5月季度；HBM需求
-MU,Micron Technology,Q4 FY2026,2026-09-30,AMC,confirmed,Q4 FY2026
+MU,Micron Technology,Q4 FY2026,2026-09-30,AMC,reported,Q4 FY2026
 NOW,ServiceNow,Q1 2026,2026-04-22,AMC,reported,Q1 2026 日历季度
 NOW,ServiceNow,Q2 2026,2026-07-22,AMC,reported,Q2 2026 日历季度
 NVDA,NVIDIA,Q4 FY2026,2026-02-25,AMC,reported,Q4 FY2026 — 1月季度；营收创纪录
@@ -107,7 +116,7 @@ NVDA,NVIDIA,Q2 FY2027,2026-08-26,AMC,reported,Q2 FY2027 — 7月季度
 NVDA,NVIDIA,Q3 FY2027,2026-11-19,AMC,estimated,Q3 FY2027 — 10月季度
 ORCL,Oracle,Q3 FY2026,2026-03-10,AMC,reported,Q3 FY2026 — 2月季度；云增长
 ORCL,Oracle,Q4 FY2026,2026-06-10,AMC,reported,Q4 FY2026 — 5月季度
-ORCL,Oracle,Q1 FY2027,2026-09-10,AMC,confirmed,Q1 FY2027
+ORCL,Oracle,Q1 FY2027,2026-09-10,AMC,reported,Q1 FY2027
 OUST,Ouster,Q2 2026,2026-08-06,AMC,reported,Q2 2026 · 激光雷达
 PLTR,Palantir Technologies,Q1 2026,2026-05-04,AMC,reported,Q1 2026 日历季度
 PLTR,Palantir Technologies,Q2 2026,2026-08-03,AMC,reported,Q2 2026 日历季度
@@ -128,11 +137,12 @@ TEL,TE Connectivity,Q3 FY2026,2026-07-22,BMO,reported,FQ3 2026 · 连接器/传�
 TER,Teradyne,Q2 2026,2026-07-28,AMC,reported,Q2 2026 · 协作机器人UR/MiR
 TSLA,Tesla,Q1 2026,2026-04-22,AMC,reported,Q1 2026 日历季度
 TSLA,Tesla,Q2 2026,2026-07-22,AMC,reported,Q2 2026 日历季度
-TSLA,Tesla,Q3 2026,2026-10-20,AMC,estimated,Q3 2026 日历季度
+TSLA,Tesla,Q3 2026,2026-10-21,AMC,confirmed,Q3 2026 日历季度
 VECO,Veeco Instruments,Q2 2026,2026-08-05,AMC,reported,Q2 2026 · 半导体制程设备（MOCVD/离子束/激光退火）
 VECO,Veeco Instruments,Q3 2026,2026-11-03,AMC,estimated,Q3 2026 · 半导体制程设备 · 日期估算
 VRT,Vertiv Holdings,Q1 2026,2026-04-22,BMO,reported,Q1 2026 日历季度；散热backlog
 VRT,Vertiv Holdings,Q2 2026,2026-07-29,BMO,reported,Q2 2026 日历季度
+VRT,Vertiv Holdings,Q3 2026,2026-10-28,BMO,confirmed,Q3 2026 日历季度；散热需求
 VST,Vistra Corp,Q1 2026,2026-05-07,BMO,reported,Q1 2026 日历季度
 VST,Vistra Corp,Q2 2026,2026-08-07,BMO,reported,Q2 2026 日历季度
 XOM,Exxon Mobil,Q1 2026,2026-05-01,BMO,reported,Q1 2026 日历季度
