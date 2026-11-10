@@ -166,8 +166,8 @@
         <div><span class="tier D">D</span>冷门：教科书形态，实战极少用到</div>
       </div>
       <div class="scheme">配色：
-        <button class="chip" data-scheme="cn">红涨绿跌</button>
         <button class="chip" data-scheme="us">绿涨红跌</button>
+        <button class="chip" data-scheme="cn">红涨绿跌</button>
       </div>
     </div>
   </div>
@@ -548,10 +548,10 @@
   const setScheme = (s) => {
     document.body.classList.toggle('us', s === 'us');
     document.querySelectorAll('[data-scheme]').forEach((x) => x.classList.toggle('active', x.dataset.scheme === s));
-    try { localStorage.setItem('candleScheme', s); } catch (_) {}
+    try { localStorage.setItem('candleScheme2', s); } catch (_) {}
   };
   document.querySelectorAll('[data-scheme]').forEach((b) => b.addEventListener('click', () => setScheme(b.dataset.scheme)));
-  setScheme((() => { try { return localStorage.getItem('candleScheme') || 'cn'; } catch (_) { return 'cn'; } })());
+  setScheme((() => { try { return localStorage.getItem('candleScheme2') || 'us'; } catch (_) { return 'us'; } })());
 
   const nC = ALL.filter((p) => p.type !== 'trend').length, nT = ALL.length - nC;
   document.getElementById('sub').textContent = `以 Steve Nison《日本蜡烛图技术》为主线，补充 Bulkowski、Morris 等人整理的统计形态，共 ${nC} 种K线形态 + ${nT} 项趋势与技术指标。每个形态都配有统一风格的示意图，并按「实用度」排名：越靠前越常见、越可靠、越值得先学。`;
