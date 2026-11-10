@@ -1,6 +1,6 @@
 # AWS Machine Learning Specialty <!-- omit in toc -->
 
-*Published on 2025-03-12 in [AI](../topics/ai.html)*
+*Published on 2025-03-12 in [AI](../topics/ai)*
 
 - [Data Engineering](#data-engineering)
   - [Data Lakes and Storage](#data-lakes-and-storage)

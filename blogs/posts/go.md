@@ -1,7 +1,7 @@
 # Golang Logs
 
 
-*Published on 2025-01-26 in [Programming](../topics/programming.html)*
+*Published on 2025-01-26 in [Programming](../topics/programming)*
 - [Golang Logs](#golang-notes)
   - [Goroutine](#goroutine)
 

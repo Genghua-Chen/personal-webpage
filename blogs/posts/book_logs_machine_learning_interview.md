@@ -1,7 +1,7 @@
 # Book Logs: Machine Learning Interviews
 
 
-*Published on 2025-03-12 in [AI](../topics/ai.html)*
+*Published on 2025-03-12 in [AI](../topics/ai)*
 - [Book Logs: Machine Learning Interviews](#golang-notes)
   - [Summarizing Regularization](#SummarizingRegularization)
 

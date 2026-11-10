@@ -183,7 +183,7 @@
     .field{grid-template-columns:22px 60px 1fr}
   }
 </style>
-  <script>if(/\/index\.html$/.test(location.pathname))history.replaceState(null,"",location.pathname.replace(/index\.html$/,"")+location.search+location.hash)</script>
+  <script>(function(){var p=location.pathname,c=p.replace(/\/index\.html$/,"/").replace(/\.html$/,"");if(c!==p)history.replaceState(null,"",c+location.search+location.hash)})()</script>
 </head>
 <body data-stage="empty">
 

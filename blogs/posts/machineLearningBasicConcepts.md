@@ -1,6 +1,6 @@
 # Machine Learning Basic Concepts <!-- omit in toc -->
 
-*Published on 2025-03-12 in [AI](../topics/ai.html)*
+*Published on 2025-03-12 in [AI](../topics/ai)*
 - [Statistical and Foundational Techniques](#statistical-and-foundational-techniques)
   - [Independent and Dependent Variables](#independent-and-dependent-variables)
   - [Linear Regression](#linear-regression)

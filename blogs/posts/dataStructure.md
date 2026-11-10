@@ -1,6 +1,6 @@
 # Data Stucture Basic Concepts <!-- omit in toc -->
 
-*Published on 2025-04-14 in [AI](../topics/ai.html)*
+*Published on 2025-04-14 in [AI](../topics/ai)*
 
 - [Array](#array)
 - [Linked List](#linked-list)

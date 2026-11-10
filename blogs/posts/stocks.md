@@ -1,6 +1,6 @@
 # Stock Logs <!-- omit in toc -->
 
-*Published on 2025-09-22 in [AI](../topics/ai.html)*
+*Published on 2025-09-22 in [AI](../topics/ai)*
 
 - [9/22/2025](#9222025)
   - [MU](#mu)

@@ -1,6 +1,6 @@
 # Language Model Training Resource Expectation <!-- omit in toc -->
 
-*Published on 2025-01-15 in [AI](../topics/ai.html)*
+*Published on 2025-01-15 in [AI](../topics/ai)*
 
 - [Inference](#inference)
   - [Precision Table:](#precision-table)

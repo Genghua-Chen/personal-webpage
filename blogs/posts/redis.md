@@ -1,7 +1,7 @@
 # Redis
 
 
-*Published on 2025-01-26 in [Programming](../topics/programming.html)*
+*Published on 2025-01-26 in [Programming](../topics/programming)*
 - [Redis](#redis)
 	- [String](#string)
 	- [List](#list)

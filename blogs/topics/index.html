@@ -24,7 +24,7 @@
     }
   </style>
 
-  <script>if(/\/index\.html$/.test(location.pathname))history.replaceState(null,"",location.pathname.replace(/index\.html$/,"")+location.search+location.hash)</script>
+  <script>(function(){var p=location.pathname,c=p.replace(/\/index\.html$/,"/").replace(/\.html$/,"");if(c!==p)history.replaceState(null,"",c+location.search+location.hash)})()</script>
 </head>
 <body>
 <div class="page-wrapper">
@@ -37,7 +37,7 @@
       <nav>
         <a href="../">Home</a>
         <a href="./" class="active">Topics</a>
-        <a href="../author.html">Author</a>
+        <a href="../author">Author</a>
       </nav>
     </div>
   </header>
@@ -52,9 +52,9 @@
     <section class="topic-section">
       <div class="content-container">
         <ul class="topic-list">
-          <li><a href="ai.html">AI</a></li>
-          <li><a href="programming.html">Programming</a></li>
-          <li><a href="engineering.html">Engineering</a></li>
+          <li><a href="ai">AI</a></li>
+          <li><a href="programming">Programming</a></li>
+          <li><a href="engineering">Engineering</a></li>
         </ul>
       </div>
     </section>

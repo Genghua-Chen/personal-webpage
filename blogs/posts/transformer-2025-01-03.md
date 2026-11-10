@@ -1,6 +1,6 @@
 # Transformer Explainations
 
-*Published on 2025-01-05 in [AI](../topics/ai.html)*
+*Published on 2025-01-05 in [AI](../topics/ai)*
 
 - [Overview](#overview)
 - [Transformer Block Encoder](#transformer-block-encoder)
