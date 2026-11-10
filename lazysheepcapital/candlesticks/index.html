@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>蜡烛图形态大全 — LazySheepcapital</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <style>
+    :root {
+      --bg:#07070f; --bg2:#0e0e1a;
+      --panel:rgba(255,255,255,0.04); --panel-h:rgba(255,255,255,0.07);
+      --border:rgba(255,255,255,0.08); --border-h:rgba(255,255,255,0.16);
+      --text:#e8e8f0; --muted:rgba(200,200,230,0.55); --dim:rgba(200,200,230,0.3);
+      --up:#f43f5e; --down:#22c55e;
+      --bull:#fb7185; --bear:#4ade80; --neu:#a5b4fc;
+      --amber:#f59e0b;
+    }
+    body.us { --up:#22c55e; --down:#f43f5e; --bull:#4ade80; --bear:#fb7185; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+
+    /* NAV */
+    .site-nav{position:sticky;top:0;z-index:300;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 24px;height:52px;background:rgba(7,7,15,.88);backdrop-filter:blur(20px) saturate(160%);border-bottom:1px solid rgba(255,255,255,.08);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif}
+    .site-nav .sn-logo{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;letter-spacing:-.02em;color:#e8e8f0;text-decoration:none;white-space:nowrap}
+    .site-nav .sn-links{display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end}
+    .site-nav .sn-link{padding:5px 11px;border-radius:8px;font-size:.78rem;color:rgba(200,200,230,.5);text-decoration:none;border:1px solid transparent;transition:all .15s;white-space:nowrap}
+    .site-nav .sn-link:hover{color:#e8e8f0;background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
+    .site-nav .sn-link.active{color:#e8e8f0;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)}
+    @media(max-width:680px){.site-nav{height:auto;padding:8px 14px;flex-wrap:wrap}.site-nav .sn-links{justify-content:flex-start}}
+
+    .wrap{max-width:1180px;margin:0 auto;padding:36px 20px 80px}
+    .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+    h1{font-size:clamp(1.8rem,4.5vw,2.7rem);font-weight:800;letter-spacing:-.04em;margin-bottom:10px}
+    .grad{background:linear-gradient(135deg,#fda4af 0%,#f59e0b 55%,#4ade80 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .sub{color:var(--muted);font-size:.95rem;max-width:68ch;margin-bottom:26px}
+
+    /* Intro panels */
+    .intro{display:grid;grid-template-columns:1.05fr 1fr;gap:14px;margin-bottom:26px}
+    @media(max-width:860px){.intro{grid-template-columns:1fr}}
+    .box{border:1px solid var(--border);border-radius:16px;background:var(--panel);padding:18px 20px}
+    .box h3{font-size:.8rem;letter-spacing:.08em;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+    .anatomy{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+    .anatomy svg{flex:0 0 auto}
+    .anatomy ul{list-style:none;font-size:.85rem;color:var(--muted);display:grid;gap:5px}
+    .anatomy b{color:var(--text);font-weight:600}
+    .legend-row{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.82rem;color:var(--muted);margin-bottom:12px}
+    .legend-row span{display:inline-flex;align-items:center;gap:6px}
+    .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+    .tiers{display:grid;gap:6px;font-size:.84rem;color:var(--muted)}
+    .tiers div{display:flex;gap:10px;align-items:baseline}
+    .scheme{margin-top:12px;display:flex;gap:6px;align-items:center;font-size:.8rem;color:var(--muted)}
+
+    /* tier badge */
+    .tier{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:6px;font-size:.74rem;font-weight:800;letter-spacing:.02em}
+    .tier.S{background:rgba(245,158,11,.18);color:#fbbf24;border:1px solid rgba(245,158,11,.4)}
+    .tier.A{background:rgba(168,85,247,.16);color:#c084fc;border:1px solid rgba(168,85,247,.35)}
+    .tier.B{background:rgba(59,130,246,.15);color:#93c5fd;border:1px solid rgba(59,130,246,.32)}
+    .tier.C{background:rgba(255,255,255,.06);color:rgba(220,220,240,.7);border:1px solid rgba(255,255,255,.14)}
+    .tier.D{background:rgba(255,255,255,.03);color:rgba(200,200,230,.45);border:1px solid rgba(255,255,255,.08)}
+
+    /* Controls */
+    .controls{position:sticky;top:52px;z-index:50;background:rgba(7,7,15,.92);backdrop-filter:blur(14px);padding:12px 0;border-bottom:1px solid var(--border);margin-bottom:18px}
+    .search{display:flex;align-items:center;gap:10px;border:1px solid var(--border);background:var(--panel);border-radius:12px;padding:10px 14px;margin-bottom:10px}
+    .search:focus-within{border-color:var(--border-h)}
+    .search input{flex:1;background:transparent;border:0;outline:0;color:var(--text);font-size:.95rem;font-family:inherit}
+    .search input::placeholder{color:var(--muted)}
+    .count{font-size:.8rem;color:var(--muted);white-space:nowrap}
+    .filters{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+    .fgroup{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+    .flabel{font-size:.72rem;color:var(--dim);margin-right:2px}
+    .chip{border:1px solid var(--border);background:var(--panel);border-radius:999px;padding:4px 11px;cursor:pointer;color:var(--muted);font-size:.78rem;font-family:inherit;transition:all .12s}
+    .chip:hover{color:var(--text);border-color:var(--border-h)}
+    .chip.active{border-color:rgba(245,158,11,.55);background:rgba(245,158,11,.12);color:#fcd34d}
+    select.chip{appearance:none;padding-right:12px}
+
+    /* Grid */
+    .group-h{display:flex;align-items:center;gap:10px;margin:26px 0 12px;font-size:.92rem;font-weight:700}
+    .group-h .gdesc{font-weight:400;color:var(--muted);font-size:.82rem}
+    .group-h::after{content:'';flex:1;height:1px;background:var(--border)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:12px}
+    .card{border:1px solid var(--border);background:var(--panel);border-radius:14px;padding:12px 12px 13px;cursor:pointer;transition:transform .15s,border-color .15s,background .15s;display:flex;flex-direction:column;gap:8px}
+    .card:hover{transform:translateY(-3px);border-color:var(--border-h);background:var(--panel-h)}
+    .card svg{width:100%;height:auto;display:block;border-radius:9px;background:rgba(255,255,255,.015)}
+    .ctop{display:flex;align-items:center;gap:8px}
+    .rank{font-size:.72rem;color:var(--dim);font-variant-numeric:tabular-nums;min-width:28px}
+    .cname{font-weight:700;font-size:.95rem;letter-spacing:-.01em;flex:1;min-width:0}
+    .cen{font-size:.74rem;color:var(--dim);margin-top:-6px}
+    .csum{font-size:.8rem;color:var(--muted);line-height:1.55}
+    .cmeta{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+    .pill{font-size:.7rem;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.05);color:var(--muted);white-space:nowrap}
+    .pill.bull{color:var(--bull);background:color-mix(in srgb,var(--bull) 12%,transparent)}
+    .pill.bear{color:var(--bear);background:color-mix(in srgb,var(--bear) 12%,transparent)}
+    .pill.neu{color:var(--neu);background:rgba(165,180,252,.1)}
+    .stars{color:#fbbf24;letter-spacing:1px;font-size:.72rem}
+    .stars i{color:rgba(255,255,255,.15);font-style:normal}
+    .empty{color:var(--muted);padding:40px 0;text-align:center}
+
+    /* Table */
+    table{width:100%;border-collapse:collapse;font-size:.85rem}
+    th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--border)}
+    th{font-size:.72rem;color:var(--dim);font-weight:600;letter-spacing:.05em}
+    tbody tr{cursor:pointer}
+    tbody tr:hover{background:var(--panel-h)}
+    td.mini svg{width:96px;height:auto;display:block}
+    .tbl-wrap{border:1px solid var(--border);border-radius:14px;overflow:auto;background:var(--panel)}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;z-index:500;background:rgba(3,3,8,.78);backdrop-filter:blur(6px);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:40px 16px}
+    .modal.open{display:flex}
+    .mbox{width:100%;max-width:760px;background:#0d0d18;border:1px solid var(--border-h);border-radius:18px;padding:22px 22px 24px;position:relative}
+    .mclose{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--muted);cursor:pointer;font-size:1.1rem}
+    .mclose:hover{color:var(--text)}
+    .mhead{display:flex;align-items:center;gap:10px;margin-bottom:2px;padding-right:40px}
+    .mhead h2{font-size:1.45rem;letter-spacing:-.03em}
+    .men{color:var(--dim);font-size:.85rem;margin-bottom:12px}
+    .msum{font-size:1.02rem;margin:14px 0 6px;padding:12px 14px;border-left:3px solid var(--amber);background:rgba(245,158,11,.06);border-radius:0 10px 10px 0}
+    .mchart svg{width:100%;height:auto;display:block;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid var(--border)}
+    .mlegend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.74rem;color:var(--dim);margin:8px 2px 4px}
+    .sec{margin-top:16px}
+    .sec h4{font-size:.78rem;letter-spacing:.06em;color:var(--dim);margin-bottom:5px}
+    .sec p{font-size:.92rem;color:rgba(232,232,240,.88)}
+    .mnav{display:flex;justify-content:space-between;gap:10px;margin-top:22px;padding-top:14px;border-top:1px solid var(--border)}
+    .mnav button{flex:1;border:1px solid var(--border);background:var(--panel);color:var(--muted);border-radius:10px;padding:9px 12px;cursor:pointer;font-family:inherit;font-size:.82rem;text-align:left}
+    .mnav button:last-child{text-align:right}
+    .mnav button:hover{color:var(--text);border-color:var(--border-h)}
+    .foot{margin-top:46px;color:var(--dim);font-size:.78rem;line-height:1.8}
+  </style>
+</head>
+<body>
+
+<nav class="site-nav"><a class="sn-logo" href="../"><img src="../favicon.svg" width="20" height="20" alt="">LazySheepcapital</a><div class="sn-links"><a href="../smart_money/" class="sn-link">聪明钱追踪</a><a href="../ai-capex-flow/" class="sn-link">AI 流向图</a><a href="../space-flow/" class="sn-link">太空板块</a><a href="../physical-ai-flow/" class="sn-link">物理AI</a><a href="../calendar/" class="sn-link">财报日历</a><a href="../candlesticks/" class="sn-link active">蜡烛图</a><a href="../cut-loss/" class="sn-link">割肉自查</a><a href="../track-record/" class="sn-link">实盘记录</a></div></nav>
+
+<div class="wrap">
+  <div class="eyebrow">Japanese Candlestick Charting Techniques</div>
+  <h1>蜡烛图<span class="grad">形态大全</span></h1>
+  <p class="sub" id="sub">以 Steve Nison《日本蜡烛图技术》为主线，补充 Bulkowski、Morris 等人整理的统计形态。每个形态都配有统一风格的示意图，并按「实用度」排名：越靠前越常见、越可靠、越值得先学。</p>
+
+  <div class="intro">
+    <div class="box">
+      <h3>先看懂一根K线</h3>
+      <div class="anatomy">
+        <div id="anatomy"></div>
+        <ul>
+          <li><b>实体</b>：开盘价和收盘价之间的部分</li>
+          <li><b>阳线</b>：收盘 &gt; 开盘（涨）　<b>阴线</b>：收盘 &lt; 开盘（跌）</li>
+          <li><b>上影线</b>：实体上方到最高价的细线</li>
+          <li><b>下影线</b>：实体下方到最低价的细线</li>
+          <li><b>窗口</b>：两根K线之间价格完全没有重叠的空白（缺口）</li>
+        </ul>
+      </div>
+    </div>
+    <div class="box">
+      <h3>怎么读示意图</h3>
+      <div class="legend-row">
+        <span><i class="sw" style="background:var(--up)"></i>阳线</span>
+        <span><i class="sw" style="background:var(--down)"></i>阴线</span>
+        <span><i class="sw" style="background:rgba(255,255,255,.18)"></i>半透明＝之前的趋势</span>
+        <span><i class="sw" style="background:rgba(245,158,11,.22);border:1px solid rgba(245,158,11,.5)"></i>高亮＝形态本身</span>
+        <span><i class="sw" style="border:1px dashed rgba(255,255,255,.5)"></i>虚线＝预期走势</span>
+      </div>
+      <div class="tiers">
+        <div><span class="tier S">S</span>必学：最常见、最可靠，原书重点</div>
+        <div><span class="tier A">A</span>常用：可靠性高，值得熟练掌握</div>
+        <div><span class="tier B">B</span>了解：有用，但需更多确认</div>
+        <div><span class="tier C">C</span>少见：出现少或单独可靠性一般</div>
+        <div><span class="tier D">D</span>冷门：教科书形态，实战极少用到</div>
+      </div>
+      <div class="scheme">配色：
+        <button class="chip" data-scheme="cn">红涨绿跌</button>
+        <button class="chip" data-scheme="us">绿涨红跌</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search">
+      <span style="color:var(--dim)">⌕</span>
+      <input id="q" type="search" placeholder="搜索形态：锤子、吞没、morning star、窗口、背离…" autocomplete="off">
+      <span class="count" id="count"></span>
+    </div>
+    <div class="filters">
+      <div class="fgroup" data-f="dir"><span class="flabel">方向</span>
+        <button class="chip active" data-v="">全部</button><button class="chip" data-v="bull">看涨</button><button class="chip" data-v="bear">看跌</button><button class="chip" data-v="neu">中性</button></div>
+      <div class="fgroup" data-f="type"><span class="flabel">类型</span>
+        <button class="chip active" data-v="">全部</button><button class="chip" data-v="rev">反转</button><button class="chip" data-v="cont">持续</button><button class="chip" data-v="ind">单根/犹豫</button><button class="chip" data-v="trend">趋势与指标</button></div>
+      <div class="fgroup" data-f="n"><span class="flabel">K线数</span>
+        <button class="chip active" data-v="">全部</button><button class="chip" data-v="1">1 根</button><button class="chip" data-v="2">2 根</button><button class="chip" data-v="3">3 根</button><button class="chip" data-v="4">4 根+</button></div>
+      <div class="fgroup" data-f="tier"><span class="flabel">等级</span>
+        <button class="chip active" data-v="">全部</button><button class="chip" data-v="S">S</button><button class="chip" data-v="A">A</button><button class="chip" data-v="B">B</button><button class="chip" data-v="C">C</button><button class="chip" data-v="D">D</button></div>
+      <div class="fgroup" data-f="book"><span class="flabel">来源</span>
+        <button class="chip active" data-v="">全部</button><button class="chip" data-v="1">原书</button><button class="chip" data-v="0">后人补充</button></div>
+      <div class="fgroup"><span class="flabel">视图</span>
+        <button class="chip active" data-view="cards">卡片</button><button class="chip" data-view="table">排名表</button></div>
+    </div>
+  </div>
+
+  <div id="out"></div>
+
+  <p class="foot">
+    排名说明：等级综合了 ① Nison 原书中的重视程度，② Bulkowski《蜡烛图形态百科》等对大量历史数据的统计（出现频率与后续走势表现），③ 实战中的辨识难度。这是经验性的排序，不是精确的统计结论。<br>
+    任何K线形态都不能单独使用：先看趋势，再看位置（支撑/阻力），最后等确认。示意图为教学用的理想化形态，真实走势往往不会这么标准。<br>
+    「原书」= 《日本蜡烛图技术》书中讲解的形态；「后人补充」= 原书未单独讲解、由其他作者整理的形态。
+  </p>
+</div>
+
+<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
+
+<script src="patterns.js"></script>
+<script>
+(function () {
+  const ALL = window.CANDLE_PATTERNS;
+  const TIER_W = { S: 5, A: 4, B: 3, C: 2, D: 1 };
+  const TIER_DESC = { S: '必学', A: '常用', B: '了解', C: '少见', D: '冷门' };
+  const DIR_ZH = { bull: '看涨', bear: '看跌', neu: '中性' };
+  const TYPE_ZH = { rev: '反转形态', cont: '持续形态', ind: '单根/犹豫', trend: '趋势与指标' };
+  const FREQ_ZH = { 1: '常见', 2: '一般', 3: '罕见' };
+
+  /* ── ranking ── */
+  const score = (p) => TIER_W[p.tier] * 100 + p.rel * 10 + (4 - p.freq) * 2;
+  const ranked = (list) => list.map((p, i) => ({ p, i })).sort((a, b) => score(b.p) - score(a.p) || a.i - b.i).map((x) => x.p);
+  ranked(ALL.filter((p) => p.type !== 'trend')).forEach((p, i) => { p.rank = i + 1; });
+  ranked(ALL.filter((p) => p.type === 'trend')).forEach((p, i) => { p.rank = i + 1; });
+  ALL.forEach((p) => { p.n = p.c ? p.c.length : 0; });
+
+  /* ── deterministic RNG ── */
+  function rng(seed) {
+    let h = 2166136261;
+    for (const ch of seed) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+    return () => { h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  /* 根据路径合成K线 */
+  function synth(path, k, R, calm) {
+    const nz = calm ? 0.28 : 0.5, wk = calm ? 0.28 : 0.45;
+    const out = [];
+    let prev = path[0];
+    for (let s = 0; s < path.length - 1; s++) {
+      const a = path[s], b = path[s + 1], step = (b - a) / k;
+      for (let j = 0; j < k; j++) {
+        const target = a + step * (j + 1);
+        const o = prev + (R() - 0.5) * 0.25;
+        let c = target + (R() - 0.5) * Math.abs(step) * nz;
+        if (Math.abs(c - o) < 0.15) c = o + (step >= 0 ? 0.25 : -0.25);
+        const u = Math.max(0.3, Math.abs(step) * wk);
+        const h = Math.max(o, c) + R() * u, l = Math.min(o, c) - R() * u;
+        out.push([o, h, l, c]);
+        prev = c;
+      }
+    }
+    return out;
+  }
+
+  function ctxOf(p) {
+    if (p.ctx) return p.ctx;
+    if (p.type === 'rev') return p.dir === 'bull' ? 'down' : 'up';
+    if (p.type === 'cont') return p.dir === 'bull' ? 'up' : 'down';
+    return 'side';
+  }
+  function afterOf(p) {
+    if (p.after !== undefined) return p.after;
+    if (p.type === 'rev' || p.type === 'cont' || (p.type === 'trend' && p.c)) return p.dir === 'bull' ? 'up' : p.dir === 'bear' ? 'down' : null;
+    return null;
+  }
+
+  /* 构造完整序列 */
+  function build(p) {
+    const R = rng(p.id);
+    if (p.path) {
+      const k = p.k || 3;
+      const candles = synth(p.path, k, R, true);
+      const wx = (w) => w * k - 0.5;
+      return { candles, ps: -1, pe: -1, k, wx, ctxN: 0 };
+    }
+    const anchor = p.c[0][0];
+    const ctx = ctxOf(p);
+    const span0 = Math.max(...p.c.map((x) => x[1])) - Math.min(...p.c.map((x) => x[2]));
+    const amp = Math.min(8.5, Math.max(5, span0 * 1.1));
+    let ctxC;
+    if (ctx === 'down') ctxC = synth([anchor + amp, anchor + (p.g ?? 0.3)], 6, R);
+    else if (ctx === 'up') ctxC = synth([anchor - amp, anchor + (p.g ?? -0.3)], 6, R);
+    else ctxC = synth([anchor + 1.2, anchor - 1.2, anchor + 1, anchor + (p.g ?? 0.2)], 2, R);
+    const pat = p.c.map((x) => x.slice());
+    const af = afterOf(p);
+    const afterC = [];
+    if (af) {
+      let last = pat[pat.length - 1][3];
+      const span = Math.max(...pat.map((x) => x[1])) - Math.min(...pat.map((x) => x[2]));
+      const st = Math.max(1.1, span * 0.22) * (af === 'up' ? 1 : -1);
+      for (let i = 0; i < 3; i++) {
+        const o = last, c = o + st;
+        afterC.push([o, Math.max(o, c) + 0.3, Math.min(o, c) - 0.3, c]);
+        last = c;
+      }
+    }
+    const candles = ctxC.concat(pat, afterC);
+    return { candles, ps: ctxC.length, pe: ctxC.length + pat.length - 1, ae: afterC.length, ctxN: ctxC.length, wx: (x) => x };
+  }
+
+  /* ── indicators ── */
+  const sma = (a, n) => a.map((_, i) => (i < n - 1 ? null : a.slice(i - n + 1, i + 1).reduce((s, v) => s + v, 0) / n));
+  const ema = (a, n) => { const k = 2 / (n + 1); let e = a[0]; return a.map((v, i) => (i === 0 ? e : (e = v * k + e * (1 - k)))); };
+  function rsi(cl, n) {
+    const out = [null]; let ag = 0, al = 0;
+    for (let i = 1; i < cl.length; i++) {
+      const d = cl[i] - cl[i - 1], g = Math.max(d, 0), l = Math.max(-d, 0);
+      if (i <= n) { ag += g / n; al += l / n; out.push(i < n ? null : (al === 0 ? 100 : 100 - 100 / (1 + ag / al))); }
+      else { ag = (ag * (n - 1) + g) / n; al = (al * (n - 1) + l) / n; out.push(al === 0 ? 100 : 100 - 100 / (1 + ag / al)); }
+    }
+    return out;
+  }
+  function stoch(cs, n) {
+    const k = cs.map((_, i) => {
+      if (i < n - 1) return null;
+      const w = cs.slice(i - n + 1, i + 1), hi = Math.max(...w.map((x) => x[1])), lo = Math.min(...w.map((x) => x[2]));
+      return hi === lo ? 50 : ((cs[i][3] - lo) / (hi - lo)) * 100;
+    });
+    const d = k.map((_, i) => (i < n + 1 ? null : (k[i] + k[i - 1] + k[i - 2]) / 3));
+    return { k, d };
+  }
+
+  /* ── SVG renderer (all charts share this one style) ── */
+  const LC = { s: '#38bdf8', r: '#f59e0b', n: 'rgba(230,230,245,.55)' };
+  function render(p, W, H, opt = {}) {
+    const S = build(p);
+    const cs = S.candles, N = cs.length;
+    const panelH = p.panel && opt.panel !== false ? Math.round(H * 0.3) : 0;
+    const mainH = H - panelH;
+    const padT = 10, padB = 10, padL = 8, padR = opt.big ? 70 : 8;
+    let lo = Math.min(...cs.map((c) => c[2])), hi = Math.max(...cs.map((c) => c[1]));
+    (p.hl || []).forEach((h) => { lo = Math.min(lo, h[0]); hi = Math.max(hi, h[0]); });
+    (p.lines || []).forEach((l) => { lo = Math.min(lo, l[1], l[3]); hi = Math.max(hi, l[1], l[3]); });
+    const pr = (hi - lo) * (p.labs ? 0.14 : 0.06) || 1; lo -= pr; hi += pr;
+    const xs = (W - padL - padR) / N;
+    const X = (i) => padL + xs * (i + 0.5);
+    const Y = (v) => padT + (hi - v) / (hi - lo) * (mainH - padT - padB);
+    const bw = Math.max(2, Math.min(xs * 0.62, opt.big ? 26 : 16));
+    const sw = opt.big ? 1.5 : 1.2;
+    let g = '';
+
+    if (S.ps >= 0) {
+      const x0 = X(S.ps) - xs / 2 + 1, x1 = X(S.pe) + xs / 2 - 1;
+      g += `<rect x="${x0}" y="2" width="${x1 - x0}" height="${mainH - 4}" rx="6" fill="rgba(245,158,11,.08)" stroke="rgba(245,158,11,.35)" stroke-width="1"/>`;
+    }
+    // horizontal levels
+    (p.hl || []).forEach(([v, c, lab]) => {
+      g += `<line x1="${padL}" x2="${W - padR}" y1="${Y(v)}" y2="${Y(v)}" stroke="${LC[c]}" stroke-width="1.2" stroke-dasharray="5 4"/>`;
+      if (lab && opt.big) g += `<text x="${W - padR + 4}" y="${Y(v) + 4}" fill="${LC[c]}" font-size="11">${lab}</text>`;
+    });
+    // candles
+    cs.forEach((c, i) => {
+      const [o, h, l, cl] = c, up = cl > o, flat = Math.abs(cl - o) < 0.06;
+      const isCtx = S.ps >= 0 && i < S.ps, isAfter = S.ps >= 0 && i > S.pe;
+      const col = flat ? 'var(--text)' : up ? 'var(--up)' : 'var(--down)';
+      const op = isCtx ? 0.38 : 1;
+      const x = X(i), yt = Y(Math.max(o, cl)), yb = Y(Math.min(o, cl));
+      const bh = Math.max(flat ? 0 : 1.5, yb - yt);
+      if (isAfter) {
+        g += `<g opacity=".5"><line x1="${x}" x2="${x}" y1="${Y(h)}" y2="${Y(l)}" stroke="${col}" stroke-width="${sw}" stroke-dasharray="2 2"/>` +
+             `<rect x="${x - bw / 2}" y="${yt}" width="${bw}" height="${Math.max(bh, 1.5)}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-dasharray="3 2"/></g>`;
+        return;
+      }
+      g += `<g opacity="${op}"><line x1="${x}" x2="${x}" y1="${Y(h)}" y2="${Y(l)}" stroke="${col}" stroke-width="${sw}"/>`;
+      if (flat) g += `<line x1="${x - bw / 2}" x2="${x + bw / 2}" y1="${yt}" y2="${yt}" stroke="${col}" stroke-width="${opt.big ? 2.4 : 2}"/>`;
+      else g += `<rect x="${x - bw / 2}" y="${yt}" width="${bw}" height="${bh}" fill="${col}" rx="${opt.big ? 1.5 : 1}"/>`;
+      g += `</g>`;
+    });
+    // sloped lines
+    (p.lines || []).forEach(([w1, y1, w2, y2, c, lab]) => {
+      const x1 = X(S.wx(w1)), x2 = X(S.wx(w2));
+      g += `<line x1="${x1}" y1="${Y(y1)}" x2="${x2}" y2="${Y(y2)}" stroke="${LC[c]}" stroke-width="1.6"/>`;
+      if (lab && opt.big) g += `<text x="${x2 + 4}" y="${Y(y2) + 4}" fill="${LC[c]}" font-size="11">${lab}</text>`;
+    });
+    // labels
+    (p.labs || []).forEach(([w, v, t]) => {
+      const peak = p.path ? (p.path[w] >= (p.path[w - 1] ?? -1e9)) : true;
+      const yy = peak ? Y(v) - (opt.big ? 14 : 8) : Y(v) + (opt.big ? 24 : 15);
+      g += `<text x="${X(S.wx(w))}" y="${yy}" fill="rgba(240,240,250,.85)" font-size="${opt.big ? 12 : 9}" text-anchor="middle" font-weight="600">${t}</text>`;
+    });
+    // MA
+    if (p.ma) {
+      const cl = cs.map((c) => c[3]), cols = ['#fbbf24', '#38bdf8'];
+      p.ma.forEach((n, j) => {
+        const m = sma(cl, n), pts = m.map((v, i) => (v == null ? null : `${X(i)},${Y(v)}`)).filter(Boolean).join(' ');
+        g += `<polyline points="${pts}" fill="none" stroke="${cols[j]}" stroke-width="1.6"/>`;
+        if (opt.big) g += `<text x="${W - padR + 4}" y="${Y(m[m.length - 1]) + 4}" fill="${cols[j]}" font-size="11">MA${n}</text>`;
+      });
+    }
+    // sub panel
+    if (panelH) {
+      const top = mainH + 4, ph = panelH - 10;
+      g += `<line x1="${padL}" x2="${W - padR}" y1="${mainH}" y2="${mainH}" stroke="rgba(255,255,255,.08)"/>`;
+      const PY = (v, a, b) => top + (b - v) / (b - a) * ph;
+      const poly = (arr, a, b, col) => `<polyline points="${arr.map((v, i) => (v == null ? null : `${X(i)},${PY(v, a, b)}`)).filter(Boolean).join(' ')}" fill="none" stroke="${col}" stroke-width="1.5"/>`;
+      const lvl = (v, a, b, t) => `<line x1="${padL}" x2="${W - padR}" y1="${PY(v, a, b)}" y2="${PY(v, a, b)}" stroke="rgba(255,255,255,.18)" stroke-dasharray="3 3"/>` + (opt.big ? `<text x="${W - padR + 4}" y="${PY(v, a, b) + 4}" fill="var(--dim)" font-size="10">${t}</text>` : '');
+      const cl = cs.map((c) => c[3]);
+      if (p.panel === 'rsi') {
+        const rv = rsi(cl, 6);
+        g += lvl(70, 0, 100, '70') + lvl(30, 0, 100, '30') + poly(rv, 0, 100, '#c084fc');
+        if (p.div) {
+          const [i1, i2] = p.div.map((w) => w * S.k - 1);
+          g += `<line x1="${X(i1)}" y1="${Y(cs[i1][1]) - 4}" x2="${X(i2)}" y2="${Y(cs[i2][1]) - 4}" stroke="#f59e0b" stroke-width="1.6"/>`;
+          g += `<line x1="${X(i1)}" y1="${PY(rv[i1], 0, 100)}" x2="${X(i2)}" y2="${PY(rv[i2], 0, 100)}" stroke="#f59e0b" stroke-width="1.6"/>`;
+          if (opt.big) g += `<text x="${X(i2) + 6}" y="${Y(cs[i2][1])}" fill="#f59e0b" font-size="11">价格：更高的高点</text><text x="${X(i2) + 6}" y="${PY(rv[i2], 0, 100) + 4}" fill="#f59e0b" font-size="11">RSI：更低的高点</text>`;
+        }
+        if (opt.big) g += `<text x="${padL + 4}" y="${top + 12}" fill="#c084fc" font-size="11">RSI(6)</text>`;
+      } else if (p.panel === 'stoch') {
+        const s = stoch(cs, 6);
+        g += lvl(80, 0, 100, '80') + lvl(20, 0, 100, '20') + poly(s.k, 0, 100, '#fbbf24') + poly(s.d, 0, 100, '#38bdf8');
+        if (opt.big) g += `<text x="${padL + 4}" y="${top + 12}" fill="#fbbf24" font-size="11">%K</text><text x="${padL + 30}" y="${top + 12}" fill="#38bdf8" font-size="11">%D</text>`;
+      } else if (p.panel === 'macd') {
+        const m = ema(cl, 5).map((v, i) => v - ema(cl, 10)[i]), sg = ema(m, 4), hs = m.map((v, i) => v - sg[i]);
+        const mx = Math.max(...m.map(Math.abs), ...hs.map(Math.abs)) * 1.1;
+        hs.forEach((v, i) => { const y0 = PY(0, -mx, mx), y1 = PY(v, -mx, mx); g += `<rect x="${X(i) - bw / 2}" y="${Math.min(y0, y1)}" width="${bw}" height="${Math.abs(y1 - y0)}" fill="${v >= 0 ? 'var(--up)' : 'var(--down)'}" opacity=".55"/>`; });
+        g += poly(m, -mx, mx, '#fbbf24') + poly(sg, -mx, mx, '#38bdf8');
+        if (opt.big) g += `<text x="${padL + 4}" y="${top + 12}" fill="#fbbf24" font-size="11">MACD</text><text x="${padL + 48}" y="${top + 12}" fill="#38bdf8" font-size="11">信号线</text>`;
+      } else if (p.panel === 'vol') {
+        const R = rng(p.id + 'v');
+        const v = cs.map((c, i) => 1 + Math.abs(c[3] - c[0]) * 1.6 + R() * 0.6 + (i > 0 && c[3] - cs[i - 1][3] > 1.5 ? 3 : 0));
+        const mx = Math.max(...v);
+        v.forEach((x, i) => { const up = cs[i][3] > cs[i][0]; g += `<rect x="${X(i) - bw / 2}" y="${PY(x, 0, mx)}" width="${bw}" height="${top + ph - PY(x, 0, mx)}" fill="${up ? 'var(--up)' : 'var(--down)'}" opacity=".6"/>`; });
+        if (opt.big) g += `<text x="${padL + 4}" y="${top + 12}" fill="var(--muted)" font-size="11">成交量</text>`;
+      }
+    }
+    return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${p.zh}示意图">${g}</svg>`;
+  }
+  window.__renderCandle = render; window.__buildCandle = build;
+
+  /* ── anatomy diagram ── */
+  (function () {
+    const W = 200, H = 150;
+    const one = (x, o, h, l, c, col) => {
+      const Y = (v) => 10 + (16 - v) / 16 * 130;
+      return `<line x1="${x}" x2="${x}" y1="${Y(h)}" y2="${Y(l)}" stroke="${col}" stroke-width="1.6"/><rect x="${x - 13}" y="${Y(Math.max(o, c))}" width="26" height="${Y(Math.min(o, c)) - Y(Math.max(o, c))}" fill="${col}" rx="1.5"/>`;
+    };
+    const t = (x, y, s, a = 'start') => `<text x="${x}" y="${y}" fill="rgba(220,220,240,.7)" font-size="10" text-anchor="${a}">${s}</text>`;
+    document.getElementById('anatomy').innerHTML =
+      `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">` +
+      one(50, 5, 15, 1, 12, 'var(--up)') + one(140, 12, 15, 1, 5, 'var(--down)') +
+      t(50, 9, '阳线', 'middle') + t(140, 9, '阴线', 'middle') +
+      t(68, 22, '最高') + t(68, 46, '收盘') + t(68, 103, '开盘') + t(68, 135, '最低') +
+      t(158, 22, '最高') + t(158, 46, '开盘') + t(158, 103, '收盘') + t(158, 135, '最低') +
+      `</svg>`;
+  })();
+
+  /* ── state ── */
+  const st = { q: '', dir: '', type: '', n: '', tier: '', book: '', view: 'cards' };
+  const out = document.getElementById('out');
+  const norm = (s) => (s || '').toLowerCase();
+  let current = [];
+
+  function matches(p) {
+    if (st.dir && p.dir !== st.dir) return false;
+    if (st.type && p.type !== st.type) return false;
+    if (st.tier && p.tier !== st.tier) return false;
+    if (st.book !== '' && String(p.book) !== st.book) return false;
+    if (st.n) { const n = +st.n; if (n === 4 ? p.n < 4 : p.n !== n) return false; }
+    if (st.q) {
+      const hay = norm([p.zh, p.en, p.al, p.s, p.rec, p.id].join(' '));
+      return st.q.split(/\s+/).every((t) => hay.includes(t));
+    }
+    return true;
+  }
+  const stars = (n) => '★'.repeat(n) + `<i>${'★'.repeat(5 - n)}</i>`;
+  const rankLabel = (p) => (p.type === 'trend' ? `T${p.rank}` : `#${p.rank}`);
+  const nLabel = (p) => (p.n ? `${p.n} 根K线` : '趋势图');
+
+  function card(p) {
+    return `<div class="card" data-id="${p.id}">
+      <div class="ctop"><span class="rank">${rankLabel(p)}</span><span class="cname">${p.zh}</span><span class="tier ${p.tier}">${p.tier}</span></div>
+      <div class="cen">${p.en}</div>
+      ${render(p, 280, p.panel ? 190 : 150)}
+      <div class="csum">${p.s || ''}</div>
+      <div class="cmeta"><span class="pill ${p.dir}">${DIR_ZH[p.dir]}</span><span class="pill">${TYPE_ZH[p.type]}</span><span class="pill">${nLabel(p)}</span><span class="pill"><span class="stars">${stars(p.rel)}</span></span></div>
+    </div>`;
+  }
+
+  function draw() {
+    const list = ALL.filter(matches);
+    const candleList = ranked(list.filter((p) => p.type !== 'trend'));
+    const trendList = ranked(list.filter((p) => p.type === 'trend'));
+    current = candleList.concat(trendList);
+    document.getElementById('count').textContent = `${list.length} / ${ALL.length}`;
+    if (!list.length) { out.innerHTML = '<div class="empty">没有找到匹配的形态，换个关键词试试。</div>'; return; }
+    if (st.view === 'table') {
+      out.innerHTML = `<div class="tbl-wrap"><table><thead><tr><th>排名</th><th>图示</th><th>形态</th><th>等级</th><th>方向</th><th>类型</th><th>K线</th><th>可靠性</th><th>常见度</th><th>来源</th></tr></thead><tbody>` +
+        current.map((p) => `<tr data-id="${p.id}"><td>${rankLabel(p)}</td><td class="mini">${render(p, 140, 70, { panel: false })}</td><td><b>${p.zh}</b><div style="color:var(--dim);font-size:.75rem">${p.en}</div></td><td><span class="tier ${p.tier}">${p.tier}</span></td><td><span class="pill ${p.dir}">${DIR_ZH[p.dir]}</span></td><td>${TYPE_ZH[p.type]}</td><td>${p.n || '—'}</td><td><span class="stars">${stars(p.rel)}</span></td><td>${FREQ_ZH[p.freq]}</td><td>${p.book ? '原书' : '补充'}</td></tr>`).join('') +
+        `</tbody></table></div>`;
+      return;
+    }
+    let html = '';
+    ['S', 'A', 'B', 'C', 'D'].forEach((t) => {
+      const g = candleList.filter((p) => p.tier === t);
+      if (g.length) html += `<div class="group-h"><span class="tier ${t}">${t}</span>${TIER_DESC[t]}<span class="gdesc">${g.length} 种</span></div><div class="grid">${g.map(card).join('')}</div>`;
+    });
+    if (trendList.length) html += `<div class="group-h">📈 趋势与西方技术配合<span class="gdesc">K线必须放在趋势里看 · ${trendList.length} 项</span></div><div class="grid">${trendList.map(card).join('')}</div>`;
+    out.innerHTML = html;
+  }
+
+  /* ── modal ── */
+  const modal = document.getElementById('modal'), mbox = document.getElementById('mbox');
+  let openId = null;
+  function open(id) {
+    const p = ALL.find((x) => x.id === id); if (!p) return;
+    openId = id;
+    const idx = current.findIndex((x) => x.id === id);
+    const prev = current[idx - 1], next = current[idx + 1];
+    mbox.innerHTML = `<button class="mclose" aria-label="关闭">✕</button>
+      <div class="mhead"><span class="tier ${p.tier}">${p.tier}</span><h2>${p.zh}</h2></div>
+      <div class="men">${p.en}　·　实用度排名 ${rankLabel(p)}</div>
+      <div class="mchart">${render(p, 680, p.panel ? 420 : 300, { big: true })}</div>
+      <div class="mlegend">${p.path ? '示意走势图' : '<span>半透明：之前的趋势</span><span>黄色框：形态本身</span>' + (afterOf(p) ? '<span>虚线：通常的后续走势（不保证）</span>' : '')}</div>
+      <div class="cmeta" style="margin-top:6px"><span class="pill ${p.dir}">${DIR_ZH[p.dir]}</span><span class="pill">${TYPE_ZH[p.type]}</span><span class="pill">${nLabel(p)}</span><span class="pill">可靠性 <span class="stars">${stars(p.rel)}</span></span><span class="pill">${FREQ_ZH[p.freq]}</span><span class="pill">${p.book ? '《日本蜡烛图技术》原书' : '后人补充'}</span></div>
+      <div class="msum">${p.s || ''}</div>
+      <div class="sec"><h4>① 怎么认出它</h4><p>${p.rec}</p></div>
+      <div class="sec"><h4>② 它说明了什么</h4><p>${p.psy}</p></div>
+      <div class="sec"><h4>③ 实战怎么用</h4><p>${p.use}</p></div>
+      <div class="mnav"><button data-go="${prev ? prev.id : ''}" ${prev ? '' : 'disabled style="visibility:hidden"'}>← ${prev ? prev.zh : ''}</button><button data-go="${next ? next.id : ''}" ${next ? '' : 'disabled style="visibility:hidden"'}>${next ? next.zh : ''} →</button></div>`;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if (location.hash.slice(1) !== id) history.replaceState(null, '', '#' + id);
+    mbox.scrollTop = 0; modal.scrollTop = 0;
+  }
+  function close() { modal.classList.remove('open'); document.body.style.overflow = ''; openId = null; history.replaceState(null, '', location.pathname + location.search); }
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal || e.target.closest('.mclose')) return close();
+    const go = e.target.closest('[data-go]'); if (go && go.dataset.go) open(go.dataset.go);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!openId) return;
+    if (e.key === 'Escape') close();
+    const idx = current.findIndex((x) => x.id === openId);
+    if (e.key === 'ArrowRight' && current[idx + 1]) open(current[idx + 1].id);
+    if (e.key === 'ArrowLeft' && current[idx - 1]) open(current[idx - 1].id);
+  });
+  out.addEventListener('click', (e) => { const c = e.target.closest('[data-id]'); if (c) open(c.dataset.id); });
+
+  /* ── controls ── */
+  document.getElementById('q').addEventListener('input', (e) => { st.q = norm(e.target.value.trim()); draw(); });
+  document.querySelectorAll('.fgroup[data-f]').forEach((grp) => grp.addEventListener('click', (e) => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    grp.querySelectorAll('.chip').forEach((x) => x.classList.toggle('active', x === b));
+    st[grp.dataset.f] = b.dataset.v; draw();
+  }));
+  document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-view]').forEach((x) => x.classList.toggle('active', x === b));
+    st.view = b.dataset.view; draw();
+  }));
+  const setScheme = (s) => {
+    document.body.classList.toggle('us', s === 'us');
+    document.querySelectorAll('[data-scheme]').forEach((x) => x.classList.toggle('active', x.dataset.scheme === s));
+    try { localStorage.setItem('candleScheme', s); } catch (_) {}
+  };
+  document.querySelectorAll('[data-scheme]').forEach((b) => b.addEventListener('click', () => setScheme(b.dataset.scheme)));
+  setScheme((() => { try { return localStorage.getItem('candleScheme') || 'cn'; } catch (_) { return 'cn'; } })());
+
+  const nC = ALL.filter((p) => p.type !== 'trend').length, nT = ALL.length - nC;
+  document.getElementById('sub').textContent = `以 Steve Nison《日本蜡烛图技术》为主线，补充 Bulkowski、Morris 等人整理的统计形态，共 ${nC} 种K线形态 + ${nT} 项趋势与技术指标。每个形态都配有统一风格的示意图，并按「实用度」排名：越靠前越常见、越可靠、越值得先学。`;
+
+  draw();
+  if (location.hash.length > 1) open(decodeURIComponent(location.hash.slice(1)));
+})();
+</script>
+</body>
+</html>
