@@ -183,13 +183,14 @@
     .field{grid-template-columns:22px 60px 1fr}
   }
 </style>
+  <script>if(/\/index\.html$/.test(location.pathname))history.replaceState(null,"",location.pathname.replace(/index\.html$/,"")+location.search+location.hash)</script>
 </head>
 <body data-stage="empty">
 
 <header class="top">
   <div class="brand">Photo Frame</div>
   <div class="spacer"></div>
-  <a class="back" href="../index.html" data-i18n="back">← Genghua</a>
+  <a class="back" href="../" data-i18n="back">← Genghua</a>
   <button id="langBtn" class="lang" type="button" data-i18n="langToggle">中文</button>
 </header>
 

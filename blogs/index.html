@@ -138,18 +138,19 @@
 
   </style>
   
+  <script>if(/\/index\.html$/.test(location.pathname))history.replaceState(null,"",location.pathname.replace(/index\.html$/,"")+location.search+location.hash)</script>
 </head>
 <body>
 <div class="page-wrapper">
   <header>
     <div class="header-container">
-      <a href="index.html" class="logo">
+      <a href="./" class="logo">
         <img src="imgs/Pigman.png" alt="Logo">
         Genghua's Log
       </a>
       <nav>
-        <a href="index.html" class="active">Home</a>
-        <a href="topics/index.html">Topics</a>
+        <a href="./" class="active">Home</a>
+        <a href="topics/">Topics</a>
         <a href="author.html">Author</a>
       </nav>
     </div>
