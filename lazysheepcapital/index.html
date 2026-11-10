@@ -42,7 +42,6 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       display: flex; align-items: center; gap: 8px;
     }
-    .nav-logo-icon { font-size: 1.15rem; -webkit-text-fill-color: initial; }
     .nav-links { display: flex; gap: 2px; }
     .nav-link {
       padding: 6px 13px; border-radius: 8px;
@@ -52,136 +51,104 @@
     }
     .nav-link:hover { color: var(--text); background: var(--panel); border-color: var(--border); }
 
-    /* ── HERO ── */
-    .hero {
-      padding: 88px 36px 72px;
+    /* ── TOP (compact hero) ── */
+    .top {
       max-width: 1180px; margin: 0 auto;
-      text-align: center;
+      padding: 30px 36px 18px;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; flex-wrap: wrap;
     }
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--muted);
-      border: 1px solid var(--border); border-radius: 999px;
-      padding: 5px 16px; margin-bottom: 28px;
-    }
-    .pulse-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #22c55e; display: inline-block;
-      animation: pulse 2.4s ease-in-out infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.8)} }
-
-    .hero h1 {
-      font-size: clamp(2.6rem, 5.5vw, 4.4rem);
-      font-weight: 800; letter-spacing: -0.045em;
-      line-height: 1.08; margin-bottom: 22px;
+    .top h1 {
+      font-size: clamp(1.8rem, 3.4vw, 2.5rem);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.1;
     }
     .grad-text {
       background: linear-gradient(135deg, #c4b5fd 0%, #818cf8 35%, #38bdf8 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .hero-sub {
-      font-size: 1.05rem; color: var(--muted);
-      max-width: 48ch; margin: 0 auto 52px;
-      line-height: 1.75;
+    .top-sub { margin-top: 8px; font-size: .9rem; color: var(--muted); }
+    .hero-stats { display: flex; gap: 0; }
+    .stat { padding: 0 20px; border-left: 1px solid var(--border); text-align: left; }
+    .stat-num { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1.2; }
+    .stat-label { font-size: 0.72rem; color: var(--muted); }
+
+    /* ── MARKET PULSE ── */
+    .pulse {
+      max-width: 1180px; margin: 0 auto; padding: 0 36px 18px;
     }
-    .hero-stats {
-      display: flex; justify-content: center; gap: 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 28px 0;
+    .pulse-in {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      border: 1px solid var(--border); border-radius: 14px;
+      background: var(--panel); padding: 10px 12px 10px 16px;
+      text-decoration: none; color: inherit; transition: border-color .15s, background .15s;
     }
-    .stat {
-      flex: 1; max-width: 160px; text-align: center;
-      border-right: 1px solid var(--border);
-      padding: 0 24px;
-    }
-    .stat:last-child { border-right: 0; }
-    .stat-num {
-      font-size: 1.7rem; font-weight: 800;
-      letter-spacing: -0.04em; color: var(--text);
-    }
-    .stat-label { font-size: 0.74rem; color: var(--muted); margin-top: 3px; letter-spacing: 0.02em; }
+    .pulse-in:hover { border-color: var(--border-h); background: var(--panel-h); text-decoration: none; }
+    .pulse-label { font-size: .72rem; font-weight: 700; letter-spacing: .1em; color: var(--dim); margin-right: 4px; white-space: nowrap; }
+    .pchip { display: inline-flex; align-items: baseline; gap: 5px; font-size: .78rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,255,255,.04); white-space: nowrap; }
+    .pchip span { color: var(--muted); }
+    .pchip b { font-weight: 800; }
+    .pchip.hot  { background: rgba(34,197,94,.12); }
+    .pchip.cold { background: rgba(244,63,94,.12); }
+    .p-up { color: #4ade80; } .p-down { color: #fb7185; }
+    .pulse-cta { margin-left: auto; font-size: .8rem; font-weight: 700; color: #60a5fa; white-space: nowrap; }
 
     /* ── TOOLS ── */
     .tools-section {
       max-width: 1180px; margin: 0 auto;
-      padding: 60px 36px 72px;
-    }
-    .section-label {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--dim);
-      margin-bottom: 20px;
+      padding: 0 36px 44px;
     }
     .tools-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
     }
     .tool-card {
       position: relative;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 20px; padding: 28px;
+      border-radius: 16px; padding: 18px 18px 16px;
       text-decoration: none; color: inherit;
       display: flex; flex-direction: column;
-      transition: transform .2s ease, border-color .2s, background .2s, box-shadow .2s;
+      transition: transform .18s ease, border-color .18s, background .18s;
       overflow: hidden;
     }
     .tool-card::before {
-      content: '';
-      position: absolute; inset: 0; border-radius: 20px;
-      background: radial-gradient(ellipse at 25% 0%, var(--glow) 0%, transparent 60%);
-      pointer-events: none; opacity: 0; transition: opacity .3s;
+      content: ''; position: absolute; left: 0; top: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent-c), transparent 80%);
+      opacity: .7;
     }
-    .tool-card:hover { transform: translateY(-4px); border-color: var(--border-h); background: var(--panel-h); box-shadow: 0 20px 60px rgba(0,0,0,.4); }
-    .tool-card:hover::before { opacity: 1; }
-
-    .tool-card.purple { --glow: rgba(168,85,247,.2);  --accent-c: #c084fc; }
-    .tool-card.cyan   { --glow: rgba(6,182,212,.18);  --accent-c: #22d3ee; }
-    .tool-card.blue   { --glow: rgba(59,130,246,.18); --accent-c: #60a5fa; }
-    .tool-card.rose   { --glow: rgba(244,63,94,.18);  --accent-c: #fb7185; }
-    .tool-card.amber  { --glow: rgba(245,158,11,.18); --accent-c: #fbbf24; }
-    .tool-card.emerald{ --glow: rgba(34,229,133,.18); --accent-c: #22e585; }
-
-    .tool-icon {
-      width: 46px; height: 46px; border-radius: 13px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.35rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      margin-bottom: 22px; flex-shrink: 0;
-    }
-    .tool-title {
-      font-size: 1.22rem; font-weight: 700;
-      letter-spacing: -0.025em; margin-bottom: 4px;
-    }
+    .tool-card:hover { transform: translateY(-3px); border-color: var(--border-h); background: var(--panel-h); text-decoration: none; }
+    .tool-card.purple { --accent-c: #c084fc; }
+    .tool-card.cyan   { --accent-c: #22d3ee; }
+    .tool-card.blue   { --accent-c: #60a5fa; }
+    .tool-card.rose   { --accent-c: #fb7185; }
+    .tool-card.amber  { --accent-c: #fbbf24; }
+    .tool-card.emerald{ --accent-c: #22e585; }
+    .tool-card.green  { --accent-c: #4ade80; }
+    .tool-card.slate  { --accent-c: #cbd5e1; }
+    .tool-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    .tool-title { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; }
+    .tool-cta { font-size: .9rem; font-weight: 700; color: var(--accent-c); opacity: .6; transition: opacity .15s, transform .15s; }
+    .tool-card:hover .tool-cta { opacity: 1; transform: translateX(2px); }
     .tool-en {
-      font-size: 0.74rem; font-weight: 600;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--dim); margin-bottom: 14px;
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: var(--dim); margin: 2px 0 10px;
     }
-    .tool-desc {
-      font-size: 0.87rem; color: var(--muted);
-      line-height: 1.65; flex: 1;
-    }
-    .tool-footer {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      margin-top: 24px; padding-top: 18px;
-      border-top: 1px solid var(--border);
-    }
-    .tool-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tool-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; flex: 1; }
+    .tool-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 12px; }
     .tool-tag {
-      font-size: 0.68rem; font-weight: 600;
-      padding: 3px 8px; border-radius: 5px;
+      font-size: 0.66rem; font-weight: 600;
+      padding: 2px 7px; border-radius: 5px;
       background: rgba(255,255,255,0.06); color: var(--muted);
     }
-    .tool-cta {
-      font-size: 0.83rem; font-weight: 700;
-      color: var(--accent-c); white-space: nowrap;
+    .sublinks { display: flex; flex-direction: column; gap: 6px; flex: 1; justify-content: flex-end; }
+    .sublink {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 10px; border-radius: 9px; font-size: .82rem; font-weight: 700;
+      text-decoration: none; border: 1px solid var(--sl-b); background: var(--sl-bg); color: var(--sl-c);
+      transition: filter .15s;
     }
+    .sublink:hover { filter: brightness(1.35); text-decoration: none; }
+    .sublink span { font-size: .7rem; font-weight: 500; color: var(--muted); }
 
     /* ── DIVIDER ── */
     .section-divider {
@@ -330,22 +297,29 @@
     a { color: #60a5fa; text-decoration: none; }
     a:hover { text-decoration: underline; }
 
+    @media (max-width: 1060px) {
+      .nav { padding: 0 20px; }
+      .nav-link { padding: 6px 8px; font-size: .78rem; }
+    }
     @media (max-width: 960px) {
-      .tools-grid { grid-template-columns: 1fr; }
+      .tools-grid { grid-template-columns: repeat(2, 1fr); }
       .grid { grid-template-columns: 1fr; }
-      .hero-stats { gap: 0; }
+      .top { align-items: flex-start; }
+    }
+    @media (max-width: 760px) {
+      .nav-links { display: none; }
     }
     @media (max-width: 640px) {
       .nav  { padding: 0 18px; }
-      .nav-links { display: none; }
-      .hero { padding: 52px 18px 48px; }
-      .tools-section, .briefing, .section-divider { padding-left: 18px; padding-right: 18px; }
-      .hero h1 { font-size: 2.2rem; }
+      .top, .pulse, .tools-section, .briefing, .section-divider { padding-left: 18px; padding-right: 18px; }
+      .top { padding-top: 22px; }
       .metrics { grid-template-columns: repeat(2,1fr); }
-      .hero-stats { flex-wrap: wrap; }
-      .stat { min-width: 50%; border-bottom: 1px solid var(--border); padding: 16px 0; }
-      .stat:nth-child(odd) { border-right: 1px solid var(--border); }
-      .stat:last-child { border-bottom: 0; }
+      .stat { padding: 0 14px; }
+      .stat:first-child { padding-left: 0; border-left: 0; }
+      .pulse-cta { margin-left: 0; }
+    }
+    @media (max-width: 520px) {
+      .tools-grid { grid-template-columns: 1fr; }
     }
   </style>
   <script>(function(){var p=location.pathname,c=p.replace(/\/index\.html$/,"/").replace(/\.html$/,"");if(c!==p)history.replaceState(null,"",c+location.search+location.hash)})()</script>
@@ -354,12 +328,10 @@
 
   <!-- ── NAV ── -->
   <nav class="nav">
-    <span class="nav-logo">
-      <img src="favicon.svg" width="22" height="22" style="display:block;flex-shrink:0" alt="">
-      LazySheepcapital
-    </span>
+    <span class="nav-logo">LazySheepcapital</span>
     <div class="nav-links">
       <a href="smart_money/" class="nav-link">聪明钱追踪</a>
+      <a href="sectors/" class="nav-link">板块涨跌</a>
       <a href="ai-capex-flow/" class="nav-link">AI 流向图</a>
       <a href="space-flow/" class="nav-link">太空板块</a>
       <a href="physical-ai-flow/" class="nav-link">物理AI</a>
@@ -367,150 +339,90 @@
       <a href="candlesticks/" class="nav-link">蜡烛图</a>
       <a href="cut-loss/" class="nav-link">割肉自查</a>
       <a href="track-record/" class="nav-link">实盘记录</a>
-      <a href="../fun_things/" class="nav-link">🎲 实验室</a>
+      <a href="../fun_things/" class="nav-link">实验室</a>
     </div>
   </nav>
 
-  <!-- ── HERO ── -->
-  <section class="hero">
-    <div class="hero-eyebrow">
-      <span class="pulse-dot"></span>
-      2026 H1 · 数据持续更新中
+  <!-- ── TOP ── -->
+  <header class="top">
+    <div>
+      <h1>赌狗<span class="grad-text">资本</span> · 跟着聪明钱，重仓下注</h1>
+      <p class="top-sub">追踪顶级机构持仓，可视化资本流向，每日板块涨跌与财报宏观日历。</p>
     </div>
-    <h1>赌狗<span class="grad-text">资本</span><br>跟着聪明钱，重仓下注</h1>
-    <p class="hero-sub">追踪顶级机构持仓动向，可视化 AI 资本流向，<br>一站式掌握财报、FOMC 与宏观数据日历。</p>
     <div class="hero-stats">
-      <div class="stat">
-        <div class="stat-num" id="statInst">21</div>
-        <div class="stat-label">机构覆盖</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="statQuarters">5</div>
-        <div class="stat-label">季度数据</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="statMoves">400+</div>
-        <div class="stat-label">持仓变化</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="statEarnings">50+</div>
-        <div class="stat-label">财报追踪</div>
-      </div>
+      <div class="stat"><div class="stat-num" id="statInst">21</div><div class="stat-label">机构覆盖</div></div>
+      <div class="stat"><div class="stat-num" id="statQuarters">5</div><div class="stat-label">季度数据</div></div>
+      <div class="stat"><div class="stat-num" id="statMoves">400+</div><div class="stat-label">持仓变化</div></div>
+      <div class="stat"><div class="stat-num" id="statEarnings">50+</div><div class="stat-label">财报追踪</div></div>
     </div>
+  </header>
+
+  <!-- ── MARKET PULSE（读 data/sectors.json，加载失败整条隐藏） ── -->
+  <section class="pulse" id="pulse" hidden>
+    <a class="pulse-in" href="sectors/" id="pulseIn"></a>
   </section>
 
   <!-- ── TOOLS ── -->
   <section class="tools-section">
-    <div class="section-label">核心工具</div>
     <div class="tools-grid">
 
       <a href="smart_money/" class="tool-card purple">
-        <div class="tool-icon">🏦</div>
-        <div class="tool-title">聪明钱追踪</div>
+        <div class="tool-head"><div class="tool-title">聪明钱追踪</div><span class="tool-cta">→</span></div>
         <div class="tool-en">Smart Money Tracker</div>
-        <div class="tool-desc">实时追踪 Bridgewater、Berkshire、Pershing Square 等 <span id="tcInstCount">21</span> 家顶级机构的 13F 季度持仓变化，量化聪明钱动向与信号强度，内置全市场热力图与机构横向对比。</div>
-        <div class="tool-footer">
-          <div class="tool-tags">
-            <span class="tool-tag">13F 披露</span>
-            <span class="tool-tag" id="tcQuarter">Q2 2026</span>
-            <span class="tool-tag">热力图</span>
-          </div>
-          <span class="tool-cta">进入 →</span>
-        </div>
+        <div class="tool-desc"><span id="tcInstCount">21</span> 家顶级机构 13F 持仓变化，量化信号强度，热力图与横向对比。</div>
+        <div class="tool-tags"><span class="tool-tag">13F</span><span class="tool-tag" id="tcQuarter">Q2 2026</span></div>
       </a>
 
-      <div class="tool-card cyan" style="cursor:default">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-          <div class="tool-icon" style="margin-bottom:0">⚡</div>
-          <div>
-            <div class="tool-title" style="margin-bottom:1px">资本流向图</div>
-            <div class="tool-en">Capital Flow · 供应链图谱</div>
-          </div>
-        </div>
-        <div class="tool-desc" style="margin-bottom:16px">可视化 AI 基建、太空产业 &amp; 物理 AI / 机器人三大板块的资本流向与供应链受益拆解，分层 Chip 卡 · 瓶颈剖析 · 聪明钱信号。</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <a href="ai-capex-flow/" style="flex:1;min-width:120px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.22);border-radius:10px;padding:10px 14px;text-decoration:none;color:inherit;transition:background .15s" onmouseover="this.style.background='rgba(0,229,255,.13)'" onmouseout="this.style.background='rgba(0,229,255,.07)'">
-            <div>
-              <div style="font-weight:700;font-size:.88rem;color:#22d3ee">⚡ AI Capex</div>
-              <div style="font-size:.75rem;color:var(--muted);margin-top:2px">GPU · 光互联 · 能源</div>
-            </div>
-            <span style="color:#22d3ee;font-weight:700;font-size:.85rem">→</span>
-          </a>
-          <a href="space-flow/" style="flex:1;min-width:120px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(199,125,255,.07);border:1px solid rgba(199,125,255,.22);border-radius:10px;padding:10px 14px;text-decoration:none;color:inherit;transition:background .15s" onmouseover="this.style.background='rgba(199,125,255,.13)'" onmouseout="this.style.background='rgba(199,125,255,.07)'">
-            <div>
-              <div style="font-weight:700;font-size:.88rem;color:#c084fc">🚀 太空板块</div>
-              <div style="font-size:.75rem;color:var(--muted);margin-top:2px">SPCX · 发射 · 卫星</div>
-            </div>
-            <span style="color:#c084fc;font-weight:700;font-size:.85rem">→</span>
-          </a>
-          <a href="physical-ai-flow/" style="flex:1;min-width:120px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(94,243,140,.07);border:1px solid rgba(94,243,140,.22);border-radius:10px;padding:10px 14px;text-decoration:none;color:inherit;transition:background .15s" onmouseover="this.style.background='rgba(94,243,140,.13)'" onmouseout="this.style.background='rgba(94,243,140,.07)'">
-            <div>
-              <div style="font-weight:700;font-size:.88rem;color:#5ef38c">🤖 物理 AI</div>
-              <div style="font-size:.75rem;color:var(--muted);margin-top:2px">机器人 · 执行器 · 大脑</div>
-            </div>
-            <span style="color:#5ef38c;font-weight:700;font-size:.85rem">→</span>
-          </a>
+      <a href="sectors/" class="tool-card green">
+        <div class="tool-head"><div class="tool-title">板块涨跌</div><span class="tool-cta">→</span></div>
+        <div class="tool-en">Daily Sector Moves</div>
+        <div class="tool-desc">11 大板块 + 科技 10 个细分（存储、GPU、软件…）热力图与分时曲线，收盘日更。</div>
+        <div class="tool-tags"><span class="tool-tag">日更</span><span class="tool-tag">热力图</span></div>
+      </a>
+
+      <div class="tool-card cyan">
+        <div class="tool-head"><div class="tool-title">资本流向图</div></div>
+        <div class="tool-en">Capital Flow · 供应链</div>
+        <div class="sublinks">
+          <a class="sublink" href="ai-capex-flow/" style="--sl-c:#22d3ee;--sl-b:rgba(0,229,255,.22);--sl-bg:rgba(0,229,255,.07)">AI Capex <span>GPU · 光互联 · 能源</span></a>
+          <a class="sublink" href="space-flow/" style="--sl-c:#c084fc;--sl-b:rgba(199,125,255,.22);--sl-bg:rgba(199,125,255,.07)">太空板块 <span>发射 · 卫星</span></a>
+          <a class="sublink" href="physical-ai-flow/" style="--sl-c:#5ef38c;--sl-b:rgba(94,243,140,.22);--sl-bg:rgba(94,243,140,.07)">物理 AI <span>机器人 · 执行器</span></a>
         </div>
       </div>
 
       <a href="calendar/" class="tool-card blue">
-        <div class="tool-icon">📅</div>
-        <div class="tool-title">财报日历</div>
+        <div class="tool-head"><div class="tool-title">财报日历</div><span class="tool-cta">→</span></div>
         <div class="tool-en">Financial Calendar</div>
-        <div class="tool-desc">50+ 公司财报日期、FOMC 会议、非农与 CPI 等宏观数据一站式聚合，盘前 ▲ / 盘后 ▼ 清晰标注，支持月视图、事件类型筛选与近期事件速览。</div>
-        <div class="tool-footer">
-          <div class="tool-tags">
-            <span class="tool-tag">财报</span>
-            <span class="tool-tag">FOMC</span>
-            <span class="tool-tag">经济数据</span>
-          </div>
-          <span class="tool-cta">进入 →</span>
-        </div>
+        <div class="tool-desc">50+ 公司财报、FOMC、非农与 CPI，盘前盘后清晰标注，月视图与近期速览。</div>
+        <div class="tool-tags"><span class="tool-tag">财报</span><span class="tool-tag">FOMC</span></div>
       </a>
 
       <a href="candlesticks/" class="tool-card amber">
-        <div class="tool-icon">🕯️</div>
-        <div class="tool-title">蜡烛图形态大全</div>
-        <div class="tool-en">Japanese Candlestick Patterns</div>
-        <div class="tool-desc">基于《日本蜡烛图技术》整理 100+ 种K线形态，加上趋势与技术指标。每种形态都配统一风格的示意图，并按实用度分为 S/A/B/C/D 五档，支持搜索和筛选。</div>
-        <div class="tool-footer">
-          <div class="tool-tags">
-            <span class="tool-tag">K线形态</span>
-            <span class="tool-tag">实用度排名</span>
-            <span class="tool-tag">可搜索</span>
-          </div>
-          <span class="tool-cta">进入 →</span>
-        </div>
+        <div class="tool-head"><div class="tool-title">蜡烛图形态</div><span class="tool-cta">→</span></div>
+        <div class="tool-en">Candlestick Patterns</div>
+        <div class="tool-desc">100+ 种 K 线形态与趋势指标，统一示意图，按实用度 S–D 分档，可搜索。</div>
+        <div class="tool-tags"><span class="tool-tag">K线</span><span class="tool-tag">排名</span></div>
       </a>
 
       <a href="cut-loss/" class="tool-card rose">
-        <div class="tool-icon">🔪</div>
-        <div class="tool-title">割肉自查</div>
+        <div class="tool-head"><div class="tool-title">割肉自查</div><span class="tool-cta">→</span></div>
         <div class="tool-en">Cut-Loss Checklist</div>
-        <div class="tool-desc">想割肉之前，先回答五个问题：大盘崩了吗？基本面崩了吗？买入逻辑证伪了吗？杠杆要爆了吗？你是 sb 吗？只要有一题答「否」，就不应该轻易割肉。</div>
-        <div class="tool-footer">
-          <div class="tool-tags">
-            <span class="tool-tag">情绪管理</span>
-            <span class="tool-tag">5 道题</span>
-            <span class="tool-tag">防剁手</span>
-          </div>
-          <span class="tool-cta">进入 →</span>
-        </div>
+        <div class="tool-desc">想割肉前先答五个问题，有一题答「否」就别轻易割。</div>
+        <div class="tool-tags"><span class="tool-tag">5 道题</span><span class="tool-tag">防剁手</span></div>
+      </a>
+
+      <a href="track-record/" class="tool-card slate">
+        <div class="tool-head"><div class="tool-title">实盘记录</div><span class="tool-cta">→</span></div>
+        <div class="tool-en">Track Record</div>
+        <div class="tool-desc">真实仓位与累计收益曲线，每笔交易可追溯。</div>
+        <div class="tool-tags"><span class="tool-tag">实盘</span><span class="tool-tag">收益曲线</span></div>
       </a>
 
       <a href="../fun_things/" class="tool-card emerald">
-        <div class="tool-icon">🎲</div>
-        <div class="tool-title">蒙特卡洛实验室</div>
-        <div class="tool-en">Monte Carlo Markets Lab</div>
-        <div class="tool-desc">用几何布朗运动模拟一只股票的上千种未来走势，实时读出量化真正关心的赔率：盈利概率、95% 风险价值 (VaR)、以及 P5–P95 分位数扇形。纯 Canvas，零依赖。</div>
-        <div class="tool-footer">
-          <div class="tool-tags">
-            <span class="tool-tag">GBM 模拟</span>
-            <span class="tool-tag">VaR</span>
-            <span class="tool-tag">交互可视化</span>
-          </div>
-          <span class="tool-cta">进入 →</span>
-        </div>
+        <div class="tool-head"><div class="tool-title">蒙特卡洛实验室</div><span class="tool-cta">→</span></div>
+        <div class="tool-en">Monte Carlo Lab</div>
+        <div class="tool-desc">几何布朗运动模拟上千种走势，读出盈利概率、95% VaR 与分位数扇形。</div>
+        <div class="tool-tags"><span class="tool-tag">GBM</span><span class="tool-tag">VaR</span></div>
       </a>
 
     </div>
@@ -710,6 +622,29 @@
       }
     }
     start();
+  </script>
+
+  <script>
+    /* 首页市场快讯条：读板块日更数据，失败则整条隐藏 */
+    (async function () {
+      try {
+        const d = await fetch("data/sectors.json", { cache: "no-cache" }).then(r => r.json());
+        const pct = v => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(2) + "%";
+        const c = v => v >= 0 ? "p-up" : "p-down";
+        const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+        const chip = (name, v, extra = "") => `<span class="pchip ${extra}"><span>${esc(name)}</span><b class="${c(v)}">${pct(v)}</b></span>`;
+        const sec = d.sectors, g = d.tech_groups;
+        document.getElementById("pulseIn").innerHTML =
+          `<span class="pulse-label">${d.closed ? "收盘" : "盘中"} ${esc(d.date.slice(5).replace("-", "/"))}</span>` +
+          d.indices.map(i => chip(i.name, i.chg)).join("") +
+          chip("领涨 " + sec[0].name, sec[0].chg, "hot") +
+          chip("领跌 " + sec[sec.length - 1].name, sec[sec.length - 1].chg, "cold") +
+          chip("科技强 " + g[0].name, g[0].avg, "hot") +
+          chip("科技弱 " + g[g.length - 1].name, g[g.length - 1].avg, "cold") +
+          `<span class="pulse-cta">板块涨跌 →</span>`;
+        document.getElementById("pulse").hidden = false;
+      } catch (e) { /* 没数据就不显示 */ }
+    })();
   </script>
 
   <script>

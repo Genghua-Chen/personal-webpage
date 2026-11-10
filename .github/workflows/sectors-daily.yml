@@ -1,0 +1,42 @@
+# 每个交易日美股收盘后，拉取板块 / 科技细分涨跌，更新 lazysheepcapital/data/sectors.json
+# 说明文档：lazysheepcapital/scripts/README.md 「板块涨跌日更」一节
+name: sectors-daily
+
+on:
+  schedule:
+    # 周一到周五 21:30 UTC = 美东 16:30（冬令时）/ 17:30（夏令时），都在收盘后
+    - cron: "30 21 * * 1-5"
+  workflow_dispatch: {}   # 允许在 GitHub Actions 页面手动触发
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sectors-daily
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch sector data
+        run: python3 lazysheepcapital/scripts/fetch_sectors.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "sectors-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lazysheepcapital/data/sectors.json lazysheepcapital/data/sectors_history.csv
+          if git diff --cached --quiet; then
+            echo "no change"
+          else
+            git commit -m "sectors: daily close $(date -u +%F)"
+            git pull --rebase
+            git push
+          fi

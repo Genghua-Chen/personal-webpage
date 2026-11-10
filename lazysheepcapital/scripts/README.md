@@ -121,3 +121,64 @@ tail -n +2 data/smart_money_positions_new.csv >> data/smart_money_positions.csv
 - 动作判定：新出现 = `New Position`，消失 = `Exited`（pct -100），
   数量增 = `Added`，数量减 = `Reduced`
 - SEC 要求 User-Agent 带联系方式（脚本里已配置），请求间隔 0.2s
+
+---
+
+# 板块涨跌日更（`fetch_sectors.py`）
+
+页面：`sectors/`（导航「板块涨跌」）。首页顶部的市场快讯条也读同一份数据。
+
+## 它做什么
+
+从 Yahoo Finance 拉取约 75 个代码的**当日涨跌、5 分钟分时、近一月日线**，写两个文件：
+
+| 文件 | 内容 | 用途 |
+|---|---|---|
+| `data/sectors.json` | 最新一个交易日的完整快照（指数、11 大板块、科技 ETF、科技 10 个细分及成分股，含曲线） | `sectors/` 页面和首页快讯条直接读取 |
+| `data/sectors_history.csv` | 每天一行：日期 + 11 个板块 ETF 涨跌 + 10 个科技细分等权涨跌 | 长期积累，方便以后做统计 / 回看 |
+
+纯标准库，不需要装依赖。
+
+## 自动日更（GitHub Actions）
+
+`.github/workflows/sectors-daily.yml`：
+
+- **时间**：周一到周五 21:30 UTC，即美东 16:30（冬令时）/ 17:30（夏令时），都在收盘之后。
+- **流程**：跑脚本 → 如果 `sectors.json` / `sectors_history.csv` 有变化就 commit 并 push 到 `main` → GitHub Pages 自动重新部署。
+- **节假日**：休市日 Yahoo 返回的是上一个交易日数据，脚本会覆盖同一天那行，不会产生重复。
+- **手动触发**：GitHub 仓库 → Actions → `sectors-daily` → Run workflow。
+- 需要仓库 Settings → Actions → General → Workflow permissions 设为 **Read and write**（workflow 里已声明 `contents: write`，一般默认可用）。
+
+## 手动跑
+
+```bash
+cd lazysheepcapital
+python3 scripts/fetch_sectors.py
+```
+
+输出示例：
+
+```
+✅ data/sectors.json  截至 2026-11-10 16:00 ET  (73/74 只)
+   缺失: PSTG
+```
+
+盘中跑得到的是实时快照，页面左上角会显示黄色「盘中快照」；收盘后跑显示绿色「收盘数据」。
+
+## 改分组 / 加股票
+
+只改 `fetch_sectors.py` 顶部的 `TECH_GROUPS`（科技细分）、`SECTORS`、`TECH_ETFS`、`INDICES` 列表，页面会自动适配，不需要改 HTML。
+`sectors_history.csv` 的列由 `SECTORS` + `TECH_GROUPS` 的 key 决定，**改了分组之后旧行的列会对不上**，建议改分组时把旧 CSV 另存一份。
+
+## 口径说明
+
+- 涨跌幅 = 最新价 ÷ 前一交易日收盘价 − 1。
+- 科技细分 = 成分股**等权平均**；XLK / SMH 是市值加权，所以英伟达、微软这类大权重股大跌时，两者可能相差很多。
+- 「近一月」曲线以窗口第一天为 0% 的累计涨跌。
+- 某只股票拉取失败（退市、改代码等）会列在 `missing` 里并显示在页面底部，不影响其他数据。
+
+## 常见问题
+
+- **页面显示「数据加载失败」**：本地直接双击打开 HTML 时浏览器会拦截 `fetch`，用 `python3 -m http.server` 在仓库根目录起一个服务再访问。
+- **Actions 跑了但没更新**：看 Actions 日志里是否有 `⚠️` 行；Yahoo 偶尔限流，脚本每个代码会重试 3 次。
+- **加了新的子页面**：记得把「板块涨跌」放进新页面的 `.sn-link` 导航（顺序见其他页面）。
