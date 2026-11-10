@@ -20,6 +20,7 @@ from datetime import datetime, timedelta, timezone
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "sectors.json")
 HIST = os.path.join(ROOT, "data", "sectors_history.csv")
+ARCHIVE = os.path.join(ROOT, "data", "sectors_archive")   # 每日精简存档，页面「回放」用
 
 INDICES = [("SPY", "标普 500"), ("QQQ", "纳指 100"), ("IWM", "罗素 2000")]
 
@@ -170,6 +171,8 @@ def main():
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     _append_history(out)
+    if out["closed"]:
+        _write_archive(out)
     print(f"✅ {os.path.relpath(OUT, ROOT)}  截至 {out['asof_et']}  ({len(q) - len(missing)}/{len(q)} 只)")
     if missing:
         print("   缺失:", ", ".join(missing))
@@ -182,6 +185,63 @@ def _is_edt(ts):
         first = datetime(d.year, month, 1, tzinfo=timezone.utc)
         return first + timedelta(days=(6 - first.weekday()) % 7 + 7 * (n - 1))
     return nth_sunday(3, 2) + timedelta(hours=7) <= d < nth_sunday(11, 1) + timedelta(hours=6)
+
+
+def _thin(points, step):
+    """分时曲线降采样：每 step 秒取一个点，保留最后一个点（收盘）。"""
+    if not points:
+        return []
+    out, nxt = [], points[0][0]
+    for p in points:
+        if p[0] >= nxt:
+            out.append(p)
+            nxt = p[0] + step
+    if out[-1] is not points[-1]:
+        out.append(points[-1])
+    return out
+
+
+def _write_archive(out):
+    """存一份精简快照到 data/sectors_archive/YYYY-MM-DD.json，并更新 index.json（日期列表）。
+
+    结构和 sectors.json 相同，页面可以直接复用渲染逻辑；区别：
+      - 不存「近一月」曲线（回放只看当天）
+      - 指数 / 板块 / 细分的分时降到 15 分钟一个点，个股降到 30 分钟一个点，ETF 不存分时
+      - 分时的 x 存「距 t0（开盘）的分钟数」，页面加载时还原成时间戳
+    一天约 20 KB。
+    """
+    # 分时时间戳改存「距开盘的分钟数」，体积小很多；页面用 t0 还原
+    t0 = min((r["intraday"][0][0] for r in out["indices"] if r.get("intraday")), default=0)
+
+    def slim(r, step):
+        r = {k: v for k, v in r.items() if k not in ("month", "time", "intraday")}
+        if step:
+            r["intraday"] = [[(t - t0) // 60, v] for t, v in _thin(out_map[r["sym"]], step)]
+        return r
+
+    out_map = {r["sym"]: r.get("intraday") for r in
+               out["indices"] + out["sectors"] + out["tech_etfs"]
+               + [s for g in out["tech_groups"] for s in g["stocks"]]}
+
+    snap = dict(out)
+    snap.pop("generated", None)
+    snap["t0"] = t0
+    snap["indices"] = [slim(r, 900) for r in out["indices"]]
+    snap["sectors"] = [slim(r, 900) for r in out["sectors"]]
+    snap["tech_etfs"] = [slim(r, 0) for r in out["tech_etfs"]]   # 页面只用涨跌幅
+    snap["tech_groups"] = [
+        {**{k: v for k, v in g.items() if k not in ("month", "stocks", "intraday")},
+         "intraday": [[(t - t0) // 60, v] for t, v in _thin(g["intraday"], 900)],
+         "stocks": [slim(x, 1800) for x in g["stocks"]]}
+        for g in out["tech_groups"]
+    ]
+    os.makedirs(ARCHIVE, exist_ok=True)
+    with open(os.path.join(ARCHIVE, out["date"] + ".json"), "w", encoding="utf-8") as f:
+        json.dump(snap, f, ensure_ascii=False, separators=(",", ":"))
+    dates = sorted((n[:-5] for n in os.listdir(ARCHIVE)
+                    if n.endswith(".json") and n[:4].isdigit()), reverse=True)
+    with open(os.path.join(ARCHIVE, "index.json"), "w", encoding="utf-8") as f:
+        json.dump({"dates": dates}, f)
 
 
 def _append_history(out):

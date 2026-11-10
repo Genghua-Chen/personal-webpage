@@ -140,6 +140,14 @@
     .foot{margin-top:30px;font-size:.76rem;color:var(--dim);line-height:1.8;border-top:1px solid var(--border);padding-top:16px}
     .err{padding:60px 20px;text-align:center;color:var(--muted)}
 
+    /* date replay nav */
+    .dnav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .dbtn{font-size:.8rem;font-weight:600;padding:7px 12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text);text-decoration:none;white-space:nowrap;transition:border-color .15s,background .15s}
+    a.dbtn:hover{border-color:var(--border-h);background:var(--panel-h)}
+    .dbtn.off{color:var(--dim);cursor:default}
+    .dbtn.now{border-color:rgba(167,139,250,.45);color:#c4b5fd}
+    .dsel{font:inherit;font-size:.8rem;font-weight:600;padding:7px 10px;border-radius:10px;border:1px solid var(--border);background:#11111d;color:var(--text);cursor:pointer}
+
     @media(max-width:1000px){.two{grid-template-columns:1fr}.heat{grid-template-columns:repeat(3,1fr)}.etfs{grid-template-columns:repeat(4,1fr)}}
     @media(max-width:760px){.tiles{grid-template-columns:repeat(2,1fr)}.groups,.movers{grid-template-columns:1fr}.heat{grid-template-columns:repeat(2,1fr)}.wrap{padding:20px 14px 60px}.chart{height:280px}}
   </style>
@@ -153,11 +161,30 @@
 <script>
 (async function () {
   const app = document.getElementById("app");
-  let D;
+  const getJSON = u => fetch(u, { cache: "no-cache" }).then(r => { if (!r.ok) throw r.status; return r.json(); });
+  // ?date=YYYY-MM-DD → 回放 data/sectors_archive/ 里那天的存档；不带参数 → 最新数据
+  const want = new URLSearchParams(location.search).get("date");
+  let D, latest, dates = [];
   try {
-    D = await fetch("../data/sectors.json", { cache: "no-cache" }).then(r => { if (!r.ok) throw r.status; return r.json(); });
+    [latest, dates] = await Promise.all([
+      getJSON("../data/sectors.json"),
+      getJSON("../data/sectors_archive/index.json").then(j => j.dates || []).catch(() => []),
+    ]);
   } catch (e) {
     app.innerHTML = '<div class="err">数据加载失败，请稍后再试。</div>'; return;
+  }
+  if (!dates.includes(latest.date)) dates = [latest.date, ...dates].sort().reverse();
+  const replay = !!want && want !== latest.date;
+  if (!replay) D = latest;
+  else {
+    try { D = await getJSON(`../data/sectors_archive/${encodeURIComponent(want)}.json`); }
+    catch (e) {
+      app.innerHTML = `<div class="err">没有 ${String(want).replace(/[<>&"]/g, "")} 的存档。<br><br><a href="./" style="color:#60a5fa">回到最新</a></div>`; return;
+    }
+    // 存档里分时的 x 是「距开盘分钟数」，还原成时间戳
+    const fix = r => { if (r.intraday) r.intraday = r.intraday.map(([m, v]) => [D.t0 + m * 60, v]); };
+    [...D.indices, ...D.sectors, ...D.tech_etfs].forEach(fix);
+    D.tech_groups.forEach(g => { fix(g); g.stocks.forEach(fix); });
   }
 
   /* ── helpers ── */
@@ -280,12 +307,30 @@
   const xlk = sec.find(s => s.sym === "XLK");
   const tilesData = [...D.indices, xlk && { ...xlk, name: "科技板块" }].filter(Boolean);
 
+  /* ── 日期回放导航：dates 新→旧 ── */
+  function dateNav() {
+    if (dates.length < 2 && !replay) return "";
+    const i = dates.indexOf(D.date);
+    const older = dates[i + 1], newer = i > 0 ? dates[i - 1] : null;
+    const href = d => d === latest.date ? "./" : `?date=${d}`;
+    const wk = d => "日一二三四五六"[new Date(d + "T12:00:00").getDay()];
+    return `<div class="dnav">
+      ${older ? `<a class="dbtn" href="${href(older)}" title="${older}">‹ 前一天</a>` : `<span class="dbtn off">‹ 前一天</span>`}
+      <select class="dsel" onchange="location.href=this.value">${dates.map(d =>
+        `<option value="${href(d)}"${d === D.date ? " selected" : ""}>${d} 周${wk(d)}${d === latest.date ? " · 最新" : ""}</option>`).join("")}</select>
+      ${newer ? `<a class="dbtn" href="${href(newer)}" title="${newer}">后一天 ›</a>` : `<span class="dbtn off">后一天 ›</span>`}
+      ${replay ? `<a class="dbtn now" href="./">回到最新</a>` : ""}
+    </div>`;
+  }
+
   /* ── 渲染 ── */
   app.innerHTML = `
     <div class="head">
       <div>
-        <div class="eyebrow"><span class="dot${D.closed ? "" : " live"}"></span>${D.closed ? "收盘数据" : "盘中快照"} · ${esc(D.asof_et)} · 每个交易日收盘后自动更新</div>
-        <h1>今日板块涨跌</h1>
+        <div class="eyebrow">${replay
+          ? `<span class="dot" style="background:#a78bfa"></span>历史回放 · ${esc(D.asof_et)}`
+          : `<span class="dot${D.closed ? "" : " live"}"></span>${D.closed ? "收盘数据" : "盘中快照"} · ${esc(D.asof_et)} · 每个交易日收盘后自动更新`}</div>
+        <h1>${replay ? `${esc(md(D.date))} 板块涨跌` : "今日板块涨跌"}</h1>
         <p class="summary">
           标普 <b class="${cls(idx.SPY?.chg)}">${pct(idx.SPY?.chg ?? 0)}</b>，纳指 <b class="${cls(idx.QQQ?.chg)}">${pct(idx.QQQ?.chg ?? 0)}</b>。
           11 大板块中 <b>${sec.filter(s => s.chg > 0).length}</b> 涨 <b>${sec.filter(s => s.chg <= 0).length}</b> 跌，
@@ -293,6 +338,7 @@
           科技细分最强 <b>${esc(gTop.name)}</b> <b class="${cls(gTop.avg)}">${pct(gTop.avg)}</b>，最弱 <b>${esc(gBot.name)}</b> <b class="${cls(gBot.avg)}">${pct(gBot.avg)}</b>。
         </p>
       </div>
+      ${dateNav()}
     </div>
 
     <div class="tiles">${tilesData.map(t => `
@@ -306,7 +352,7 @@
 
     <section class="sec">
       <div class="sec-head"><div class="sec-title">11 大板块<small>SPDR Sector ETFs</small></div>
-        <div class="seg" data-chart="sec"><button data-m="intraday" class="on">今日分时</button><button data-m="month">近一月</button></div></div>
+        <div class="seg" data-chart="sec"><button data-m="intraday" class="on">${replay ? "当日分时" : "今日分时"}</button>${replay ? "" : '<button data-m="month">近一月</button>'}</div></div>
       <div class="two">
         <div class="card"><div class="bars">${(() => { const mx = Math.max(...sec.map(s => Math.abs(s.chg)), 0.5); return sec.map(s => `
           <div class="bar-row"><div class="bl">${esc(s.name)}<span>${s.sym}</span></div>${bar(s.chg, mx)}<div class="bv ${cls(s.chg)}">${pct(s.chg)}</div></div>`).join(""); })()}
@@ -329,7 +375,7 @@
 
     <section class="sec">
       <div class="sec-head"><div class="sec-title">细分走势对比<small>悬停图例高亮 · 点击开关</small></div>
-        <div class="seg" data-chart="grp"><button data-m="intraday" class="on">今日分时</button><button data-m="month">近一月</button></div></div>
+        <div class="seg" data-chart="grp"><button data-m="intraday" class="on">${replay ? "当日分时" : "今日分时"}</button>${replay ? "" : '<button data-m="month">近一月</button>'}</div></div>
       <div class="card"><div class="chart" id="grpChart" style="height:400px"></div><div class="legend" id="grpLegend"></div></div>
     </section>
 
@@ -366,8 +412,8 @@
     </div>`;
 
   /* ── 图表 ── */
-  const secSeries = m => sec.map((s, i) => ({ name: s.name, color: s.sym === "XLK" ? "#ffffff" : PALETTE[i % PALETTE.length], bold: s.sym === "XLK", points: s[m] }));
-  const grpSeries = m => G.map(g => ({ name: g.name, color: g.color, points: g[m] }));
+  const secSeries = m => sec.map((s, i) => ({ name: s.name, color: s.sym === "XLK" ? "#ffffff" : PALETTE[i % PALETTE.length], bold: s.sym === "XLK", points: s[m] || [] }));
+  const grpSeries = m => G.map(g => ({ name: g.name, color: g.color, points: g[m] || [] }));
   const charts = {};
   function mount(key, elId, lgId, fn, m) { charts[key] = lineChart(document.getElementById(elId), document.getElementById(lgId), fn(m), m); }
   mount("sec", "secChart", "secLegend", secSeries, "intraday");
