@@ -11,6 +11,7 @@
       {
         "title": "Golang Logs",
         "filename": "go.html",
+        "hidden": true,
         "date": "2025-01-27",
         "excerpt": "Logs on Golang.",
         "readingTime": 23,
@@ -35,6 +36,7 @@
       {
         "title": "Stock Logs",
         "filename": "stocks.html",
+        "hidden": true,
         "date": "2025-09-21",
         "excerpt": "Learning from stock market",
         "readingTime": 6,

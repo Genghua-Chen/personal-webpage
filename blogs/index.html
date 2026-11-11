@@ -191,7 +191,7 @@
         throw new Error(`Failed to fetch posts: ${response.statusText}`);
       }
       const data = await response.json();
-      return data.posts;
+      return data.posts.filter(p => !p.hidden);
     } catch (error) {
       console.error(error);
       throw error;
