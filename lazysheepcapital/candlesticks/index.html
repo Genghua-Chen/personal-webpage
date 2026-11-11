@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>蜡烛图形态大全 — LazySheepcapital</title>
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <script src="../i18n.js"></script>
+  <script src="i18n-en.js"></script>
   <style>
     :root {
       --bg:#07070f; --bg2:#0e0e1a;
@@ -16,6 +18,8 @@
       --amber:#f59e0b;
     }
     body.us { --up:#22c55e; --down:#f43f5e; --bull:#4ade80; --bear:#fb7185; }
+    /* EN mode: the name slot already shows the English name, so hide the duplicate subtitle */
+    html[lang="en"] .cen, html[lang="en"] .ten{display:none}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 
@@ -133,7 +137,7 @@
 
 <div class="wrap">
   <div class="eyebrow">Japanese Candlestick Charting Techniques</div>
-  <h1>蜡烛图<span class="grad">形态大全</span></h1>
+  <h1 data-i18n-html>蜡烛图<span class="grad">形态大全</span></h1>
   <p class="sub" id="sub">以 Steve Nison《日本蜡烛图技术》为主线，补充 Bulkowski、Morris 等人整理的统计形态。每个形态都配有统一风格的示意图，并按「实用度」排名：越靠前越常见、越可靠、越值得先学。</p>
 
   <div class="intro">
@@ -142,11 +146,11 @@
       <div class="anatomy">
         <div id="anatomy"></div>
         <ul>
-          <li><b>实体</b>：开盘价和收盘价之间的部分</li>
-          <li><b>阳线</b>：收盘 &gt; 开盘（涨）　<b>阴线</b>：收盘 &lt; 开盘（跌）</li>
-          <li><b>上影线</b>：实体上方到最高价的细线</li>
-          <li><b>下影线</b>：实体下方到最低价的细线</li>
-          <li><b>窗口</b>：两根K线之间价格完全没有重叠的空白（缺口）</li>
+          <li data-i18n-html><b>实体</b>：开盘价和收盘价之间的部分</li>
+          <li data-i18n-html><b>阳线</b>：收盘 &gt; 开盘（涨）　<b>阴线</b>：收盘 &lt; 开盘（跌）</li>
+          <li data-i18n-html><b>上影线</b>：实体上方到最高价的细线</li>
+          <li data-i18n-html><b>下影线</b>：实体下方到最低价的细线</li>
+          <li data-i18n-html><b>窗口</b>：两根K线之间价格完全没有重叠的空白（缺口）</li>
         </ul>
       </div>
     </div>
@@ -456,7 +460,8 @@
     if (st.book !== '' && String(p.book) !== st.book) return false;
     if (st.n) { const n = +st.n; if (n === 4 ? p.n < 4 : p.n !== n) return false; }
     if (st.q) {
-      const hay = norm([p.zh, p.en, p.al, p.s, p.rec, p.id].join(' '));
+      const e = (window.CANDLE_EN || {})[p.id] || {};
+      const hay = norm([p.zh, p.en, p.al, p.s, p.rec, p.id, e.s, e.rec].join(' '));
       return st.q.split(/\s+/).every((t) => hay.includes(t));
     }
     return true;
@@ -484,7 +489,7 @@
     if (!list.length) { out.innerHTML = '<div class="empty">没有找到匹配的形态，换个关键词试试。</div>'; return; }
     if (st.view === 'table') {
       out.innerHTML = `<div class="tbl-wrap"><table><thead><tr><th>排名</th><th>图示</th><th>形态</th><th>等级</th><th>方向</th><th>类型</th><th>K线</th><th>可靠性</th><th>常见度</th><th>来源</th></tr></thead><tbody>` +
-        current.map((p) => `<tr data-id="${p.id}"><td>${rankLabel(p)}</td><td class="mini">${render(p, 140, 70, { panel: false })}</td><td><b>${p.zh}</b><div style="color:var(--dim);font-size:.75rem">${p.en}</div></td><td><span class="tier ${p.tier}">${p.tier}</span></td><td><span class="pill ${p.dir}">${DIR_ZH[p.dir]}</span></td><td>${TYPE_ZH[p.type]}</td><td>${p.n || '—'}</td><td><span class="stars">${stars(p.rel)}</span></td><td>${FREQ_ZH[p.freq]}</td><td>${p.book ? '原书' : '补充'}</td></tr>`).join('') +
+        current.map((p) => `<tr data-id="${p.id}"><td>${rankLabel(p)}</td><td class="mini">${render(p, 140, 70, { panel: false })}</td><td><b>${p.zh}</b><div class="ten" style="color:var(--dim);font-size:.75rem">${p.en}</div></td><td><span class="tier ${p.tier}">${p.tier}</span></td><td><span class="pill ${p.dir}">${DIR_ZH[p.dir]}</span></td><td>${TYPE_ZH[p.type]}</td><td>${p.n || '—'}</td><td><span class="stars">${stars(p.rel)}</span></td><td>${FREQ_ZH[p.freq]}</td><td>${p.book ? '原书' : '补充'}</td></tr>`).join('') +
         `</tbody></table></div>`;
       return;
     }

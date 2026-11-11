@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LazySheepcapital — Financial Intelligence</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script src="i18n.js"></script>
+  <script src="i18n-en.js"></script>
   <style>
     :root {
       --bg:           #07070f;
@@ -133,6 +135,7 @@
       font-size: 0.66rem; font-weight: 700; letter-spacing: 0.07em;
       text-transform: uppercase; color: var(--dim); margin: 2px 0 10px;
     }
+    html[lang=en] .tool-en { visibility: hidden; height: 6px; margin: 0; } /* repeats the (now English) title */
     .tool-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; flex: 1; }
     .tool-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 12px; }
     .tool-tag {
@@ -346,7 +349,7 @@
   <!-- ── TOP ── -->
   <header class="top">
     <div>
-      <h1>赌狗<span class="grad-text">资本</span> · 跟着聪明钱，重仓下注</h1>
+      <h1 data-i18n-html>赌狗<span class="grad-text">资本</span> · 跟着聪明钱，重仓下注</h1>
       <p class="top-sub">追踪顶级机构持仓，可视化资本流向，每日板块涨跌与财报宏观日历。</p>
     </div>
     <div class="hero-stats">

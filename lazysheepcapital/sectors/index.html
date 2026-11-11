@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>板块涨跌 — LazySheepcapital</title>
+  <script src="../i18n.js"></script>
+  <script src="i18n-en.js"></script>
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <style>
     :root{
@@ -150,6 +152,12 @@
 
     @media(max-width:1000px){.two{grid-template-columns:1fr}.heat{grid-template-columns:repeat(3,1fr)}.etfs{grid-template-columns:repeat(4,1fr)}}
     @media(max-width:760px){.tiles{grid-template-columns:repeat(2,1fr)}.groups,.movers{grid-template-columns:1fr}.heat{grid-template-columns:repeat(2,1fr)}.wrap{padding:20px 14px 60px}.chart{height:280px}}
+    html[lang=en] .he, html[lang=en] .ge { display: none; }
+    html[lang=en] .bar-row { grid-template-columns: 136px 1fr 64px; }
+    /* phones: let the movers / ETF grids shrink instead of pushing the page sideways */
+    .mv .nm{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+    .movers>.card{min-width:0}
+    @media(max-width:520px){.mv{grid-template-columns:20px minmax(0,1fr) 56px 60px;gap:8px}.mv svg{width:56px}.mv .nm em{display:none}.etfs{grid-template-columns:repeat(2,1fr)}}
   </style>
   <script>(function(){var p=location.pathname,c=p.replace(/\/index\.html$/,"/").replace(/\.html$/,"");if(c!==p)history.replaceState(null,"",c+location.search+location.hash)})()</script>
 </head>
@@ -195,6 +203,7 @@
   const etFmt = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit", hour12: false });
   const et = t => etFmt.format(new Date(t * 1000));
   const md = s => s.slice(5).replace("-", "/");
+  const en = s => window.I18N ? I18N.tr(s) : s;
   // 热力底色：涨绿跌红，|3%| 封顶
   const heatBg = v => {
     const a = Math.min(Math.abs(v) / 3, 1);
@@ -331,11 +340,17 @@
           ? `<span class="dot" style="background:#a78bfa"></span>历史回放 · ${esc(D.asof_et)}`
           : `<span class="dot${D.closed ? "" : " live"}"></span>${D.closed ? "收盘数据" : "盘中快照"} · ${esc(D.asof_et)} · 每个交易日收盘后自动更新`}</div>
         <h1>${replay ? `${esc(md(D.date))} 板块涨跌` : "今日板块涨跌"}</h1>
-        <p class="summary">
+        <p class="summary" data-lang="zh">
           标普 <b class="${cls(idx.SPY?.chg)}">${pct(idx.SPY?.chg ?? 0)}</b>，纳指 <b class="${cls(idx.QQQ?.chg)}">${pct(idx.QQQ?.chg ?? 0)}</b>。
           11 大板块中 <b>${sec.filter(s => s.chg > 0).length}</b> 涨 <b>${sec.filter(s => s.chg <= 0).length}</b> 跌，
           领涨 <b>${esc(sTop.name)}</b> <b class="${cls(sTop.chg)}">${pct(sTop.chg)}</b>，领跌 <b>${esc(sBot.name)}</b> <b class="${cls(sBot.chg)}">${pct(sBot.chg)}</b>。
           科技细分最强 <b>${esc(gTop.name)}</b> <b class="${cls(gTop.avg)}">${pct(gTop.avg)}</b>，最弱 <b>${esc(gBot.name)}</b> <b class="${cls(gBot.avg)}">${pct(gBot.avg)}</b>。
+        </p>
+        <p class="summary" data-lang="en">
+          S&amp;P 500 <b class="${cls(idx.SPY?.chg)}">${pct(idx.SPY?.chg ?? 0)}</b>, Nasdaq 100 <b class="${cls(idx.QQQ?.chg)}">${pct(idx.QQQ?.chg ?? 0)}</b>.
+          Of the 11 sectors, <b>${sec.filter(s => s.chg > 0).length}</b> rose and <b>${sec.filter(s => s.chg <= 0).length}</b> fell;
+          <b>${esc(en(sTop.name))}</b> led <b class="${cls(sTop.chg)}">${pct(sTop.chg)}</b> and <b>${esc(en(sBot.name))}</b> lagged <b class="${cls(sBot.chg)}">${pct(sBot.chg)}</b>.
+          Strongest tech group: <b>${esc(gTop.en || en(gTop.name))}</b> <b class="${cls(gTop.avg)}">${pct(gTop.avg)}</b>; weakest: <b>${esc(gBot.en || en(gBot.name))}</b> <b class="${cls(gBot.avg)}">${pct(gBot.avg)}</b>.
         </p>
       </div>
       ${dateNav()}
@@ -406,10 +421,13 @@
       <div class="etfs">${D.tech_etfs.map(e => `<div class="etf"><div class="es">${e.sym}</div><div class="en">${esc(e.name)}</div><div class="ev ${cls(e.chg)}">${pct(e.chg)}</div></div>`).join("")}</div>
     </section>
 
-    <div class="foot">
+    <div class="foot"><span data-lang="zh">
       数据来源 Yahoo Finance，${esc(D.asof_et)}。涨跌幅 = 最新价 / 前一交易日收盘价 − 1。科技细分为成分股等权平均，与市值加权的 ETF 可能不同。
       ${D.missing.length ? `本次缺失：${D.missing.map(esc).join(", ")}。` : ""}仅供参考，不构成投资建议。
-    </div>`;
+    </span><span data-lang="en">
+      Data: Yahoo Finance, ${esc(D.asof_et)}. Change = last price / previous close − 1. Tech groups are equal-weighted averages of their constituents and may differ from cap-weighted ETFs.
+      ${D.missing.length ? `Missing this run: ${D.missing.map(esc).join(", ")}. ` : ""}For reference only, not investment advice.
+    </span></div>`;
 
   /* ── 图表 ── */
   const secSeries = m => sec.map((s, i) => ({ name: s.name, color: s.sym === "XLK" ? "#ffffff" : PALETTE[i % PALETTE.length], bold: s.sym === "XLK", points: s[m] || [] }));

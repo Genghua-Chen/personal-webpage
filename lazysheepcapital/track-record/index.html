@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>实盘记录 — LazySheepcapital</title>
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <script src="../i18n.js"></script>
+  <script src="i18n-en.js"></script>
   <style>
     :root {
       --bg:      #07070f;
@@ -142,8 +144,8 @@
 
 
   <section class="hero">
-    <h1>实盘记录 <span class="grad">Track Record</span></h1>
-    <p>每一笔下注都公开。赢要赢得明白，输要输得服气。<a class="pr-link" href="../#principle-06">祖训第 6 条</a>：相信自己的投资原则。</p>
+    <h1 data-i18n-html>实盘记录 <span class="grad">Track Record</span></h1>
+    <p data-i18n-html>每一笔下注都公开。赢要赢得明白，输要输得服气。<a class="pr-link" href="../#principle-06">祖训第 6 条</a>：相信自己的投资原则。</p>
   </section>
 
   <div class="stats-row" id="statsRow"></div>
@@ -194,6 +196,7 @@
      交易数据 — 直接在这里增删条目即可
      direction: "long" | "short"
      status:    "open" | "closed"
+     thesis_en / lesson_en: 英文版（缺省时英文模式下回退显示中文）
      ════════════════════════════════════════ */
   const TRADES = [
     // —— 当前持仓 ——
@@ -202,12 +205,14 @@
       direction: "long", sizePct: 35,
       entryDate: "2026-04-15", entryPrice: 152.3, currentPrice: 168.9,
       thesis: "Q1 2026 13F 显示机构再度净增仓，AI capex 周期未见顶，顺势重仓。",
+      thesis_en: "Q1 2026 13Fs show institutions net buyers again and the AI capex cycle hasn't peaked. Going heavy with the trend.",
     },
     {
       status: "open", ticker: "GOOGL", company: "Alphabet",
       direction: "long", sizePct: 20,
       entryDate: "2026-05-08", entryPrice: 178.2, currentPrice: 183.5,
       thesis: "Gemini 商业化超预期，估值仍低于 Mag7 均值，聪明钱 Q1 集体加仓。",
+      thesis_en: "Gemini monetization beating expectations, valuation still below the Mag 7 average, and smart money added across the board in Q1.",
     },
 
     // —— 已平仓 ——
@@ -218,6 +223,8 @@
       exitDate: "2026-01-20", exitPrice: 148.6,
       thesis: "13F 连续两季机构增仓，AI 主线。",
       lesson: "跟随聪明钱 + 顺势而为，吃到主升浪。祖训 01 / 11 的胜利。",
+      thesis_en: "Two straight quarters of institutional buying in 13Fs; the core AI trade.",
+      lesson_en: "Followed the smart money and the trend, and caught the main leg up. A win for principles 01 / 11.",
     },
     {
       status: "closed", ticker: "UNH", company: "UnitedHealth",
@@ -226,6 +233,8 @@
       exitDate: "2025-12-18", exitPrice: 322.0,
       thesis: "巴菲特 Q2 建仓，基本面被错杀。",
       lesson: "价值回归（祖训 10）兑现，到目标位坚决离场。",
+      thesis_en: "Buffett opened a position in Q2; fundamentals unfairly sold off.",
+      lesson_en: "Value reversion (principle 10) played out. Exited decisively at the target.",
     },
     {
       status: "closed", ticker: "TSLA", company: "Tesla",
@@ -234,6 +243,8 @@
       exitDate: "2026-03-28", exitPrice: 376.5,
       thesis: "下跌趋势确认，顺势做空。",
       lesson: "祖训 11 执行到位，趋势走完及时落袋。",
+      thesis_en: "Downtrend confirmed; shorted with the trend.",
+      lesson_en: "Executed principle 11 well and took profits once the trend ran its course.",
     },
     {
       status: "closed", ticker: "PLTR", company: "Palantir",
@@ -242,6 +253,8 @@
       exitDate: "2026-02-19", exitPrice: 104.8,
       thesis: "估值离谱，赌它回调。",
       lesson: "❌ 逆势做空散户热门股，违反祖训 02 / 11。止损离场，学费。",
+      thesis_en: "Absurd valuation; bet on a pullback.",
+      lesson_en: "❌ Shorted a retail favorite against the trend, breaking principles 02 / 11. Stopped out. Tuition paid.",
     },
     {
       status: "closed", ticker: "SMCI", company: "Super Micro",
@@ -250,6 +263,8 @@
       exitDate: "2025-10-30", exitPrice: 38.9,
       thesis: "AI 服务器放量，便宜。",
       lesson: "❌ 财务看不懂还是碰了，违反祖训 07。好在小仓试错，及时认错。",
+      thesis_en: "AI server volumes ramping, and cheap.",
+      lesson_en: "❌ Touched it even though I couldn't read the financials, breaking principle 07. Luckily a small test position, and I admitted the mistake quickly.",
     },
   ];
 
@@ -261,10 +276,12 @@
   }
   const fmtPnl = p => `<span class="${p >= 0 ? "pnl-pos" : "pnl-neg"}">${p >= 0 ? "+" : ""}${p.toFixed(1)}%</span>`;
   /* 「祖训 02 / 11」→ 可点击锚点，跳回首页对应原则并高亮 */
-  const linkPrinciples = s => (s || "").replace(/祖训\s*((?:\d{2}\s*\/\s*)*\d{2})/g, (m, nums) =>
-    "祖训 " + nums.split("/").map(n => n.trim())
+  const linkPrinciples = s => (s || "").replace(/(祖训|[Pp]rinciples?)\s*((?:\d{2}\s*\/\s*)*\d{2})/g, (m, word, nums) =>
+    word + " " + nums.split("/").map(n => n.trim())
       .map(n => `<a class="pr-link" href="../#principle-${n}">${n}</a>`)
       .join(" / "));
+  /* 中英各渲染一份，CSS 按 <html lang> 显示其一（见 ../i18n.js） */
+  const both = (zh, en) => `<span data-lang="zh">${zh}</span><span data-lang="en">${en}</span>`;
   const dirTag = d => d === "long"
     ? '<span class="dir long">做多 ▲</span>'
     : '<span class="dir short">做空 ▼</span>';
@@ -307,7 +324,7 @@
       <td class="num">$${t.entryPrice}</td>
       <td class="num">$${t.currentPrice}</td>
       <td>${fmtPnl(pnlPct(t))}</td>
-      <td class="thesis">${t.thesis}</td>
+      <td class="thesis">${both(t.thesis, t.thesis_en || t.thesis)}</td>
     </tr>
   `).join("") || '<tr><td colspan="8" style="padding:18px;color:var(--muted);text-align:center">空仓中 · 耐心等待（祖训 09）</td></tr>';
 
@@ -321,7 +338,7 @@
       <td class="date">${t.entryDate}<br>→ ${t.exitDate}</td>
       <td class="num">$${t.entryPrice}<br>→ $${t.exitPrice}</td>
       <td>${fmtPnl(pnlPct(t))}</td>
-      <td class="thesis">${linkPrinciples(t.lesson || t.thesis)}</td>
+      <td class="thesis">${both(linkPrinciples(t.lesson || t.thesis), linkPrinciples(t.lesson_en || t.thesis_en || t.lesson || t.thesis))}</td>
     </tr>
   `).join("");
 

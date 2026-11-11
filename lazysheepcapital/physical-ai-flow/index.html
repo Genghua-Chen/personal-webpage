@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>物理 AI / 机器人流向图 — LazySheepcapital</title>
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<script src="../i18n.js"></script>
+<script src="i18n-en.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -267,6 +269,7 @@ footer a:hover{color:rgba(94,243,140,.9)}
   .flow-wrap{grid-template-columns:1fr}
   .col-arr-l,.col-arr-r{display:none}
   .col-down{padding-top:0}
+  .col-buyers,.col-layers,.col-down{grid-column:1;min-width:0}
   .strip{grid-template-columns:repeat(3,1fr)}
   .bottle-grid{grid-template-columns:1fr 1fr}
   .tvi-grid{grid-template-columns:1fr}
@@ -280,6 +283,7 @@ footer a:hover{color:rgba(94,243,140,.9)}
   .bottle-grid{grid-template-columns:1fr}
   .hero{padding:22px 20px}
   .layer-body{grid-template-columns:1fr}
+  .sm-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
 }
 </style>
 <style>
@@ -327,7 +331,7 @@ footer a:hover{color:rgba(94,243,140,.9)}
 <!-- PRIVATE BANNER -->
 <div class="spcx-banner">
   <span class="spcx-badge">🤖 私募"机器人大脑"四巨头</span>
-  <div class="spcx-text">
+  <div class="spcx-text" data-i18n-html>
     资金最密集处是"机器人大脑"（VLA / 世界模型）：<strong>Figure AI</strong>（累计 ~$1.9B · 估值 $39B）、<strong>Skild AI</strong>（$1.4B · 估值 $14B · SoftBank/英伟达领投）、<strong>Physical Intelligence</strong>（~$1.4B · 估值 $11B+ · 贝索斯系）、<strong>1X / Agility / Apptronik</strong> 紧随。这些龙头均未上市 —— 散户只能借公开代理布局：
     <strong>NVDA</strong>（大脑+算力平台）、<strong>TSLA</strong>（Optimus）、<strong>MP</strong>（稀土磁材）、<strong>TER</strong>（协作机器人）、<strong>6324.T 谐波减速机</strong>等。
   </div>
@@ -781,19 +785,19 @@ footer a:hover{color:rgba(94,243,140,.9)}
   <div class="tvi-grid">
     <div class="tvi-col">
       <div class="tvi-label" style="color:var(--brain)">📋 私募龙头 → 公开代理</div>
-      <div class="tvi-row"><span class="tvi-icon">🧠</span><span class="tvi-text"><strong>大脑层</strong>：Figure/PI/Skild 均未上市 → 用 <span style="color:var(--brain)">NVDA</span>（卖铲）+ <span style="color:var(--brain)">GOOGL</span>（Gemini Robotics）间接暴露</span></div>
-      <div class="tvi-row"><span class="tvi-icon">⚙️</span><span class="tvi-text"><strong>执行器瓶颈</strong>：无论谁造整机都要买 <span style="color:var(--act)">6324.T · 6594.T · ALNT</span> 的关节</span></div>
-      <div class="tvi-row"><span class="tvi-icon">🧲</span><span class="tvi-text"><strong>磁材卡脖子</strong>：<span style="color:var(--mag)">MP</span> — 去中国化稀土磁体唯一规模标的</span></div>
-      <div class="tvi-row"><span class="tvi-icon">👁️</span><span class="tvi-text"><strong>感知层</strong>：<span style="color:var(--sense)">AMBA · CGNX · 6861.T</span> — 单台传感器用量随放量线性增长</span></div>
-      <div class="tvi-row"><span class="tvi-icon">🤖</span><span class="tvi-text"><strong>整机代理</strong>：<span style="color:var(--oem)">TSLA</span>（唯一上市纯整机）+ <span style="color:var(--oem)">TER · ABB · 6954.T</span></span></div>
+      <div class="tvi-row"><span class="tvi-icon">🧠</span><span class="tvi-text" data-i18n-html><strong>大脑层</strong>：Figure/PI/Skild 均未上市 → 用 <span style="color:var(--brain)">NVDA</span>（卖铲）+ <span style="color:var(--brain)">GOOGL</span>（Gemini Robotics）间接暴露</span></div>
+      <div class="tvi-row"><span class="tvi-icon">⚙️</span><span class="tvi-text" data-i18n-html><strong>执行器瓶颈</strong>：无论谁造整机都要买 <span style="color:var(--act)">6324.T · 6594.T · ALNT</span> 的关节</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🧲</span><span class="tvi-text" data-i18n-html><strong>磁材卡脖子</strong>：<span style="color:var(--mag)">MP</span> — 去中国化稀土磁体唯一规模标的</span></div>
+      <div class="tvi-row"><span class="tvi-icon">👁️</span><span class="tvi-text" data-i18n-html><strong>感知层</strong>：<span style="color:var(--sense)">AMBA · CGNX · 6861.T</span> — 单台传感器用量随放量线性增长</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🤖</span><span class="tvi-text" data-i18n-html><strong>整机代理</strong>：<span style="color:var(--oem)">TSLA</span>（唯一上市纯整机）+ <span style="color:var(--oem)">TER · ABB · 6954.T</span></span></div>
     </div>
     <div class="tvi-col">
       <div class="tvi-label" style="color:var(--bot)">🚀 Figure / Tesla 里程碑 — 板块影响</div>
-      <div class="tvi-row"><span class="tvi-icon">📈</span><span class="tvi-text"><strong>整机放量</strong>：Tesla Optimus 量产或 Figure IPO 将带动全产业链估值重估，执行器/磁材率先反应</span></div>
-      <div class="tvi-row"><span class="tvi-icon">💰</span><span class="tvi-text"><strong>ETF 被动买盘</strong>：<span style="color:var(--sense)">BOTZ · BOTT · ROBO</span> 调仓将推动 NVDA · 6324.T · TER 被动流入</span></div>
-      <div class="tvi-row"><span class="tvi-icon">🏭</span><span class="tvi-text"><strong>供应链公开</strong>：整机厂供应商披露或揭示 <span style="color:var(--act)">谐波/电机/丝杠</span> 真实订单规模</span></div>
-      <div class="tvi-row"><span class="tvi-icon">⚡</span><span class="tvi-text"><strong>卖铲人确定性最高</strong>：<span style="color:var(--brain)">NVDA</span> 无论谁赢都收"算力+大脑+仿真"三道租</span></div>
-      <div class="tvi-row"><span class="tvi-icon">🌐</span><span class="tvi-text"><strong>中美两条供应链</strong>：关注关税/出口管制 → <span style="color:var(--mag)">MP</span> 与中国 <span style="color:var(--mag)">绿的/拓普</span> 此消彼长</span></div>
+      <div class="tvi-row"><span class="tvi-icon">📈</span><span class="tvi-text" data-i18n-html><strong>整机放量</strong>：Tesla Optimus 量产或 Figure IPO 将带动全产业链估值重估，执行器/磁材率先反应</span></div>
+      <div class="tvi-row"><span class="tvi-icon">💰</span><span class="tvi-text" data-i18n-html><strong>ETF 被动买盘</strong>：<span style="color:var(--sense)">BOTZ · BOTT · ROBO</span> 调仓将推动 NVDA · 6324.T · TER 被动流入</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🏭</span><span class="tvi-text" data-i18n-html><strong>供应链公开</strong>：整机厂供应商披露或揭示 <span style="color:var(--act)">谐波/电机/丝杠</span> 真实订单规模</span></div>
+      <div class="tvi-row"><span class="tvi-icon">⚡</span><span class="tvi-text" data-i18n-html><strong>卖铲人确定性最高</strong>：<span style="color:var(--brain)">NVDA</span> 无论谁赢都收"算力+大脑+仿真"三道租</span></div>
+      <div class="tvi-row"><span class="tvi-icon">🌐</span><span class="tvi-text" data-i18n-html><strong>中美两条供应链</strong>：关注关税/出口管制 → <span style="color:var(--mag)">MP</span> 与中国 <span style="color:var(--mag)">绿的/拓普</span> 此消彼长</span></div>
     </div>
   </div>
 </div>

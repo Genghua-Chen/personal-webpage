@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>割肉自查 — LazySheepcapital</title>
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <script src="../i18n.js"></script>
+  <script src="i18n-en.js"></script>
   <style>
     :root {
       --bg:           #07070f;
@@ -172,8 +174,8 @@
 
   <main class="main">
     <div class="page-eyebrow">Cut-Loss Checklist</div>
-    <h1 class="page-title">割肉<span class="grad-text">自查</span></h1>
-    <p class="page-sub">想割肉之前，先依次回答下面的问题。<br>只要有任何一题的答案是「否」，就不应该轻易割肉。</p>
+    <h1 class="page-title" data-i18n-html>割肉<span class="grad-text">自查</span></h1>
+    <p class="page-sub" data-i18n-html>想割肉之前，先依次回答下面的问题。<br>只要有任何一题的答案是「否」，就不应该轻易割肉。</p>
 
     <div class="progress" id="progress"></div>
 
@@ -254,7 +256,7 @@
         <div class="result-emoji">🐑</div>
         <div class="result-title hold">不应该轻易割肉！</div>
         <p class="result-reason">${textToHtmlSafe(q.noVerdict)}</p>
-        <p class="result-note">投资的关键是不要被情绪吓跑。回去看看你自己写下的<a href="../#principle-06">投资原则</a>，然后关掉行情软件。</p>
+        <p class="result-note" data-i18n-html>投资的关键是不要被情绪吓跑。回去看看你自己写下的<a href="../#principle-06">投资原则</a>，然后关掉行情软件。</p>
         <button type="button" class="btn-restart" id="btnRestart">重新自查</button>`;
       bindRestart();
     }
